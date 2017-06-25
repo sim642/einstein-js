@@ -5,6 +5,7 @@ import {Hint} from "./hint/Hint";
 import {OpenHintFactory} from "./hint/OpenHint";
 import {SameColumnHintFactory} from "./hint/SameColumnHint";
 import {AdjacentHintFactory} from "./hint/AdjacentHint";
+import {DirectionHintFactory} from "./hint/DirectionHint";
 
 export class Puzzle {
     public multiBoard: MultiBoard = MultiBoard.full();
@@ -28,7 +29,7 @@ export class Puzzle {
     }
 
     private static generateHint(board: SingleBoard): Hint {
-        let hintFactories = [new OpenHintFactory(), new SameColumnHintFactory(), new AdjacentHintFactory()];
+        let hintFactories = [new OpenHintFactory(), new SameColumnHintFactory(), new AdjacentHintFactory(), new DirectionHintFactory()];
         let hintFactory = hintFactories[_.random(0, hintFactories.length - 1)];
         return hintFactory.random(board);
     }
