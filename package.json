@@ -1,0 +1,12 @@
+{
+  "name": "einstein-js",
+  "version": "0.0.1",
+  "scripts": {
+    "build": "webpack"
+  },
+  "devDependencies": {
+    "webpack": "^3.0.0",
+    "awesome-typescript-loader": "^3.1.3",
+    "source-map-loader": "^0.2.1"
+  }
+}
