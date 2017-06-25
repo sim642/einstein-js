@@ -29,7 +29,7 @@ export class SameColumnHint implements Hint {
     }
 }
 
-export class OpenHintFactory implements HintFactory {
+export class SameColumnHintFactory implements HintFactory {
     random(board: SingleBoard): Hint {
         let col = _.random(0, board.cols - 1);
         let row1 = _.random(0, board.rows - 1);

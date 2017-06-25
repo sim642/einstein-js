@@ -1,11 +1,13 @@
 import * as _ from 'lodash';
 import {Board} from './Board';
+import {Hint} from "../hint/Hint";
+import {SingleBoard} from "./SingleBoard";
 
 type Variants = boolean[];
 
 export class MultiBoard extends Board<Variants> {
-    static fill(): MultiBoard {
-        return new MultiBoard(_.times(Board.rows, _.constant(_.times(Board.cols, _.constant(_.times(Board.variants, _.constant(true)))))));
+    static full(): MultiBoard {
+        return new MultiBoard(_.times(Board.rows, row => _.times(Board.cols, col => _.times(Board.variants, _.constant(true)))));
     }
 
     remove(row: number, col: number, variant: number): void {
@@ -79,5 +81,45 @@ export class MultiBoard extends Board<Variants> {
 
         if (changed)
             this.pruneSingles(row);
+    }
+
+    applyHint(hint: Hint): boolean {
+        return hint.applyTo(this);
+    }
+
+    applyHints(hints: Hint[]): boolean {
+        let changed : boolean;
+        do {
+            changed = false;
+            for (let hint of hints) {
+                if (this.applyHint(hint))
+                    changed = true;
+            }
+        } while (changed);
+        return changed;
+    }
+
+    isSolved(singleBoard: SingleBoard): boolean {
+        return this.isSingleBoard() && this.contains(singleBoard);
+    }
+
+    isSingleBoard(): boolean {
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                if (!this.isSingle(row, col))
+                    return false;
+            }
+        }
+        return true;
+    }
+
+    contains(singleBoard: SingleBoard): boolean {
+        for (let row = 0; row < this.rows; row++) {
+            for (let col = 0; col < this.cols; col++) {
+                if (!this.isPossible(row, col, singleBoard.get(row, col)))
+                    return false;
+            }
+        }
+        return true;
     }
 }

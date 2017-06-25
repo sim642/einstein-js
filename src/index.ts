@@ -1,5 +1,3 @@
-import {SingleBoard} from './puzzle/board/SingleBoard';
-import {MultiBoard} from './puzzle/board/MultiBoard';
+import {Puzzle} from "./puzzle/Puzzle";
 
-console.log(JSON.stringify(SingleBoard.random()));
-console.log(JSON.stringify(MultiBoard.fill()));
+console.log(Puzzle.generate());
