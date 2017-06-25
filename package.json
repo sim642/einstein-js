@@ -10,5 +10,9 @@
     "ts-loader": "^2.2.0",
     "typescript": "^2.3.4",
     "webpack": "^3.0.0"
+  },
+  "dependencies": {
+    "@types/lodash": "^4.14.66",
+    "lodash": "^4.17.4"
   }
 }
