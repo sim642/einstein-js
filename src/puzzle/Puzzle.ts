@@ -36,11 +36,13 @@ export class Puzzle {
 
     private static pruneHints(board: SingleBoard, hints: Hint[]): Hint[] {
         hints = _.clone(hints);
+        console.debug(`Before pruneHints: ${hints.length}`);
         let changed: boolean;
         do {
             changed = false;
             for (let i = 0; i < hints.length; i++) {
-                let newHints = _.pullAt(hints, [i]);
+                let newHints = _.clone(hints);
+                _.pullAt(newHints, [i]);
                 if (board.isSolvable(newHints)) {
                     hints = newHints;
                     changed = true;
@@ -48,6 +50,7 @@ export class Puzzle {
                 }
             }
         } while (changed);
+        console.debug(`After pruneHints: ${hints.length}`);
         return hints;
     }
 }
