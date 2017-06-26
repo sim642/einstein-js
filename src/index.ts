@@ -1,5 +1,7 @@
 import {Puzzle} from "./puzzle/Puzzle";
 import * as $ from "jquery";
+import {MultiBoardWidget} from "./web/MultiBoardWidget";
 
-console.log(Puzzle.generate());
-$("body").append($("<span></span>").text("LOL"));
+let puzzle = Puzzle.generate();
+let multiBoardWidget = new MultiBoardWidget(puzzle);
+$("body").append(multiBoardWidget.create());
