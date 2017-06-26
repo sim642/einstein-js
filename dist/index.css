@@ -7,27 +7,56 @@
 }
 
 .multiboard {
-  float: left;
+  width: 40%;
+  table-layout: fixed;
+   float: left;
 }
 
 .multiboard td {
-  width: 48px;
-  height: 48px;
   padding: 0;
   
   background-image: url('./icons/original/tile.png');
+  background-size: 100% 100%;
+  line-height: 0;
+}
+
+.cell-single {
+  width: 100%;
+}
+
+.square {
+  height: 0;
+  padding-bottom: 100%;
+  position: relative;
+}
+
+.cell-multi {
+  width: 100%;
+  table-layout: fixed;
+  border-collapse: collapse;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translateX(-50%) translateY(-50%);
+}
+
+.cell-multi td {
+  padding: 0;
+  background: none;
   line-height: 0;
 }
 
 .cell-multi-variant {
   cursor: pointer;
+  width: 100%;
 }
 
 .cell-multi-empty {
-  width: 16px;
-  height: 16px;
+  
+}
 
-  display: inline-block;
+.cell-multi tr:first-child .cell-multi-variant {
+  /*! padding-top: 50%; */
 }
 
 .hint-outer {

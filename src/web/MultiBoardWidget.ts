@@ -28,33 +28,46 @@ class CellWidget extends Widget {
     }
 
     render(): $Element {
-        let $td = $("<td></td>");
+        let $div = $("<div></div>")
+            .addClass("square");
         if (this.board.isSingle(this.row, this.col)) {
             let variant = this.board.getSingle(this.row, this.col);
-            $td.append(
+            $div.append(
                 new LargeVariantIconWidget(this.row, variant).create()
                     .addClass("cell-single")
             );
         }
         else {
-            $td.append(
-                $("<div></div>")
+            let variantCols = Math.ceil(Math.sqrt(this.board.variants));
+            let variantRows = Math.ceil(this.board.variants / variantCols);
+            $div.append(
+                $("<table></table>")
                     .addClass("cell-multi")
                     .append(...
-                        _.times(this.board.variants, variant =>
-                            this.board.isPossible(this.row, this.col, variant) ?
-                                new SmallVariantIconWidget(this.row, variant).create()
-                                    .addClass("cell-multi-variant")
-                                    .click(this.onClickVariant(variant))
-                                    .contextmenu(this.onRightClickVariant(variant))
-                            :
-                                $("<div></div>")
-                                    .addClass("cell-multi-empty")
+                        _.times(variantRows, variantRow =>
+                            $("<tr></tr>")
+                                .append(...
+                                    _.times(variantCols, variantCol => {
+                                            let variant = variantRow * variantCols + variantCol;
+                                            return $("<td></td>")
+                                                .append(
+                                                    variant < this.board.variants && this.board.isPossible(this.row, this.col, variant) ?
+                                                        new SmallVariantIconWidget(this.row, variant).create()
+                                                            .addClass("cell-multi-variant")
+                                                            .click(this.onClickVariant(variant))
+                                                            .contextmenu(this.onRightClickVariant(variant))
+                                                    :
+                                                        $("<div></div>")
+                                                            .addClass("cell-multi-empty square")
+                                                );
+                                        }
+                                    )
+                                )
                         )
                     )
             );
         }
-        return $td;
+        return $("<td></td>").append($div);
     }
 }
 
