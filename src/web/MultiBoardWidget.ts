@@ -5,15 +5,17 @@ import {Puzzle} from "../puzzle/Puzzle";
 import {$Element, Widget} from "./Widget";
 import {LargeVariantIconWidget, SmallVariantIconWidget} from "./IconWidgets";
 
+type RefreshCb = () => void;
+
 class CellWidget extends Widget {
-    constructor(private board: MultiBoard, private row: number, private col: number, private rowWidget: RowWidget) {
+    constructor(private board: MultiBoard, private row: number, private col: number, private refreshCb: RefreshCb) {
         super();
     }
 
     private onClickVariant(variant: number) {
         return e => {
             this.board.set(this.row, this.col, variant);
-            this.rowWidget.recreate();
+            this.refreshCb();
         }
     }
 
@@ -21,7 +23,7 @@ class CellWidget extends Widget {
         return e => {
             e.preventDefault();
             this.board.remove(this.row, this.col, variant);
-            this.rowWidget.recreate();
+            this.refreshCb();
         }
     }
 
@@ -57,15 +59,20 @@ class CellWidget extends Widget {
 }
 
 class RowWidget extends Widget {
-    constructor(private board: MultiBoard, private row: number) {
+    constructor(private board: MultiBoard, private row: number, private refreshCb: RefreshCb) {
         super();
     }
+
+    private refresh: RefreshCb = () => {
+        this.recreate();
+        this.refreshCb();
+    };
 
     render(): $Element {
         return $("<tr></tr>")
             .append(...
                 _.times(this.board.cols, col =>
-                    new CellWidget(this.board, this.row, col, this).create()
+                    new CellWidget(this.board, this.row, col, this.refresh).create()
                 )
             )
     }
@@ -79,12 +86,23 @@ export class MultiBoardWidget extends Widget {
         this.board = puzzle.multiBoard;
     }
 
+    private refresh: RefreshCb = () => {
+        if (this.puzzle.isSolved()) {
+            alert("Solved!");
+            this.$.addClass("solved");
+        }
+        else if (this.puzzle.isOver()) {
+            alert("Over!");
+            this.$.addClass("over");
+        }
+    };
+
     render(): $Element {
         return $("<table></table>")
             .addClass("multiboard")
             .append(...
                 _.times(this.board.rows, row =>
-                    new RowWidget(this.board, row).create()
+                    new RowWidget(this.board, row, this.refresh).create()
                 )
             )
     }

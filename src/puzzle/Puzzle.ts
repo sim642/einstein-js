@@ -15,6 +15,14 @@ export class Puzzle {
         this.multiBoard.applyHints(_.filter(hints, hint => hint.getType() === HintType.Start));
     }
 
+    isSolved(): boolean {
+        return this.multiBoard.isSolved(this.singleBoard);
+    }
+
+    isOver(): boolean {
+        return !this.multiBoard.contains(this.singleBoard);
+    }
+
     static generate(): Puzzle {
         let board = SingleBoard.random();
         return new Puzzle(board, Puzzle.pruneHints(board, Puzzle.generateHints(board)));
