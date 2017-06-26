@@ -4,7 +4,7 @@ import {SingleBoard} from "./board/SingleBoard";
 import {AdjacentHintFactory} from "./hint/AdjacentHint";
 import {BetweenHintFactory} from "./hint/BetweenHint";
 import {DirectionHintFactory} from "./hint/DirectionHint";
-import {Hint} from "./hint/Hint";
+import {Hint, HintType} from "./hint/Hint";
 import {OpenHintFactory} from "./hint/OpenHint";
 import {SameColumnHintFactory} from "./hint/SameColumnHint";
 
@@ -12,7 +12,7 @@ export class Puzzle {
     public multiBoard: MultiBoard = MultiBoard.full();
 
     constructor(public singleBoard: SingleBoard, public hints: Hint[]) {
-
+        this.multiBoard.applyHints(_.filter(hints, hint => hint.getType() === HintType.Start));
     }
 
     static generate(): Puzzle {

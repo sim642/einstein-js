@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
-import {Hint, HintFactory} from "./Hint";
+import {Hint, HintFactory, HintType} from "./Hint";
 
 export class DirectionHint implements Hint {
     constructor(public rowLeft: number, public variantLeft: number, public rowRight: number, public variantRight: number) {
@@ -30,6 +30,10 @@ export class DirectionHint implements Hint {
         }
 
         return changed;
+    }
+
+    getType(): HintType {
+        return HintType.Horizontal;
     }
 }
 

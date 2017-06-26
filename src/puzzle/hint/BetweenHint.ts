@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
-import {Hint, HintFactory} from "./Hint";
+import {Hint, HintFactory, HintType} from "./Hint";
 
 export class BetweenHint implements Hint {
     constructor(public row1: number, public variant1: number, public rowMiddle: number, public variantMiddle: number, public row2: number, public variant2: number) {
@@ -59,6 +59,10 @@ export class BetweenHint implements Hint {
         } while (changed2);
 
         return changed;
+    }
+
+    getType(): HintType {
+        return HintType.Horizontal;
     }
 }
 

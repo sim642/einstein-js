@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
-import {Hint, HintFactory} from "./Hint";
+import {Hint, HintFactory, HintType} from "./Hint";
 
 export class OpenHint implements Hint {
     constructor(public row: number, public col: number, public variant: number) {
@@ -15,6 +15,10 @@ export class OpenHint implements Hint {
         }
         else
             return false;
+    }
+
+    getType(): HintType {
+        return HintType.Start;
     }
 }
 

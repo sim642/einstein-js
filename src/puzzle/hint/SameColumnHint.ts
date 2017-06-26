@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
-import {Hint, HintFactory} from "./Hint";
+import {Hint, HintFactory, HintType} from "./Hint";
 
 export class SameColumnHint implements Hint {
     constructor(public row1: number, public variant1: number, public row2: number, public variant2: number) {
@@ -26,6 +26,10 @@ export class SameColumnHint implements Hint {
         }
 
         return changed;
+    }
+
+    getType(): HintType {
+        return HintType.Vertical;
     }
 }
 

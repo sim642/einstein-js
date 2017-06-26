@@ -3,7 +3,7 @@ import * as _ from "lodash";
 import {AdjacentHint} from "../puzzle/hint/AdjacentHint";
 import {BetweenHint} from "../puzzle/hint/BetweenHint";
 import {DirectionHint} from "../puzzle/hint/DirectionHint";
-import {Hint} from "../puzzle/hint/Hint";
+import {Hint, HintType} from "../puzzle/hint/Hint";
 import {OpenHint} from "../puzzle/hint/OpenHint";
 import {SameColumnHint} from "../puzzle/hint/SameColumnHint";
 import {IconWidget, LargeVariantIconWidget} from "./IconWidgets";
@@ -105,9 +105,20 @@ export class HintsWidget extends Widget {
     render(): $Element {
         return $("<div></div>")
             .addClass("hints")
-            .append(...
-                _.map(this.hints, hint =>
-                    new HintWidget(hint).create()
+            .append($("<div></div>")
+                .addClass("hints-horizontal")
+                .append(...
+                    _.map(_.filter(this.hints, hint => hint.getType() === HintType.Horizontal), hint =>
+                        new HintWidget(hint).create()
+                    )
+                )
+            )
+            .append($("<div></div>")
+                .addClass("hints-vertical")
+                .append(...
+                    _.map(_.filter(this.hints, hint => hint.getType() === HintType.Vertical), hint =>
+                        new HintWidget(hint).create()
+                    )
                 )
             )
     }
