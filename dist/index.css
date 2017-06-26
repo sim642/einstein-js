@@ -1,0 +1,57 @@
+.solved {
+  background-color: lime;
+}
+
+.over {
+  background-color: red;
+}
+
+.multiboard {
+  float: left;
+}
+
+.multiboard td {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  
+  background-image: url('./icons/original/tile.png');
+  line-height: 0;
+}
+
+.cell-multi-variant {
+  cursor: pointer;
+}
+
+.cell-multi-empty {
+  width: 16px;
+  height: 16px;
+
+  display: inline-block;
+}
+
+.hint-outer {
+  display: inline-block;
+}
+
+.hint {
+  border-collapse: collapse;
+  margin: 3px;
+  cursor: pointer;
+}
+
+.hint td {
+  width: 48px;
+  height: 48px;
+  padding: 0;
+  line-height: 0;
+  
+  position: relative;
+}
+
+.hint-between {
+  position: absolute;
+  top: 0;
+  left: -11px;
+  z-index: 100;
+}

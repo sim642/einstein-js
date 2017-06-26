@@ -38,6 +38,10 @@ export class MultiBoard extends Board<Variants> {
         return this.count(row, col) == 1;
     }
 
+    getSingle(row: number, col: number): number {
+        return _.findIndex(this.get(row, col));
+    }
+
     private pruneSingles(row: number): void {
         let colCnt = _.times(this.cols, _.constant(0));
         let variantCnt = _.times(this.variants, _.constant(0));

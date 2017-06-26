@@ -4,7 +4,7 @@ import {MultiBoard} from "../puzzle/board/MultiBoard";
 import {Puzzle} from "../puzzle/Puzzle";
 import {$Element, Widget} from "./Widget";
 
-class ColWidget extends Widget {
+class CellWidget extends Widget {
     constructor(private board: MultiBoard, private row: number, private col: number, private rowWidget: RowWidget) {
         super();
     }
@@ -25,13 +25,35 @@ class ColWidget extends Widget {
     }
 
     render(): $Element {
-        return $("<td></td>").append(...
-            _.times(this.board.variants, variant =>
-                this.board.isPossible(this.row, this.col, variant) ?
-                    $("<span></span>").text(variant).click(this.onClickVariant(variant)).contextmenu(this.onRightClickVariant(variant)) :
-                    $("<span></span>")
-            )
-        );
+        let $td = $("<td></td>");
+        if (this.board.isSingle(this.row, this.col)) {
+            let variant = this.board.getSingle(this.row, this.col);
+            $td.append(
+                $("<img>")
+                    .addClass("cell-single")
+                    .attr("src", `./icons/original/large/large-${(this.row + 10).toString(16)}${variant + 1}.png`)
+            );
+        }
+        else {
+            $td.append(
+                $("<div></div>")
+                    .addClass("cell-multi")
+                    .append(...
+                        _.times(this.board.variants, variant =>
+                            this.board.isPossible(this.row, this.col, variant) ?
+                                $("<img>")
+                                    .addClass("cell-multi-variant")
+                                    .attr("src", `./icons/original/small/small-${(this.row + 10).toString(16)}${variant + 1}.png`)
+                                    .click(this.onClickVariant(variant))
+                                    .contextmenu(this.onRightClickVariant(variant))
+                            :
+                                $("<div></div>")
+                                    .addClass("cell-multi-empty")
+                        )
+                    )
+            );
+        }
+        return $td;
     }
 }
 
@@ -41,11 +63,12 @@ class RowWidget extends Widget {
     }
 
     render(): $Element {
-        return $("<tr></tr>").append(...
-            _.times(this.board.cols, col =>
-                new ColWidget(this.board, this.row, col, this).create()
+        return $("<tr></tr>")
+            .append(...
+                _.times(this.board.cols, col =>
+                    new CellWidget(this.board, this.row, col, this).create()
+                )
             )
-        )
     }
 }
 
@@ -58,10 +81,12 @@ export class MultiBoardWidget extends Widget {
     }
 
     render(): $Element {
-        return $("<table></table>").append(...
-            _.times(this.board.rows, row =>
-                new RowWidget(this.board, row).create()
+        return $("<table></table>")
+            .addClass("multiboard")
+            .append(...
+                _.times(this.board.rows, row =>
+                    new RowWidget(this.board, row).create()
+                )
             )
-        )
     }
 }
