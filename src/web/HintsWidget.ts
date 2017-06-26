@@ -87,9 +87,15 @@ class HintWidget extends Widget {
             throw new Error("Unknown hint type");
     }
 
+    private onRightClick(e) {
+        e.preventDefault();
+        $(this).hide();
+    }
+
     render(): $Element {
         return $("<div></div>")
             .addClass("hint-outer")
+            .contextmenu(this.onRightClick)
             .append($("<table></table>")
                 .addClass("hint")
                 .append(this.renderTbody())
@@ -102,9 +108,17 @@ export class HintsWidget extends Widget {
         super();
     }
 
+    private onToggle(e) {
+        $(".hint-outer").toggle();
+    }
+
     render(): $Element {
         return $("<div></div>")
             .addClass("hints")
+            .append($("<button></button>")
+                .text("Toggle")
+                .click(this.onToggle)
+            )
             .append($("<div></div>")
                 .addClass("hints-horizontal")
                 .append(...
