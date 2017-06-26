@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import {MultiBoard} from "../puzzle/board/MultiBoard";
 import {Puzzle} from "../puzzle/Puzzle";
 import {$Element, Widget} from "./Widget";
+import {LargeVariantIconWidget, SmallVariantIconWidget} from "./IconWidgets";
 
 class CellWidget extends Widget {
     constructor(private board: MultiBoard, private row: number, private col: number, private rowWidget: RowWidget) {
@@ -29,9 +30,8 @@ class CellWidget extends Widget {
         if (this.board.isSingle(this.row, this.col)) {
             let variant = this.board.getSingle(this.row, this.col);
             $td.append(
-                $("<img>")
+                new LargeVariantIconWidget(this.row, variant).create()
                     .addClass("cell-single")
-                    .attr("src", `./icons/original/large/large-${(this.row + 10).toString(16)}${variant + 1}.png`)
             );
         }
         else {
@@ -41,9 +41,8 @@ class CellWidget extends Widget {
                     .append(...
                         _.times(this.board.variants, variant =>
                             this.board.isPossible(this.row, this.col, variant) ?
-                                $("<img>")
+                                new SmallVariantIconWidget(this.row, variant).create()
                                     .addClass("cell-multi-variant")
-                                    .attr("src", `./icons/original/small/small-${(this.row + 10).toString(16)}${variant + 1}.png`)
                                     .click(this.onClickVariant(variant))
                                     .contextmenu(this.onRightClickVariant(variant))
                             :
