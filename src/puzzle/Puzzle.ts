@@ -42,13 +42,13 @@ export class Puzzle {
         do {
             changed = false;
             for (let i = 0; i < hints.length; i++) {
-                let newHints = _.clone(hints);
-                _.pullAt(newHints, [i]);
-                if (board.isSolvable(newHints)) {
-                    hints = newHints;
+                let hint = hints.splice(i, 1)[0];
+                if (board.isSolvable(hints)) {
                     changed = true;
                     break;
                 }
+                else
+                    hints.splice(i, 0, hint);
             }
         } while (changed);
         console.debug(`After pruneHints: ${hints.length}`);
