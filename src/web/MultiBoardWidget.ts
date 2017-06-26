@@ -10,23 +10,25 @@ class ColWidget extends Widget {
     }
 
     private onClickVariant(variant: number) {
-        this.board.set(this.row, this.col, variant);
-        this.rowWidget.recreate();
+        return e => {
+            this.board.set(this.row, this.col, variant);
+            this.rowWidget.recreate();
+        }
     }
 
     private onRightClickVariant(variant: number) {
-        this.board.remove(this.row, this.col, variant);
-        this.rowWidget.recreate();
+        return e => {
+            e.preventDefault();
+            this.board.remove(this.row, this.col, variant);
+            this.rowWidget.recreate();
+        }
     }
 
     render(): $Element {
         return $("<td></td>").append(...
             _.times(this.board.variants, variant =>
                 this.board.isPossible(this.row, this.col, variant) ?
-                    $("<span></span>").text(variant).click(e => this.onClickVariant(variant)).contextmenu(e => {
-                        e.preventDefault();
-                        this.onRightClickVariant(variant)
-                    }) :
+                    $("<span></span>").text(variant).click(this.onClickVariant(variant)).contextmenu(this.onRightClickVariant(variant)) :
                     $("<span></span>")
             )
         );
