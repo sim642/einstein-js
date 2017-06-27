@@ -4,6 +4,7 @@ import {Component, h} from "preact";
 import {MultiBoard} from "../puzzle/board/MultiBoard";
 import {Puzzle} from "../puzzle/Puzzle";
 import {LargeVariantIconComponent, SmallVariantIconComponent} from "./IconComponents";
+import "./multiboard.less";
 
 type Refresh = () => void;
 
@@ -42,7 +43,7 @@ class VariantVariantMultiCellComponent extends Component<VariantProps, any> {
 class EmptyVariantMultiCellComponent extends Component<VariantProps, any> {
     render(props: VariantProps) {
         return (
-            <div class="cell-multi-empty square"/>
+            <div class="cell-multi-empty"/>
         );
     }
 }
@@ -89,7 +90,7 @@ class CellComponent extends Component<CellProps, any> {
     render(props: CellProps) {
         return (
             <td>
-                <div class="square">
+                <div class="cell">
                     {
                         props.board.isSingle(props.row, props.col) ?
                             <SingleCellComponent {...props}/> :

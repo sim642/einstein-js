@@ -1,0 +1,61 @@
+@import "../common";
+
+.solved {
+  background-color: lime;
+}
+
+.over {
+  background-color: red;
+}
+
+.table-cell-filler() {
+  width: 100%;
+}
+
+.table-equal() {
+  table-layout: fixed;
+}
+
+.multiboard {
+  .table-equal;
+
+  float: left;
+  width: 40%;
+
+  td {
+    padding: 0;
+    line-height: 0;
+  }
+}
+
+.cell {
+  .square;
+  .center-outer;
+
+  background-image: url('./icons/original/tile.png');
+  background-size: 100% 100%;
+}
+
+.cell-single img {
+  .table-cell-filler;
+}
+
+.cell-multi {
+  .center-ver;
+  .table-cell-filler;
+
+  .table-equal;
+  border-collapse: collapse;
+}
+
+.cell-multi-variant {
+  .clickable;
+
+  img {
+    .table-cell-filler;
+  }
+}
+
+.cell-multi-empty {
+  .square;
+}

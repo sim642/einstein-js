@@ -6,6 +6,7 @@ import {DirectionHint} from "../puzzle/hint/DirectionHint";
 import {Hint, HintType} from "../puzzle/hint/Hint";
 import {SameColumnHint} from "../puzzle/hint/SameColumnHint";
 import {IconComponent, LargeVariantIconComponent} from "./IconComponents";
+import "./hints.less";
 
 interface HintProps {
     hint: Hint;
