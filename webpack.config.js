@@ -15,15 +15,8 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 use: [
-                    {
-                        loader: "nativejsx-loader",
-                        options: {
-                            declarationType: "let"
-                        }
-                    },
-                    {
-                        loader: "ts-loader"
-                    }
+                    "nativejsx-loader",
+                    "ts-loader"
                 ]
             }
         ]
