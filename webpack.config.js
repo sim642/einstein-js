@@ -1,3 +1,5 @@
+var ExtractTextPlugin = require('extract-text-webpack-plugin');
+
 module.exports = {
     entry: "./src/index.tsx",
     output: {
@@ -18,25 +20,29 @@ module.exports = {
             },
             {
                 test: /\.less$/,
-                use: [
-                    {
-                        loader: "style-loader"
-                    },
-                    {
-                        loader: "css-loader",
-                        options: {
-                            sourceMap: true,
-                            url: false
+                use: ExtractTextPlugin.extract({
+                    fallback: "style-loader",
+                    use: [
+                        {
+                            loader: "css-loader",
+                            options: {
+                                sourceMap: true,
+                                url: false
+                            }
+                        },
+                        {
+                            loader: "less-loader",
+                            options: {
+                                sourceMap: true
+                            }
                         }
-                    },
-                    {
-                        loader: "less-loader",
-                        options: {
-                            sourceMap: true
-                        }
-                    }
-                ]
+                    ]
+                })
             }
         ]
-    }
+    },
+
+    plugins: [
+        new ExtractTextPlugin("./dist/styles.css")
+    ]
 };
