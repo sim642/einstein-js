@@ -7,8 +7,9 @@ export class IconWidget extends Widget {
     }
 
     render(): $Element {
-        return $("<img>")
-            .attr("src", `./icons/original/${this.name}.png`);
+        return $(
+            <img src={`./icons/original/${this.name}.png`}/>
+        );
     }
 }
 
