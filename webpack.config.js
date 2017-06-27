@@ -14,10 +14,7 @@ module.exports = {
         rules: [
             {
                 test: /\.tsx?$/,
-                use: [
-                    "nativejsx-loader",
-                    "ts-loader"
-                ]
+                use: "ts-loader"
             }
         ]
     }
