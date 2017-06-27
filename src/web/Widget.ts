@@ -9,6 +9,10 @@ export abstract class Widget {
         return this.$ = this.render();
     }
 
+    create2(): HTMLElement {
+        return this.create()[0];
+    }
+
     recreate(): $Element {
         let $new = this.render();
         this.$.replaceWith($new);

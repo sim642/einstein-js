@@ -28,46 +28,54 @@ class CellWidget extends Widget {
     }
 
     render(): $Element {
-        let $div = $("<div></div>")
-            .addClass("square");
+        let el;
         if (this.board.isSingle(this.row, this.col)) {
             let variant = this.board.getSingle(this.row, this.col);
-            $div.append(
-                new LargeVariantIconWidget(this.row, variant).create()
-                    .addClass("cell-single")
-            );
+            el = new LargeVariantIconWidget(this.row, variant).create()
+                .addClass("cell-single")[0];
         }
         else {
             let variantCols = Math.ceil(Math.sqrt(this.board.variants));
             let variantRows = Math.ceil(this.board.variants / variantCols);
-            $div.append(
-                $("<table></table>")
-                    .addClass("cell-multi")
-                    .append(...
-                        _.times(variantRows, variantRow =>
-                            $("<tr></tr>")
-                                .append(...
-                                    _.times(variantCols, variantCol => {
-                                            let variant = variantRow * variantCols + variantCol;
-                                            return $("<td></td>")
-                                                .append(
-                                                    variant < this.board.variants && this.board.isPossible(this.row, this.col, variant) ?
-                                                        new SmallVariantIconWidget(this.row, variant).create()
-                                                            .addClass("cell-multi-variant")
-                                                            .click(this.onClickVariant(variant))
-                                                            .contextmenu(this.onRightClickVariant(variant))
-                                                    :
-                                                        $("<div></div>")
-                                                            .addClass("cell-multi-empty square")
-                                                );
+            el = (
+                <table class="cell-multi">
+                    {_.times(variantRows, variantRow => (
+                            <tr>
+                                {_.times(variantCols, variantCol => {
+                                        let variant = variantRow * variantCols + variantCol;
+                                        let el;
+                                        if (variant < this.board.variants && this.board.isPossible(this.row, this.col, variant)) {
+                                            el = new SmallVariantIconWidget(this.row, variant).create()
+                                                .addClass("cell-multi-variant")
+                                                .click(this.onClickVariant(variant))
+                                                .contextmenu(this.onRightClickVariant(variant))[0];
                                         }
-                                    )
-                                )
+                                        else {
+                                            el = (
+                                                <div class="cell-multi-empty square"/>
+                                            )
+                                        }
+                                        return (
+                                            <td>
+                                                {el}
+                                            </td>
+                                        );
+                                    }
+                                )}
+                            </tr>
                         )
-                    )
+                    )}
+                </table>
             );
         }
-        return $("<td></td>").append($div);
+
+        return (
+            <td>
+                <div class="square">
+                    {el}
+                </div>
+            </td>
+        )
     }
 }
 
@@ -111,12 +119,12 @@ export class MultiBoardWidget extends Widget {
     };
 
     render(): $Element {
-        return $("<table></table>")
-            .addClass("multiboard")
-            .append(...
-                _.times(this.board.rows, row =>
-                    new RowWidget(this.board, row, this.refresh).create()
-                )
-            )
+        return $(
+            <table class="multiboard">
+                {_.times(this.board.rows, row =>
+                    new RowWidget(this.board, row, this.refresh).create2()
+                )}
+            </table>
+        );
     }
 }
