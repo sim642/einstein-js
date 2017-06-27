@@ -15,6 +15,27 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 use: "ts-loader"
+            },
+            {
+                test: /\.less$/,
+                use: [
+                    {
+                        loader: "style-loader"
+                    },
+                    {
+                        loader: "css-loader",
+                        options: {
+                            sourceMap: true,
+                            url: false
+                        }
+                    },
+                    {
+                        loader: "less-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    }
+                ]
             }
         ]
     }

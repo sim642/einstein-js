@@ -6,8 +6,12 @@
     "watch": "webpack --watch"
   },
   "devDependencies": {
+    "css-loader": "^0.28.4",
+    "less": "^2.7.2",
+    "less-loader": "^4.0.4",
     "nativejsx-loader": "^2.0.0",
     "source-map-loader": "^0.2.1",
+    "style-loader": "^0.18.2",
     "ts-loader": "^2.2.0",
     "typescript": "^2.3.4",
     "webpack": "^3.0.0"
