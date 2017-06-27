@@ -20,7 +20,19 @@
   .table-equal;
 
   float: left;
-  width: 40%;
+
+  /*@media @small and (orientation:portrait) {
+    width: 100%;
+  }
+  @media @small and (orientation:landscape) {
+    width: 100vh;
+  }*/
+  @media @small {
+    width: 100vmin;
+  }
+  @media @large {
+    width: 40%;
+  }
 
   td {
     padding: 0;

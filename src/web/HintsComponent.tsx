@@ -125,11 +125,11 @@ export class HintsComponent extends Component<HintsProps, any> {
                     {_.map(_.filter(props.hints, hint => hint.getType() === HintType.Horizontal), hint =>
                         <HintComponent hint={hint}/>
                     )}
-                </div>
-                <div class="hints-horizontal">
-                    {_.map(_.filter(props.hints, hint => hint.getType() === HintType.Vertical), hint =>
-                        <HintComponent hint={hint}/>
-                    )}
+                    <div class="hints-vertical">
+                        {_.map(_.filter(props.hints, hint => hint.getType() === HintType.Vertical), hint =>
+                            <HintComponent hint={hint}/>
+                        )}
+                    </div>
                 </div>
             </div>
         );

@@ -1,7 +1,25 @@
 @import "../common";
 
+.hints {
+  @media @small and @landscape {
+    display: flex;
+    flex-flow: row;
+    height: 100vh;
+  }
+}
+
+.hints-horizontal, .hints-vertical {
+  @media @small and @landscape {
+    display: flex;
+    flex-flow: row wrap;
+    writing-mode: vertical-lr;
+    height: 100vh;
+  }
+}
+
 .hint-outer {
   display: inline-block;
+  writing-mode: horizontal-tb;
 }
 
 .hint {

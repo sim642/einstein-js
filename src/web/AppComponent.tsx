@@ -2,6 +2,7 @@ import {Component, h} from "preact";
 import {MultiBoardComponent} from "./MultiBoardComponent";
 import {Puzzle} from "../puzzle/Puzzle";
 import {HintsComponent} from "./HintsComponent";
+import "../base.less";
 
 export interface AppProps {
     puzzle: Puzzle;
