@@ -20,7 +20,7 @@
   line-height: 0;
 }
 
-.cell-single {
+.cell-single img {
   width: 100%;
 }
 
@@ -48,6 +48,9 @@
 
 .cell-multi-variant {
   cursor: pointer;
+}
+
+.cell-multi-variant img {
   width: 100%;
 }
 

@@ -16,6 +16,7 @@
     "@types/jquery": "^3.2.4",
     "@types/lodash": "^4.14.66",
     "jquery": "^3.2.1",
-    "lodash": "^4.17.4"
+    "lodash": "^4.17.4",
+    "preact": "^8.1.0"
   }
 }
