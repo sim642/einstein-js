@@ -1,3 +1,4 @@
+import * as classNames from "classnames";
 import * as _ from "lodash";
 import {Component, h} from "preact";
 import {MultiBoard} from "../puzzle/board/MultiBoard";
@@ -18,16 +19,16 @@ class SingleCellComponent extends Component<CellProps, any> {
 }
 
 class VariantVariantMultiCellComponent extends Component<VariantProps, any> {
-    private onClick(e) {
+    private onClick = (e) => {
         this.props.board.set(this.props.row, this.props.col, this.props.variant);
         this.props.refresh();
-    }
+    };
 
-    private onRightClick(e) {
+    private onRightClick = (e) => {
         e.preventDefault();
         this.props.board.remove(this.props.row, this.props.col, this.props.variant);
         this.props.refresh();
-    }
+    };
 
     render(props: VariantProps) {
         return (
@@ -82,11 +83,9 @@ class MultiCellComponent extends Component<CellProps, any> {
 
 interface CellProps extends RowProps {
     col: number;
-    refresh: Refresh;
 }
 
 class CellComponent extends Component<CellProps, any> {
-
     render(props: CellProps) {
         return (
             <td>
@@ -105,6 +104,7 @@ class CellComponent extends Component<CellProps, any> {
 interface RowProps {
     board: MultiBoard;
     row: number;
+    refresh: Refresh;
 }
 
 class RowComponent extends Component<RowProps, MultiBoard> {
@@ -113,9 +113,10 @@ class RowComponent extends Component<RowProps, MultiBoard> {
         this.state = props.board;
     }
 
-    private refresh() {
+    private refresh: Refresh = () => {
         this.forceUpdate();
-    }
+        this.props.refresh();
+    };
 
     render(props: RowProps, state: MultiBoard) {
         return (
@@ -138,22 +139,26 @@ export class MultiBoardComponent extends Component<MultiBoardProps, MultiBoard> 
         this.state = props.puzzle.multiBoard;
     }
 
-    /*private refresh: Refresh = () => {
-        if (this.puzzle.isSolved()) {
+    private refresh: Refresh = () => {
+        if (this.props.puzzle.isSolved()) {
             alert("Solved!");
-            this.$.addClass("solved");
+            this.forceUpdate();
         }
-        else if (this.puzzle.isOver()) {
+        else if (this.props.puzzle.isOver()) {
             alert("Over!");
-            this.$.addClass("over");
+            this.forceUpdate();
         }
-    };*/
+    };
 
     render(props: MultiBoardProps, state: MultiBoard) {
         return (
-            <table class="multiboard">
+            <table class={classNames({
+                "multiboard": true,
+                "solved": props.puzzle.isSolved(),
+                "over": props.puzzle.isOver()
+            })}>
                 {_.times(state.rows, row =>
-                    <RowComponent board={state} row={row}/>
+                    <RowComponent board={state} row={row} refresh={this.refresh}/>
                 )}
             </table>
         );

@@ -1,4 +1,3 @@
-import * as $ from "jquery";
 import * as _ from "lodash";
 import {Component, h} from "preact";
 import {AdjacentHint} from "../puzzle/hint/AdjacentHint";
@@ -89,10 +88,10 @@ class HintComponent extends Component<HintProps, any> {
             throw new Error("Unsupported hint type");
     }
 
-    private onRightClick(e) {
+    private onRightClick = (e) => {
         e.preventDefault();
-        $(this).hide();
-    }
+        this.base.style.display = "none";
+    };
 
     render(props: HintProps) {
         return (
@@ -110,9 +109,12 @@ export interface HintsProps {
 }
 
 export class HintsComponent extends Component<HintsProps, any> {
-    private onToggle(e) {
-        $(".hint-outer").toggle();
-    }
+    private onToggle = (e) => {
+        _.forEach(this.base.querySelectorAll(".hint-outer"), el => {
+            let style = (el as HTMLElement).style;
+            style.display = style.display === "none" ? "" : "none";
+        });
+    };
 
     render(props: HintsProps) {
         return (
