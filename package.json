@@ -6,6 +6,7 @@
     "watch": "webpack --watch"
   },
   "devDependencies": {
+    "nativejsx-loader": "^2.0.0",
     "source-map-loader": "^0.2.1",
     "ts-loader": "^2.2.0",
     "typescript": "^2.3.4",

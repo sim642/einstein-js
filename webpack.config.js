@@ -1,5 +1,5 @@
 module.exports = {
-    entry: "./src/index.ts",
+    entry: "./src/index.tsx",
     output: {
         filename: "./dist/bundle.js"
     },
@@ -11,10 +11,20 @@ module.exports = {
     },
 
     module: {
-        loaders: [
+        rules: [
             {
                 test: /\.tsx?$/,
-                loader: "ts-loader"
+                use: [
+                    {
+                        loader: "nativejsx-loader",
+                        options: {
+                            declarationType: "let"
+                        }
+                    },
+                    {
+                        loader: "ts-loader"
+                    }
+                ]
             }
         ]
     }

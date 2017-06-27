@@ -8,6 +8,7 @@
       "scripthost",
       "es2015.iterable"
     ],
+    "jsx": "preserve",
     "sourceMap": true,
     "noImplicitReturns": true,
     "strictNullChecks": true
