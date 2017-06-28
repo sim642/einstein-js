@@ -108,22 +108,17 @@ interface RowProps {
     refresh: Refresh;
 }
 
-class RowComponent extends Component<RowProps, MultiBoard> {
-    constructor(props: RowProps) {
-        super();
-        this.state = props.board;
-    }
-
+class RowComponent extends Component<RowProps, any> {
     private refresh: Refresh = () => {
         this.forceUpdate();
         this.props.refresh();
     };
 
-    render(props: RowProps, state: MultiBoard) {
+    render(props: RowProps) {
         return (
             <tr>
-                {_.times(state.cols, col =>
-                    <CellComponent board={state} row={props.row} col={col} refresh={this.refresh}/>
+                {_.times(props.board.cols, col =>
+                    <CellComponent {...props} col={col} refresh={this.refresh}/>
                 )}
             </tr>
         );
@@ -134,12 +129,7 @@ export interface MultiBoardProps {
     puzzle: Puzzle;
 }
 
-export class MultiBoardComponent extends Component<MultiBoardProps, MultiBoard> {
-    constructor(props: MultiBoardProps) {
-        super();
-        this.state = props.puzzle.multiBoard;
-    }
-
+export class MultiBoardComponent extends Component<MultiBoardProps, any> {
     private refresh: Refresh = () => {
         if (this.props.puzzle.isSolved()) {
             alert("Solved!");
@@ -151,15 +141,16 @@ export class MultiBoardComponent extends Component<MultiBoardProps, MultiBoard> 
         }
     };
 
-    render(props: MultiBoardProps, state: MultiBoard) {
+    render(props: MultiBoardProps) {
+        let board = props.puzzle.multiBoard;
         return (
             <table class={classNames({
                 "multiboard": true,
                 "solved": props.puzzle.isSolved(),
                 "over": props.puzzle.isOver()
             })}>
-                {_.times(state.rows, row =>
-                    <RowComponent board={state} row={row} refresh={this.refresh}/>
+                {_.times(board.rows, row =>
+                    <RowComponent board={board} row={row} refresh={this.refresh}/>
                 )}
             </table>
         );

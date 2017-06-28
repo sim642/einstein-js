@@ -4,16 +4,34 @@ import {Puzzle} from "../puzzle/Puzzle";
 import {HintsComponent} from "./HintsComponent";
 import "./app.less";
 
-export interface AppProps {
+interface AppState {
     puzzle: Puzzle;
 }
 
-export class AppComponent extends Component<AppProps, any> {
-    render(props: AppProps) {
+export class AppComponent extends Component<{}, AppState> {
+    constructor() {
+        super();
+        this.state = {
+            puzzle: Puzzle.generate()
+        };
+    }
+
+    private onClickNewGame = (e) => {
+        this.setState({
+            puzzle: Puzzle.generate()
+        });
+    };
+
+    render(props, state: AppState) {
         return (
             <div class="app">
-                <MultiBoardComponent puzzle={props.puzzle}/>
-                <HintsComponent hints={props.puzzle.hints}/>
+                <div class="app-top">
+                    <div>
+                        <button onClick={this.onClickNewGame}>New game</button>
+                    </div>
+                    <MultiBoardComponent puzzle={state.puzzle}/>
+                </div>
+                <HintsComponent hints={state.puzzle.hints}/>
             </div>
         );
     }
