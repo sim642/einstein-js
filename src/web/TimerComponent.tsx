@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import {Component, h} from "preact";
+import {formatDuration} from "../time";
 
 export interface TimerProps {
     start: number;
@@ -54,19 +55,9 @@ export class TimerComponent extends Component<TimerProps, TimerState> {
     }
 
     render(props: TimerProps, state: TimerState) {
-        let diffMs = state.now - props.start;
-        let diffSec = diffMs / 1000;
-        let sec = Math.floor(diffSec) % 60;
-        let min = Math.floor(diffSec / 60) % 60;
-        let hr = Math.floor(diffSec / 60 / 60);
-
         return (
             <div>
-                {_.padStart(hr.toString(), 2, "0")}
-                :
-                {_.padStart(min.toString(), 2, "0")}
-                :
-                {_.padStart(sec.toString(), 2, "0")}
+                {formatDuration(props.start, state.now)}
             </div>
         )
     }
