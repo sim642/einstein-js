@@ -1,25 +1,38 @@
 @import "../common";
 
 .hints {
-  @media @small and @landscape {
+  @media @small {
     display: flex;
-    flex-flow: row;
-    height: 100vh;
+    @media @portrait {
+      clear: left;
+      flex-flow: column;
+    }
+    @media @landscape {
+      flex-flow: row;
+      height: 100vh;
+    }
   }
 }
 
 .hints-horizontal, .hints-vertical {
-  @media @small and @landscape {
+  @media @small {
     display: flex;
     flex-flow: row wrap;
-    writing-mode: vertical-lr;
-    height: 100vh;
+    @media @portrait {
+      //justify-content: space-around;
+    }
+    @media @landscape {
+      writing-mode: vertical-lr;
+      height: 100vh;
+    }
   }
 }
 
 .hint-outer {
   display: inline-block;
-  writing-mode: horizontal-tb;
+  @media @small and @landscape {
+    writing-mode: horizontal-tb;
+  }
 }
 
 .hint {
