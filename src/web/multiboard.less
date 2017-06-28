@@ -8,12 +8,7 @@
   background-color: red;
 }
 
-.multiboard {
-  .table-equal;
-  .table-gapless;
-
-  //float: left;
-
+.multiboard-outer {
   @media @phone {
     width: 100vmin;
     align-self: center;
@@ -22,6 +17,18 @@
     width: 75vmin;
     align-self: center;
   }
+}
+
+.multiboard {
+  .table-equal;
+  .table-gapless;
+
+  //float: left;
+
+  @media @phone, @tablet {
+    width: 100%;
+  }
+
   @media @desktop {
     //width: 40%;
     .cell {

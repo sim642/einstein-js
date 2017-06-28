@@ -134,15 +134,17 @@ export class MultiBoardComponent extends Component<MultiBoardProps, any> {
     render(props: MultiBoardProps) {
         let board = props.puzzle.multiBoard;
         return (
-            <table class={classNames({
-                "multiboard": true,
-                "solved": props.puzzle.isSolved(),
-                "over": props.puzzle.isOver()
-            })}>
-                {_.times(board.rows, row =>
-                    <RowComponent board={board} row={row} refresh={props.refresh}/>
-                )}
-            </table>
+            <div class="multiboard-outer">
+                <table class={classNames({
+                    "multiboard": true,
+                    "solved": props.puzzle.isSolved(),
+                    "over": props.puzzle.isOver()
+                })}>
+                    {_.times(board.rows, row =>
+                        <RowComponent board={board} row={row} refresh={props.refresh}/>
+                    )}
+                </table>
+            </div>
         );
     }
 }
