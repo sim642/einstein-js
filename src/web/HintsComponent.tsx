@@ -110,6 +110,13 @@ export interface HintsProps {
 }
 
 export class HintsComponent extends Component<HintsProps, any> {
+    componentWillReceiveProps(nextProps) {
+        _.forEach(this.base.querySelectorAll(".hint-outer"), el => {
+            let style = (el as HTMLElement).style;
+            style.display = "";
+        });
+    }
+
     private onToggle = (e) => {
         _.forEach(this.base.querySelectorAll(".hint-outer"), el => {
             let style = (el as HTMLElement).style;
