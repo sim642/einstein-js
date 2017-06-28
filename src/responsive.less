@@ -1,0 +1,13 @@
+// S6 edge+: FF: 408x725, Samsung: 412x732
+
+@tablet-min: 768px;
+@desktop-min: 1280px;
+@phone-max: (@tablet-min - 1px);
+@tablet-max: (@desktop-min - 1px);
+
+@phone: ~"(max-width: @{phone-max})";
+@tablet: ~"(min-width: @{tablet-min}) and (max-width: @{tablet-max})";
+@desktop: ~"(min-width: @{desktop-min})";
+
+@portrait: ~"(orientation:portrait)";
+@landscape: ~"(orientation:landscape)";

@@ -1,7 +1,7 @@
 @import "../common";
 
 .hints {
-  @media @small {
+  @media @phone {
     display: flex;
     @media @portrait {
       clear: left;
@@ -15,7 +15,7 @@
 }
 
 .hints-horizontal, .hints-vertical {
-  @media @small {
+  @media @phone {
     display: flex;
     flex-flow: row wrap;
     @media @portrait {
@@ -39,7 +39,7 @@
 
 .hint-outer {
   display: inline-block;
-  @media @small and @landscape {
+  @media @phone and @landscape {
     writing-mode: horizontal-tb;
   }
 }

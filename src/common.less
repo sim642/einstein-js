@@ -1,3 +1,5 @@
+@import "responsive";
+
 .square {
   height: 0;
   padding-bottom: 100%;
@@ -22,11 +24,3 @@
 .clickable() {
   cursor: pointer;
 }
-
-@large-min: 1024px;
-@small-max: (@large-min - 1px);
-
-@small: ~"(max-width: @{small-max})";
-@large: ~"(min-width: @{large-min})";
-@portrait: ~"(orientation:portrait)";
-@landscape: ~"(orientation:landscape)";
