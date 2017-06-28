@@ -127,20 +127,10 @@ class RowComponent extends Component<RowProps, any> {
 
 export interface MultiBoardProps {
     puzzle: Puzzle;
+    refresh: Refresh;
 }
 
 export class MultiBoardComponent extends Component<MultiBoardProps, any> {
-    private refresh: Refresh = () => {
-        if (this.props.puzzle.isSolved()) {
-            alert("Solved!");
-            this.forceUpdate();
-        }
-        else if (this.props.puzzle.isOver()) {
-            alert("Over!");
-            this.forceUpdate();
-        }
-    };
-
     render(props: MultiBoardProps) {
         let board = props.puzzle.multiBoard;
         return (
@@ -150,7 +140,7 @@ export class MultiBoardComponent extends Component<MultiBoardProps, any> {
                 "over": props.puzzle.isOver()
             })}>
                 {_.times(board.rows, row =>
-                    <RowComponent board={board} row={row} refresh={this.refresh}/>
+                    <RowComponent board={board} row={row} refresh={props.refresh}/>
                 )}
             </table>
         );
