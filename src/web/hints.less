@@ -15,11 +15,12 @@
 }
 
 .hints-horizontal, .hints-vertical {
+  display: flex;
+  flex-flow: row wrap;
+  align-items: center;
+  //justify-content: space-around;
+
   @media @phone, @tablet {
-    display: flex;
-    flex-flow: row wrap;
-    align-items: center;
-    //justify-content: space-around;
     @media @landscape {
       /*
       writing-mode is workaround for flex-flow: column wrap;
@@ -56,6 +57,9 @@
   @media @tablet {
     margin: 0.5vmin;
   }
+  @media @desktop {
+    margin: 3px;
+  }
 
   .clickable;
 
@@ -88,6 +92,9 @@
     }
     @media @tablet {
       width: 7.5vmin;
+    }
+    @media @desktop {
+      width: image-width("./dist/icons/original/hint-tile.png");
     }
   }
   
