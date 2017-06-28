@@ -1,7 +1,7 @@
 @import "../common";
 
 .hints {
-  @media @phone {
+  @media @phone, @tablet {
     display: flex;
     @media @portrait {
       clear: left;
@@ -15,12 +15,11 @@
 }
 
 .hints-horizontal, .hints-vertical {
-  @media @phone {
+  @media @phone, @tablet {
     display: flex;
     flex-flow: row wrap;
-    @media @portrait {
-      //justify-content: space-around;
-    }
+    align-items: center;
+    //justify-content: space-around;
     @media @landscape {
       /*
       writing-mode is workaround for flex-flow: column wrap;
@@ -39,8 +38,10 @@
 
 .hint-outer {
   display: inline-block;
-  @media @phone and @landscape {
-    writing-mode: horizontal-tb;
+  @media @phone, @tablet {
+    @media @landscape {
+      writing-mode: horizontal-tb;
+    }
   }
 }
 

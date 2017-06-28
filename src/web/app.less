@@ -1,0 +1,31 @@
+@import "../common";
+
+html, body {
+  margin: 0;
+  padding: 0;
+
+  @media @phone, @tablet {
+    @media @landscape {
+      overflow: auto;
+      overflow-y: hidden;
+      white-space: nowrap;
+    }
+  }
+}
+
+.app {
+  display: flex;
+  @media @phone, @tablet {
+    @media @landscape {
+      flex-flow: row;
+      height: 100vh;
+    }
+    @media @portrait {
+      flex-flow: column;
+      width: 100%;
+    }
+  }
+  @media @desktop {
+    flex-flow: row;
+  }
+}
