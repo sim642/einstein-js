@@ -8,16 +8,9 @@
   background-color: red;
 }
 
-.table-cell-filler() {
-  width: 100%;
-}
-
-.table-equal() {
-  table-layout: fixed;
-}
-
 .multiboard {
   .table-equal;
+  .table-gapless;
 
   //float: left;
 
@@ -31,11 +24,6 @@
   }
   @media @desktop {
     width: 40%;
-  }
-
-  td {
-    padding: 0;
-    line-height: 0;
   }
 }
 
