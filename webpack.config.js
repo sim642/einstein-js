@@ -1,15 +1,17 @@
-var ExtractTextPlugin = require('extract-text-webpack-plugin');
+var path = require("path");
+var ExtractTextPlugin = require("extract-text-webpack-plugin");
 
 module.exports = {
     entry: "./src/index.tsx",
     output: {
-        filename: "./dist/bundle.js"
+        filename: "bundle.js",
+        path: path.resolve(__dirname, "dist")
     },
 
     devtool: "source-map",
 
     resolve: {
-        extensions: ['.webpack.js', '.web.js', '.ts', '.tsx', '.js']
+        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
     },
 
     module: {
@@ -38,11 +40,21 @@ module.exports = {
                         }
                     ]
                 })
+            },
+            {
+                test: /\.(png|svg|jpg|gif)$/,
+                use: {
+                    loader: "file-loader",
+                    query: {
+                        name: "[name].[ext]",
+                        useRelativePath: true
+                    }
+                }
             }
         ]
     },
 
     plugins: [
-        new ExtractTextPlugin("./dist/styles.css")
+        new ExtractTextPlugin("styles.css")
     ]
 };

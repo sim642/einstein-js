@@ -1,5 +1,16 @@
 import {Component, h} from "preact";
 
+
+// https://webpack.js.org/guides/dependency-management/#context-module-api
+let cache = {};
+
+function importAll (r) {
+    r.keys().forEach(key => cache[key] = r(key));
+}
+
+importAll(require.context('./', true, /\.png$/));
+
+
 export interface IconProps {
     name: string;
 }
@@ -7,7 +18,7 @@ export interface IconProps {
 export class IconComponent extends Component<IconProps, any> {
     render(props: IconProps) {
         return (
-            <img src={`./icons/original/${props.name}.png`}/>
+            <img src={cache[`./icons/original/${props.name}.png`]}/>
         );
     }
 }
