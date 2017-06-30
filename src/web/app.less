@@ -43,8 +43,19 @@ body::after {
   }
 }
 
+.app-top {
+  display: flex;
+  flex-flow: column;
+  @media @phone and @landscape {
+    flex-flow: row;
+  }
+}
+
 .header {
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-between;
+  @media @phone and @landscape {
+    flex-flow: column;
+  }
 }
