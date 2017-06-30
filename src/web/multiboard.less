@@ -9,13 +9,16 @@
 }
 
 .multiboard-outer {
+  align-self: center;
+
   @media @phone {
     width: 100vmin;
-    align-self: center;
   }
   @media @tablet {
     width: 75vmin;
-    align-self: center;
+  }
+  @media @desktop {
+    width: 60vmin;
   }
 }
 
@@ -23,16 +26,7 @@
   .table-equal;
   .table-gapless;
 
-  @media @phone, @tablet {
-    width: 100%;
-  }
-
-  @media @desktop {
-    //width: 40%;
-    .cell {
-      width: image-width("./icons/original/tile.png");
-    }
-  }
+  width: 100%;
 
   border-radius: 1%; // for rounded .over/.solved corners
 
