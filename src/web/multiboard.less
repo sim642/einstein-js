@@ -1,11 +1,11 @@
 @import "../common";
 
 .solved {
-  background-color: lime;
+  background-color: fade(lime, 80%);
 }
 
 .over {
-  background-color: red;
+  background-color: fade(red, 80%);
 }
 
 .multiboard-outer {
@@ -33,6 +33,8 @@
       width: image-width("./icons/original/tile.png");
     }
   }
+
+  border-radius: 1%; // for rounded .over/.solved corners
 
   td {
     padding: 0.5%;
