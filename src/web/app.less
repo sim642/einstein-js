@@ -13,6 +13,19 @@ html, body {
   }
 }
 
+body::after {
+  background-image: url("./rain.png");
+  opacity: 0.5;
+
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  right: 0;
+  z-index: -1;
+}
+
 .app {
   display: flex;
   @media @phone, @tablet {
