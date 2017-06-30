@@ -5,6 +5,7 @@ var webpack = require("webpack");
 var ChunkManifestPlugin = require("chunk-manifest-webpack-plugin");
 var WebpackChunkHash = require("webpack-chunk-hash");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
+var OfflinePlugin = require('offline-plugin');
 
 module.exports = Merge.smart(CommonConfig, {
     output: {
@@ -47,14 +48,20 @@ module.exports = Merge.smart(CommonConfig, {
 
         // https://webpack.js.org/guides/production/#node-environment-variable
         new webpack.DefinePlugin({
-            'process.env': {
-                'NODE_ENV': JSON.stringify('production')
+            "process.env": {
+                "NODE_ENV": JSON.stringify("production")
             }
         }),
 
         // https://webpack.js.org/guides/production/#minification
         new webpack.optimize.UglifyJsPlugin({
             sourceMap: true
+        }),
+
+        new OfflinePlugin({
+            ServiceWorker: {
+                cacheName: "einstein-js" // DO NOT CHANGE: https://github.com/NekR/offline-plugin/blob/master/docs/options.md#serviceworker-object--null--false
+            }
         })
     ]
 });
