@@ -46,6 +46,10 @@ export class AppComponent extends Component<{}, AppState> {
             <div class="app">
                 <div class="app-top">
                     <div class="header">
+                        <div class="brand">
+                            <a href="http://einstein.sim642.eu">einstein-js</a> <small>by <a href="https://github.com/sim642/einstein-js">sim642</a></small>
+                        </div>
+
                         <button onClick={this.onClickNewGame}>New game</button>
                         <TimerComponent start={state.startTime}/>
                     </div>
