@@ -1,21 +1,24 @@
 @import "../common";
 
 .solved {
-  background-color: lime;
+  background-color: fade(lime, 80%);
 }
 
 .over {
-  background-color: red;
+  background-color: fade(red, 80%);
 }
 
 .multiboard-outer {
+  align-self: center;
+
   @media @phone {
     width: 100vmin;
-    align-self: center;
   }
   @media @tablet {
     width: 75vmin;
-    align-self: center;
+  }
+  @media @desktop {
+    width: 60vmin;
   }
 }
 
@@ -23,17 +26,12 @@
   .table-equal;
   .table-gapless;
 
-  //float: left;
+  width: 100%;
 
-  @media @phone, @tablet {
-    width: 100%;
-  }
+  border-radius: 1%; // for rounded .over/.solved corners
 
-  @media @desktop {
-    //width: 40%;
-    .cell {
-      width: image-width("./icons/original/tile.png");
-    }
+  td {
+    padding: 0.5%;
   }
 }
 
@@ -54,6 +52,7 @@
   .table-cell-filler;
 
   .table-equal;
+  .table-gapless;
   border-collapse: collapse;
 }
 

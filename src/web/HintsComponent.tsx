@@ -127,7 +127,7 @@ export class HintsComponent extends Component<HintsProps, any> {
     render(props: HintsProps) {
         return (
             <div class="hints">
-                <button onClick={this.onToggle}>Toggle</button>
+                <button class="button-toggle" onClick={this.onToggle}>Toggle</button>
                 <div class="hints-horizontal">
                     {_.map(_.filter(props.hints, hint => hint.getType() === HintType.Horizontal), hint =>
                         <HintComponent hint={hint}/>

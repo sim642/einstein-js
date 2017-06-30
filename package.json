@@ -16,6 +16,7 @@
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
     "nativejsx-loader": "^2.0.0",
+    "offline-plugin": "^4.8.1",
     "source-map-loader": "^0.2.1",
     "style-loader": "^0.18.2",
     "ts-loader": "^2.2.0",
