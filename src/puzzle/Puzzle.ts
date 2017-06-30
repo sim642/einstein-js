@@ -4,7 +4,7 @@ import {SingleBoard} from "./board/SingleBoard";
 import {AdjacentHintFactory} from "./hint/AdjacentHint";
 import {BetweenHintFactory} from "./hint/BetweenHint";
 import {DirectionHintFactory} from "./hint/DirectionHint";
-import {Hint, HintType} from "./hint/Hint";
+import {Hint, HintFactory, HintType} from "./hint/Hint";
 import {OpenHintFactory} from "./hint/OpenHint";
 import {SameColumnHintFactory} from "./hint/SameColumnHint";
 
@@ -38,8 +38,41 @@ export class Puzzle {
     }
 
     private static generateHint(board: SingleBoard): Hint {
-        let hintFactories = [new OpenHintFactory(), new SameColumnHintFactory(), new AdjacentHintFactory(), new DirectionHintFactory(), new BetweenHintFactory()];
-        let hintFactory = hintFactories[_.random(0, hintFactories.length - 1)];
+        let hintFactory: HintFactory;
+        // hint frequency distribution from original einstein 2.0
+        switch (_.random(0, 14 - 1)) {
+            case 0:
+            case 1:
+            case 2:
+            case 3:
+                hintFactory = new AdjacentHintFactory();
+                break;
+
+            case 4:
+                hintFactory = new OpenHintFactory();
+                break;
+
+            case 5:
+            case 6:
+                hintFactory = new SameColumnHintFactory();
+                break;
+
+            case 7:
+            case 8:
+            case 9:
+            case 10:
+                hintFactory = new DirectionHintFactory();
+                break;
+
+            case 11:
+            case 12:
+            case 13:
+                hintFactory = new BetweenHintFactory();
+                break;
+
+            default:
+                throw new Error("Unhandled random HintFactory value");
+        }
         return hintFactory.random(board);
     }
 
