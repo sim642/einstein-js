@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import {Component, h} from "preact";
 import {MultiBoard} from "../puzzle/board/MultiBoard";
 import {Puzzle} from "../puzzle/Puzzle";
+import {LongTouchContextMenuHandler} from "./helper/LongTouchContextMenuHandler";
 import {LargeVariantIconComponent, SmallVariantIconComponent} from "./IconComponents";
 import "./multiboard.less";
 
@@ -20,20 +21,25 @@ class SingleCellComponent extends Component<CellProps, any> {
 }
 
 class VariantVariantMultiCellComponent extends Component<VariantProps, any> {
-    private onClick = (e) => {
+    private contextMenuHandler = new LongTouchContextMenuHandler(() => this.remove());
+
+    private set() {
         this.props.board.set(this.props.row, this.props.col, this.props.variant);
         this.props.refresh();
-    };
+    }
 
-    private onRightClick = (e) => {
-        e.preventDefault();
+    private remove() {
         this.props.board.remove(this.props.row, this.props.col, this.props.variant);
         this.props.refresh();
+    }
+
+    private onClick = (e) => {
+        this.set();
     };
 
     render(props: VariantProps) {
         return (
-            <div class="cell-multi-variant" onClick={this.onClick} onContextMenu={this.onRightClick}>
+            <div class="cell-multi-variant" onClick={this.onClick} {...this.contextMenuHandler}>
                 <SmallVariantIconComponent row={props.row} variant={props.variant}/>
             </div>
         );
@@ -87,10 +93,14 @@ interface CellProps extends RowProps {
 }
 
 class CellComponent extends Component<CellProps, any> {
+    private onContextMenu = (e) => {
+        e.preventDefault();
+    };
+
     render(props: CellProps) {
         return (
             <td>
-                <div class="cell">
+                <div class="cell" onContextMenu={this.onContextMenu}>
                     {
                         props.board.isSingle(props.row, props.col) ?
                             <SingleCellComponent {...props}/> :

@@ -5,14 +5,21 @@ import {BetweenHint} from "../puzzle/hint/BetweenHint";
 import {DirectionHint} from "../puzzle/hint/DirectionHint";
 import {Hint, HintType} from "../puzzle/hint/Hint";
 import {SameColumnHint} from "../puzzle/hint/SameColumnHint";
-import {IconComponent, LargeVariantIconComponent} from "./IconComponents";
+import {LongTouchContextMenuHandler} from "./helper/LongTouchContextMenuHandler";
 import "./hints.less";
+import {IconComponent, LargeVariantIconComponent} from "./IconComponents";
 
 interface HintProps {
     hint: Hint;
 }
 
 class HintComponent extends Component<HintProps, any> {
+    private contextMenuHandler = new LongTouchContextMenuHandler(() => this.hide());
+
+    private hide = () => {
+        this.base.style.display = "none";
+    };
+
     private renderTbody(props: HintProps) {
         let hint = props.hint;
         if (hint instanceof AdjacentHint) {
@@ -89,14 +96,9 @@ class HintComponent extends Component<HintProps, any> {
             throw new Error("Unsupported hint type");
     }
 
-    private onRightClick = (e) => {
-        e.preventDefault();
-        this.base.style.display = "none";
-    };
-
     render(props: HintProps) {
         return (
-            <div class="hint-outer" onContextMenu={this.onRightClick}>
+            <div class="hint-outer" {...this.contextMenuHandler}>
                 <table class="hint">
                     {this.renderTbody(props)}
                 </table>
