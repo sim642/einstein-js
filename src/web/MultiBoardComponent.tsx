@@ -3,9 +3,9 @@ import * as _ from "lodash";
 import {Component, h} from "preact";
 import {MultiBoard} from "../puzzle/board/MultiBoard";
 import {Puzzle} from "../puzzle/Puzzle";
+import {LongTouchContextMenuHandler} from "./helper/LongTouchContextMenuHandler";
 import {LargeVariantIconComponent, SmallVariantIconComponent} from "./IconComponents";
 import "./multiboard.less";
-import {LongTouchHandler, TouchHandler} from "./TouchHandler";
 
 type Refresh = () => void;
 
@@ -21,7 +21,7 @@ class SingleCellComponent extends Component<CellProps, any> {
 }
 
 class VariantVariantMultiCellComponent extends Component<VariantProps, any> {
-    private longTouchHandler: TouchHandler = new LongTouchHandler(() => this.remove());
+    private contextMenuHandler = new LongTouchContextMenuHandler(() => this.remove());
 
     private set() {
         this.props.board.set(this.props.row, this.props.col, this.props.variant);
@@ -37,15 +37,9 @@ class VariantVariantMultiCellComponent extends Component<VariantProps, any> {
         this.set();
     };
 
-    private onRightClick = (e) => {
-        e.preventDefault();
-        this.remove();
-    };
-
     render(props: VariantProps) {
         return (
-            <div class="cell-multi-variant" onClick={this.onClick} onContextMenu={this.onRightClick}
-                 {...this.longTouchHandler}>
+            <div class="cell-multi-variant" onClick={this.onClick} {...this.contextMenuHandler}>
                 <SmallVariantIconComponent row={props.row} variant={props.variant}/>
             </div>
         );

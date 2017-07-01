@@ -5,24 +5,19 @@ import {BetweenHint} from "../puzzle/hint/BetweenHint";
 import {DirectionHint} from "../puzzle/hint/DirectionHint";
 import {Hint, HintType} from "../puzzle/hint/Hint";
 import {SameColumnHint} from "../puzzle/hint/SameColumnHint";
-import {IconComponent, LargeVariantIconComponent} from "./IconComponents";
+import {LongTouchContextMenuHandler} from "./helper/LongTouchContextMenuHandler";
 import "./hints.less";
-import {LongTouchHandler, TouchHandler} from "./TouchHandler";
+import {IconComponent, LargeVariantIconComponent} from "./IconComponents";
 
 interface HintProps {
     hint: Hint;
 }
 
 class HintComponent extends Component<HintProps, any> {
-    private longTouchHandler: TouchHandler = new LongTouchHandler(() => this.hide());
+    private contextMenuHandler = new LongTouchContextMenuHandler(() => this.hide());
 
     private hide = () => {
         this.base.style.display = "none";
-    };
-
-    private onRightClick = (e) => {
-        e.preventDefault();
-        this.hide();
     };
 
     private renderTbody(props: HintProps) {
@@ -103,7 +98,7 @@ class HintComponent extends Component<HintProps, any> {
 
     render(props: HintProps) {
         return (
-            <div class="hint-outer" onContextMenu={this.onRightClick} {...this.longTouchHandler}>
+            <div class="hint-outer" {...this.contextMenuHandler}>
                 <table class="hint">
                     {this.renderTbody(props)}
                 </table>
