@@ -2,7 +2,9 @@ import {TouchContextMenuHandler} from "./Handler";
 
 export class LongTouchContextMenuHandler implements TouchContextMenuHandler {
     private timeout: number;
+
     private static touching: boolean = false;
+    private static readonly longTouchTime = 500;
 
     constructor(public callback: () => void) {
 
@@ -19,7 +21,7 @@ export class LongTouchContextMenuHandler implements TouchContextMenuHandler {
         this.timeout = setTimeout(() => {
             console.log("longtouch");
             this.callback();
-        }, 500);
+        }, LongTouchContextMenuHandler.longTouchTime);
     };
 
     onTouchMove = (e) => {
