@@ -7,12 +7,24 @@ import {Hint, HintType} from "../puzzle/hint/Hint";
 import {SameColumnHint} from "../puzzle/hint/SameColumnHint";
 import {IconComponent, LargeVariantIconComponent} from "./IconComponents";
 import "./hints.less";
+import {LongTouchHandler, TouchHandler} from "./TouchHandler";
 
 interface HintProps {
     hint: Hint;
 }
 
 class HintComponent extends Component<HintProps, any> {
+    private longTouchHandler: TouchHandler = new LongTouchHandler(() => this.hide());
+
+    private hide = () => {
+        this.base.style.display = "none";
+    };
+
+    private onRightClick = (e) => {
+        e.preventDefault();
+        this.hide();
+    };
+
     private renderTbody(props: HintProps) {
         let hint = props.hint;
         if (hint instanceof AdjacentHint) {
@@ -89,14 +101,9 @@ class HintComponent extends Component<HintProps, any> {
             throw new Error("Unsupported hint type");
     }
 
-    private onRightClick = (e) => {
-        e.preventDefault();
-        this.base.style.display = "none";
-    };
-
     render(props: HintProps) {
         return (
-            <div class="hint-outer" onContextMenu={this.onRightClick}>
+            <div class="hint-outer" onContextMenu={this.onRightClick} {...this.longTouchHandler}>
                 <table class="hint">
                     {this.renderTbody(props)}
                 </table>
