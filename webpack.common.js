@@ -75,7 +75,8 @@ module.exports = {
 
         new HtmlWebpackPlugin({
             title: "einstein-js",
-            template: "./src/index.ejs"
+            template: "./src/index.ejs",
+            favicon: "./src/einstein.ico"
         }),
 
         new webpack.NamedChunksPlugin()
