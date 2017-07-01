@@ -5,6 +5,7 @@ import {MultiBoard} from "../puzzle/board/MultiBoard";
 import {Puzzle} from "../puzzle/Puzzle";
 import {LargeVariantIconComponent, SmallVariantIconComponent} from "./IconComponents";
 import "./multiboard.less";
+import {LongTouchHandler, TouchHandler} from "./TouchHandler";
 
 type Refresh = () => void;
 
@@ -20,7 +21,7 @@ class SingleCellComponent extends Component<CellProps, any> {
 }
 
 class VariantVariantMultiCellComponent extends Component<VariantProps, any> {
-    private longTouchTimeout: number;
+    private longTouchHandler: TouchHandler = new LongTouchHandler(() => this.remove());
 
     private set() {
         this.props.board.set(this.props.row, this.props.col, this.props.variant);
@@ -41,28 +42,10 @@ class VariantVariantMultiCellComponent extends Component<VariantProps, any> {
         this.remove();
     };
 
-    // iOS long touch workaround
-    // https://stackoverflow.com/a/33778163
-    // https://jsfiddle.net/gianlucaguarini/56Szw/
-    // https://stackoverflow.com/a/33303261
-
-    private onTouchStart = (e) => {
-        console.debug("touchstart");
-        this.longTouchTimeout = setTimeout(() => {
-            console.debug("longtouch");
-            this.remove();
-        }, 500);
-    };
-
-    private onTouchEnd = (e) => {
-        console.debug("touchend");
-        clearTimeout(this.longTouchTimeout);
-    };
-
     render(props: VariantProps) {
         return (
             <div class="cell-multi-variant" onClick={this.onClick} onContextMenu={this.onRightClick}
-                 onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchCancel={this.onTouchEnd} onTouchMove={this.onTouchEnd}>
+                 {...this.longTouchHandler}>
                 <SmallVariantIconComponent row={props.row} variant={props.variant}/>
             </div>
         );
@@ -116,10 +99,14 @@ interface CellProps extends RowProps {
 }
 
 class CellComponent extends Component<CellProps, any> {
+    private onContextMenu = (e) => {
+        e.preventDefault();
+    };
+
     render(props: CellProps) {
         return (
             <td>
-                <div class="cell">
+                <div class="cell" onContextMenu={this.onContextMenu}>
                     {
                         props.board.isSingle(props.row, props.col) ?
                             <SingleCellComponent {...props}/> :
