@@ -20,20 +20,49 @@ class SingleCellComponent extends Component<CellProps, any> {
 }
 
 class VariantVariantMultiCellComponent extends Component<VariantProps, any> {
-    private onClick = (e) => {
+    private longTouchTimeout: number;
+
+    private set() {
         this.props.board.set(this.props.row, this.props.col, this.props.variant);
         this.props.refresh();
+    }
+
+    private remove() {
+        this.props.board.remove(this.props.row, this.props.col, this.props.variant);
+        this.props.refresh();
+    }
+
+    private onClick = (e) => {
+        this.set();
     };
 
     private onRightClick = (e) => {
         e.preventDefault();
-        this.props.board.remove(this.props.row, this.props.col, this.props.variant);
-        this.props.refresh();
+        this.remove();
+    };
+
+    // iOS long touch workaround
+    // https://stackoverflow.com/a/33778163
+    // https://jsfiddle.net/gianlucaguarini/56Szw/
+    // https://stackoverflow.com/a/33303261
+
+    private onTouchStart = (e) => {
+        console.debug("touchstart");
+        this.longTouchTimeout = setTimeout(() => {
+            console.debug("longtouch");
+            this.remove();
+        }, 500);
+    };
+
+    private onTouchEnd = (e) => {
+        console.debug("touchend");
+        clearTimeout(this.longTouchTimeout);
     };
 
     render(props: VariantProps) {
         return (
-            <div class="cell-multi-variant" onClick={this.onClick} onContextMenu={this.onRightClick}>
+            <div class="cell-multi-variant" onClick={this.onClick} onContextMenu={this.onRightClick}
+                 onTouchStart={this.onTouchStart} onTouchEnd={this.onTouchEnd} onTouchCancel={this.onTouchEnd} onTouchMove={this.onTouchEnd}>
                 <SmallVariantIconComponent row={props.row} variant={props.variant}/>
             </div>
         );
