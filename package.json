@@ -1,12 +1,41 @@
 {
-  "name": "einstein-js",
-  "version": "0.0.1",
+  "name": "einstein",
+  "version": "1.0.2",
+
+  "description": "Einstein Puzzle 2.0 by Flowix Games ported to the web",
+  "author": "Simmo Saan",
+  "keywords": [
+    "typescript",
+    "webpack",
+    "preact",
+    "lodash",
+    "game",
+    "puzzle-game",
+    "web"
+  ],
+
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/sim642/einstein-js.git"
+  },
+  "bugs": {
+    "url": "https://github.com/sim642/einstein-js/issues"
+  },
+  "homepage": "http://einstein.sim642.eu",
+
   "scripts": {
     "build:dev": "webpack --env=dev --progress --profile --colors",
     "build:prod": "webpack --env=prod --progress --profile --colors",
     "watch:dev": "webpack --env=dev --progress --profile --colors --watch"
   },
+
+  "dependencies": {
+    "classnames": "^2.2.5",
+    "lodash": "^4.17.4",
+    "preact": "^8.1.0"
+  },
   "devDependencies": {
+    "@types/lodash": "^4.14.66",
     "@types/webpack-env": "^1.13.0",
     "chunk-manifest-webpack-plugin": "^1.1.0",
     "css-loader": "^0.28.4",
@@ -15,20 +44,12 @@
     "html-webpack-plugin": "^2.29.0",
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
-    "nativejsx-loader": "^2.0.0",
     "offline-plugin": "^4.8.1",
-    "source-map-loader": "^0.2.1",
     "style-loader": "^0.18.2",
     "ts-loader": "^2.2.0",
     "typescript": "~2.3.4",
     "webpack": "^3.0.0",
     "webpack-chunk-hash": "^0.4.0",
     "webpack-merge": "^4.1.0"
-  },
-  "dependencies": {
-    "@types/lodash": "^4.14.66",
-    "classnames": "^2.2.5",
-    "lodash": "^4.17.4",
-    "preact": "^8.1.0"
   }
 }
