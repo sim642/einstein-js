@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#ver:7/1/2017, 2:00:33 PM
+#ver:7/5/2017, 1:08:51 PM
 #plugin:4.8.1
 
 CACHE:
@@ -82,11 +82,11 @@ CACHE:
 ../icons/original/small/small-f4.fa8fa0e7c09873297312ed5082eac413.png
 ../icons/original/large/large-a4.30bcbdd3b26849030d9f7756c19d6a98.png
 ../icons/original/large/large-f2.ebac4e572194ab532410773494ed9c4e.png
-../app.c3e9f2901fb73f3c9d834575c51363d7.js
-../chunk-manifest.json
+../app.68952240a1667404fe7f2c1edc53179e.js
 ../manifest.d41d8cd98f00b204e9800998ecf8427e.js
 ../vendor.3f74fb754b178ddc60c2d9324df93088.js
 ../app.5c926d6bc0bfab12578a17ba8d58c4c8.css
+../einstein.ico
 ../
 
 NETWORK:
