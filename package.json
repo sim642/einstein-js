@@ -1,7 +1,6 @@
 {
   "name": "einstein",
   "version": "1.0.2",
-
   "description": "Einstein Puzzle 2.0 by Flowix Games ported to the web",
   "author": "Simmo Saan",
   "keywords": [
@@ -13,7 +12,6 @@
     "puzzle-game",
     "web"
   ],
-
   "repository": {
     "type": "git",
     "url": "git+https://github.com/sim642/einstein-js.git"
@@ -22,13 +20,11 @@
     "url": "https://github.com/sim642/einstein-js/issues"
   },
   "homepage": "http://einstein.sim642.eu",
-
   "scripts": {
     "build:dev": "webpack --env=dev --progress --profile --colors",
     "build:prod": "webpack --env=prod --progress --profile --colors",
     "watch:dev": "webpack --env=dev --progress --profile --colors --watch"
   },
-
   "dependencies": {
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
@@ -38,6 +34,7 @@
     "@types/lodash": "^4.14.66",
     "@types/webpack-env": "^1.13.0",
     "chunk-manifest-webpack-plugin": "^1.1.0",
+    "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
     "extract-text-webpack-plugin": "^2.1.2",
     "file-loader": "^0.11.2",
