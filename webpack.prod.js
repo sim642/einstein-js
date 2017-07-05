@@ -60,6 +60,7 @@ module.exports = Merge.smart(CommonConfig, {
         }),
 
         new OfflinePlugin({
+            excludes: ["**/.*", "**/*.map", "chunk-manifest.json"],
             ServiceWorker: {
                 cacheName: "einstein-js" // DO NOT CHANGE: https://github.com/NekR/offline-plugin/blob/master/docs/options.md#serviceworker-object--null--false
             }
