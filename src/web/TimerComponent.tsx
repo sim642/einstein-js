@@ -21,12 +21,14 @@ export class TimerComponent extends Component<TimerProps, TimerState> {
     }
 
     componentWillReceiveProps(nextProps: TimerProps) {
-        this.setState(state => {
-            return {
-                now: nextProps.start
-            };
-        });
-        this.setTimer();
+        if (this.props.start !== nextProps.start) {
+            this.setState(state => {
+                return {
+                    now: nextProps.start
+                };
+            });
+            this.setTimer();
+        }
     }
 
     componentDidMount() {
