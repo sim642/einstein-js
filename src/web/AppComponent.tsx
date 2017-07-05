@@ -1,3 +1,5 @@
+import * as classNames from "classnames";
+import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
 import {Puzzle} from "../puzzle/Puzzle";
@@ -10,6 +12,7 @@ import {TimerComponent} from "./TimerComponent";
 
 interface AppState {
     puzzle: Puzzle;
+    paused: boolean;
 }
 
 export class AppComponent extends Component<{}, AppState> {
@@ -18,7 +21,8 @@ export class AppComponent extends Component<{}, AppState> {
     constructor() {
         super();
         this.state = {
-            puzzle: Puzzle.generate()
+            puzzle: Puzzle.generate(),
+            paused: false
         };
     }
 
@@ -28,10 +32,25 @@ export class AppComponent extends Component<{}, AppState> {
 
     private onClickNewGame = (e) => {
         this.setState({
-            puzzle: Puzzle.generate()
+            puzzle: Puzzle.generate(),
+            paused: false
         });
         this.timer.reset();
         this.timer.start();
+    };
+
+    private onClickPause = (e) => {
+        this.timer.pause();
+        this.setState(state => _.merge(state, {
+            paused: true
+        }));
+    };
+
+    private onClickResume = (e) => {
+        this.timer.start();
+        this.setState(state => _.merge(state, {
+            paused: false
+        }));
     };
 
     private refresh = () => {
@@ -50,7 +69,10 @@ export class AppComponent extends Component<{}, AppState> {
 
     render(props, state: AppState) {
         return (
-            <div class="app">
+            <div class={classNames({
+                "app": true,
+                "paused": state.paused
+            })}>
                 <div class="app-top">
                     <div class="header">
                         <div class="brand">
@@ -58,6 +80,11 @@ export class AppComponent extends Component<{}, AppState> {
                         </div>
 
                         <button onClick={this.onClickNewGame}>New game</button>
+                        {
+                            state.paused ?
+                                <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
+                                <button onClick={this.onClickPause}>Pause</button>
+                        }
                         <TimerComponent timer={this.timer}/>
                     </div>
                     <MultiBoardComponent puzzle={state.puzzle} refresh={this.refresh}/>
