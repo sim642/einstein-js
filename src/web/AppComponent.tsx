@@ -1,42 +1,48 @@
-import * as _ from "lodash";
+import * as Package from "package.json";
 import {Component, h} from "preact";
 import {Puzzle} from "../puzzle/Puzzle";
+import {formatDuration} from "../time";
+import {Timer} from "../Timer";
 import "./app.less";
 import {HintsComponent} from "./HintsComponent";
 import {MultiBoardComponent} from "./MultiBoardComponent";
 import {TimerComponent} from "./TimerComponent";
-import {formatDuration} from "../time";
-import * as Package from "package.json";
 
 interface AppState {
     puzzle: Puzzle;
-    startTime: number;
 }
 
 export class AppComponent extends Component<{}, AppState> {
+    private timer = new Timer();
+
     constructor() {
         super();
         this.state = {
-            puzzle: Puzzle.generate(),
-            startTime: _.now()
+            puzzle: Puzzle.generate()
         };
+    }
+
+    componentDidMount() {
+        this.timer.start();
     }
 
     private onClickNewGame = (e) => {
         this.setState({
-            puzzle: Puzzle.generate(),
-            startTime: _.now()
+            puzzle: Puzzle.generate()
         });
+        this.timer.reset();
+        this.timer.start();
     };
 
     private refresh = () => {
         let puzzle = this.state.puzzle;
         if (puzzle.isSolved()) {
-            let endTime = _.now();
-            alert(`Solved in ${formatDuration(this.state.startTime, endTime)}!`);
+            this.timer.pause();
+            alert(`Solved in ${formatDuration(this.timer.getTotalTime())}!`);
             this.forceUpdate();
         }
         else if (puzzle.isOver()) {
+            this.timer.pause();
             alert("Over!");
             this.forceUpdate();
         }
@@ -52,7 +58,7 @@ export class AppComponent extends Component<{}, AppState> {
                         </div>
 
                         <button onClick={this.onClickNewGame}>New game</button>
-                        <TimerComponent start={state.startTime}/>
+                        <TimerComponent timer={this.timer}/>
                     </div>
                     <MultiBoardComponent puzzle={state.puzzle} refresh={this.refresh}/>
                 </div>
