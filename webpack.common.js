@@ -17,7 +17,10 @@ module.exports = {
     devtool: "source-map",
 
     resolve: {
-        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"]
+        extensions: [".webpack.js", ".web.js", ".ts", ".tsx", ".js"],
+        alias: {
+            "package.json$": path.resolve(__dirname, "package.json")
+        }
     },
 
     module: {
@@ -75,7 +78,8 @@ module.exports = {
 
         new HtmlWebpackPlugin({
             title: "einstein-js",
-            template: "./src/index.ejs"
+            template: "./src/index.ejs",
+            favicon: "./src/einstein.ico"
         }),
 
         new webpack.NamedChunksPlugin()

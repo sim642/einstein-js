@@ -6,6 +6,7 @@ var ChunkManifestPlugin = require("chunk-manifest-webpack-plugin");
 var WebpackChunkHash = require("webpack-chunk-hash");
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var OfflinePlugin = require('offline-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = Merge.smart(CommonConfig, {
     output: {
@@ -59,9 +60,16 @@ module.exports = Merge.smart(CommonConfig, {
         }),
 
         new OfflinePlugin({
+            excludes: ["**/.*", "**/*.map", "chunk-manifest.json"],
             ServiceWorker: {
                 cacheName: "einstein-js" // DO NOT CHANGE: https://github.com/NekR/offline-plugin/blob/master/docs/options.md#serviceworker-object--null--false
             }
-        })
+        }),
+
+        new CopyWebpackPlugin([
+            {
+                from: "./CNAME"
+            }
+        ])
     ]
 });
