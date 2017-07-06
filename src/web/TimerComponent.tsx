@@ -1,34 +1,30 @@
-import * as _ from "lodash";
 import {Component, h} from "preact";
 import {formatDuration} from "../time";
+import {Timer} from "../Timer";
 
 export interface TimerProps {
-    start: number;
+    timer: Timer;
 }
 
 interface TimerState {
-    now: number;
+    time: number;
 }
 
 export class TimerComponent extends Component<TimerProps, TimerState> {
-    private timer: number | null = null;
+    private interval: number | null = null;
 
     constructor(props: TimerProps) {
         super();
         this.state = {
-            now: props.start
+            time: props.timer.getTotalTime()
         };
     }
 
     componentWillReceiveProps(nextProps: TimerProps) {
-        if (this.props.start !== nextProps.start) {
-            this.setState(state => {
-                return {
-                    now: nextProps.start
-                };
-            });
-            this.setTimer();
-        }
+        this.setState({
+            time: nextProps.timer.getTotalTime()
+        });
+        this.setTimer();
     }
 
     componentDidMount() {
@@ -40,26 +36,26 @@ export class TimerComponent extends Component<TimerProps, TimerState> {
     }
 
     private clearTimer() {
-        if (this.timer !== null)
-            clearInterval(this.timer);
+        if (this.interval !== null)
+            clearInterval(this.interval);
     }
 
     private setTimer() {
         this.clearTimer();
 
-        this.timer = setInterval(() => {
-            this.setState(state => {
-                return {
-                    now: _.now()
-                };
-            })
-        }, 1000);
+        setTimeout(() => {
+            this.interval = setInterval(() => {
+                this.setState({
+                    time: this.props.timer.getTotalTime()
+                });
+            }, 1000);
+        }, 0); // HACK: give enough delay to make interval fall between seconds and avoid second skipping
     }
 
     render(props: TimerProps, state: TimerState) {
         return (
             <div>
-                {formatDuration(props.start, state.now)}
+                {formatDuration(state.time)}
             </div>
         )
     }

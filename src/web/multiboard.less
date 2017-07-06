@@ -1,10 +1,10 @@
 @import "../common";
 
-.solved {
+.solved .multiboard {
   background-color: fade(lime, 80%);
 }
 
-.over {
+.over .multiboard {
   background-color: fade(red, 80%);
 }
 
@@ -66,4 +66,8 @@
 
 .cell-multi-empty {
   .square;
+}
+
+.paused .multiboard .cell * {
+  display: none;
 }

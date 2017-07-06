@@ -112,10 +112,8 @@ class CellComponent extends Component<CellProps, any> {
     }
 }
 
-interface RowProps {
-    board: MultiBoard;
+interface RowProps extends MultiBoardProps {
     row: number;
-    refresh: Refresh;
 }
 
 class RowComponent extends Component<RowProps, any> {
@@ -136,22 +134,17 @@ class RowComponent extends Component<RowProps, any> {
 }
 
 export interface MultiBoardProps {
-    puzzle: Puzzle;
+    board: MultiBoard;
     refresh: Refresh;
 }
 
 export class MultiBoardComponent extends Component<MultiBoardProps, any> {
     render(props: MultiBoardProps) {
-        let board = props.puzzle.multiBoard;
         return (
             <div class="multiboard-outer">
-                <table class={classNames({
-                    "multiboard": true,
-                    "solved": props.puzzle.isSolved(),
-                    "over": props.puzzle.isOver()
-                })}>
-                    {_.times(board.rows, row =>
-                        <RowComponent board={board} row={row} refresh={props.refresh}/>
+                <table class="multiboard">
+                    {_.times(props.board.rows, row =>
+                        <RowComponent {...props} row={row}/>
                     )}
                 </table>
             </div>

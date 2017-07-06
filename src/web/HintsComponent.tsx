@@ -1,3 +1,4 @@
+import * as classNames from "classnames";
 import * as _ from "lodash";
 import {Component, h} from "preact";
 import {AdjacentHint} from "../puzzle/hint/AdjacentHint";
@@ -9,15 +10,38 @@ import {LongTouchContextMenuHandler} from "./helper/LongTouchContextMenuHandler"
 import "./hints.less";
 import {IconComponent, LargeVariantIconComponent} from "./IconComponents";
 
+interface VisibilityState {
+    visible: boolean;
+}
+
 interface HintProps {
     hint: Hint;
 }
 
-class HintComponent extends Component<HintProps, any> {
-    private contextMenuHandler = new LongTouchContextMenuHandler(() => this.hide());
+class HintComponent extends Component<HintProps, VisibilityState> {
+    private contextMenuHandler = new LongTouchContextMenuHandler(() => this.onToggle());
 
-    private hide = () => {
-        this.base.style.display = "none";
+    constructor() {
+        super();
+        this.state = {
+            visible: true
+        };
+    }
+
+    componentWillReceiveProps(nextProps: HintProps) {
+        if (this.props.hint !== nextProps.hint) {
+            this.setState({
+                visible: true
+            });
+        }
+    }
+
+    private onToggle = () => {
+        this.setState(state => {
+            return {
+                visible: !state.visible
+            };
+        });
     };
 
     private renderTbody(props: HintProps) {
@@ -96,9 +120,13 @@ class HintComponent extends Component<HintProps, any> {
             throw new Error("Unsupported hint type");
     }
 
-    render(props: HintProps) {
+    render(props: HintProps, state: VisibilityState) {
         return (
-            <div class="hint-outer" {...this.contextMenuHandler}>
+            <div class={classNames({
+                "hint-outer": true,
+                "hint-visible": state.visible,
+                "hint-hidden": !state.visible
+            })} {...this.contextMenuHandler}>
                 <table class="hint">
                     {this.renderTbody(props)}
                 </table>
@@ -111,26 +139,39 @@ export interface HintsProps {
     hints: Hint[];
 }
 
-export class HintsComponent extends Component<HintsProps, any> {
-    componentWillReceiveProps(nextProps) {
-        _.forEach(this.base.querySelectorAll(".hint-outer"), el => {
-            let style = (el as HTMLElement).style;
-            style.display = "";
-        });
+export class HintsComponent extends Component<HintsProps, VisibilityState> {
+    constructor() {
+        super();
+        this.state = {
+            visible: true
+        };
+    }
+
+    componentWillReceiveProps(nextProps: HintsProps) {
+        if (this.props.hints !== nextProps.hints) {
+            this.setState({
+                visible: true
+            });
+        }
     }
 
     private onToggle = (e) => {
-        _.forEach(this.base.querySelectorAll(".hint-outer"), el => {
-            let style = (el as HTMLElement).style;
-            style.display = style.display === "none" ? "" : "none";
+        this.setState(state => {
+            return {
+                visible: !state.visible
+            };
         });
     };
 
-    render(props: HintsProps) {
+    render(props: HintsProps, state: VisibilityState) {
         return (
             <div class="hints">
                 <button class="button-toggle" onClick={this.onToggle}>Toggle</button>
-                <div class="hints-horizontal">
+                <div class={classNames({
+                    "hints-horizontal": true,
+                    "hints-visible": state.visible,
+                    "hints-hidden": !state.visible
+                })}>
                     {_.map(_.filter(props.hints, hint => hint.getType() === HintType.Horizontal), hint =>
                         <HintComponent hint={hint}/>
                     )}
