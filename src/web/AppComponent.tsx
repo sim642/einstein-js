@@ -9,10 +9,12 @@ import "./app.less";
 import {HintsComponent} from "./HintsComponent";
 import {MultiBoardComponent} from "./MultiBoardComponent";
 import {TimerComponent} from "./TimerComponent";
+import {VisibilityChangeListener} from "./helper/VisibilityChangeListener";
 
 export enum GameState {
     Playing,
-    Paused,
+    ManualPaused,
+    AutoPaused,
     Solved,
     Over,
 }
@@ -24,6 +26,7 @@ interface AppState {
 
 export class AppComponent extends Component<{}, AppState> {
     private timer = new Timer();
+    private visibilityChange: VisibilityChangeListener;
 
     constructor() {
         super();
@@ -31,10 +34,16 @@ export class AppComponent extends Component<{}, AppState> {
             puzzle: Puzzle.generate(),
             gameState: GameState.Playing
         };
+        this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
     }
 
     componentDidMount() {
         this.timer.start();
+        this.visibilityChange.add();
+    }
+
+    componentWillUnmount() {
+        this.visibilityChange.remove();
     }
 
     private onClickNewGame = (e) => {
@@ -50,16 +59,31 @@ export class AppComponent extends Component<{}, AppState> {
         if (this.state.gameState === GameState.Playing) {
             this.timer.pause();
             this.setState(state => _.merge(state, {
-                gameState: GameState.Paused
+                gameState: GameState.ManualPaused
             }));
         }
     };
 
     private onClickResume = (e) => {
-        if (this.state.gameState === GameState.Paused) {
+        if (this.state.gameState === GameState.ManualPaused || this.state.gameState === GameState.AutoPaused) {
             this.timer.start();
             this.setState(state => _.merge(state, {
                 gameState: GameState.Playing
+            }));
+        }
+    };
+
+    private onVisibilityChange = visible => {
+        if (visible && this.state.gameState === GameState.AutoPaused) {
+            this.timer.start();
+            this.setState(state => _.merge(state, {
+                gameState: GameState.Playing
+            }));
+        }
+        else if (!visible && this.state.gameState === GameState.Playing) {
+            this.timer.pause();
+            this.setState(state => _.merge(state, {
+                gameState: GameState.AutoPaused
             }));
         }
     };
@@ -87,7 +111,7 @@ export class AppComponent extends Component<{}, AppState> {
         return (
             <div class={classNames({
                 "app": true,
-                "paused": state.gameState === GameState.Paused,
+                "paused": state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused,
                 "solved": state.gameState === GameState.Solved,
                 "over": state.gameState === GameState.Over,
             })}>
@@ -99,7 +123,7 @@ export class AppComponent extends Component<{}, AppState> {
 
                         <button onClick={this.onClickNewGame}>New game</button>
                         {
-                            state.gameState === GameState.Paused ?
+                            state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused ?
                                 <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
                                 <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickPause}>Pause</button>
                         }
