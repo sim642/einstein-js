@@ -89,21 +89,23 @@ export class AppComponent extends Component<{}, AppState> {
     };
 
     private refresh = () => {
-        let puzzle = this.state.puzzle;
-        if (puzzle.isSolved()) {
-            this.timer.pause();
-            alert(`Solved in ${formatDuration(this.timer.getTotalTime())}!`);
-            this.setState(state => _.merge(state, {
-                gameState: GameState.Solved
-            }));
-        }
-        else if (puzzle.isOver()) {
-            this.timer.pause();
-            alert("Over!");
-            puzzle.multiBoard.applySingleBoard(puzzle.singleBoard); // show correct solution
-            this.setState(state => _.merge(state, {
-                gameState: GameState.Over
-            }));
+        if (this.state.gameState === GameState.Playing) {
+            let puzzle = this.state.puzzle;
+            if (puzzle.isSolved()) {
+                this.timer.pause();
+                alert(`Solved in ${formatDuration(this.timer.getTotalTime())}!`);
+                this.setState(state => _.merge(state, {
+                    gameState: GameState.Solved
+                }));
+            }
+            else if (puzzle.isOver()) {
+                this.timer.pause();
+                alert("Over!");
+                puzzle.multiBoard.applySingleBoard(puzzle.singleBoard); // show correct solution
+                this.setState(state => _.merge(state, {
+                    gameState: GameState.Over
+                }));
+            }
         }
     };
 
