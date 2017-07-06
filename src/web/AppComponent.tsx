@@ -10,9 +10,16 @@ import {HintsComponent} from "./HintsComponent";
 import {MultiBoardComponent} from "./MultiBoardComponent";
 import {TimerComponent} from "./TimerComponent";
 
+export enum GameState {
+    Playing,
+    Paused,
+    Solved,
+    Over,
+}
+
 interface AppState {
     puzzle: Puzzle;
-    paused: boolean;
+    gameState: GameState;
 }
 
 export class AppComponent extends Component<{}, AppState> {
@@ -22,7 +29,7 @@ export class AppComponent extends Component<{}, AppState> {
         super();
         this.state = {
             puzzle: Puzzle.generate(),
-            paused: false
+            gameState: GameState.Playing
         };
     }
 
@@ -33,7 +40,7 @@ export class AppComponent extends Component<{}, AppState> {
     private onClickNewGame = (e) => {
         this.setState({
             puzzle: Puzzle.generate(),
-            paused: false
+            gameState: GameState.Playing
         });
         this.timer.reset();
         this.timer.start();
@@ -42,14 +49,14 @@ export class AppComponent extends Component<{}, AppState> {
     private onClickPause = (e) => {
         this.timer.pause();
         this.setState(state => _.merge(state, {
-            paused: true
+            gameState: GameState.Paused
         }));
     };
 
     private onClickResume = (e) => {
         this.timer.start();
         this.setState(state => _.merge(state, {
-            paused: false
+            gameState: GameState.Playing
         }));
     };
 
@@ -58,12 +65,16 @@ export class AppComponent extends Component<{}, AppState> {
         if (puzzle.isSolved()) {
             this.timer.pause();
             alert(`Solved in ${formatDuration(this.timer.getTotalTime())}!`);
-            this.forceUpdate();
+            this.setState(state => _.merge(state, {
+                gameState: GameState.Solved
+            }));
         }
         else if (puzzle.isOver()) {
             this.timer.pause();
             alert("Over!");
-            this.forceUpdate();
+            this.setState(state => _.merge(state, {
+                gameState: GameState.Over
+            }));
         }
     };
 
@@ -71,7 +82,7 @@ export class AppComponent extends Component<{}, AppState> {
         return (
             <div class={classNames({
                 "app": true,
-                "paused": state.paused
+                "paused": state.gameState === GameState.Paused
             })}>
                 <div class="app-top">
                     <div class="header">
@@ -81,7 +92,7 @@ export class AppComponent extends Component<{}, AppState> {
 
                         <button onClick={this.onClickNewGame}>New game</button>
                         {
-                            state.paused ?
+                            state.gameState === GameState.Paused ?
                                 <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
                                 <button onClick={this.onClickPause}>Pause</button>
                         }
