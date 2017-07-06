@@ -126,4 +126,19 @@ export class MultiBoard extends Board<Variants> {
         }
         return true;
     }
+
+    applySingleBoard(singleBoard: SingleBoard): boolean {
+        if (this.isSolved(singleBoard))
+            return false;
+        else {
+            for (let row = 0; row < this.rows; row++) {
+                for (let col = 0; col < this.cols; col++) {
+                    let singleVariant = singleBoard.get(row, col);
+                    for (let variant = 0; variant < this.variants; variant++)
+                        this.get(row, col)[variant] = variant == singleVariant;
+                }
+            }
+            return true;
+        }
+    }
 }

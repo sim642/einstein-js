@@ -76,6 +76,7 @@ export class AppComponent extends Component<{}, AppState> {
         else if (puzzle.isOver()) {
             this.timer.pause();
             alert("Over!");
+            puzzle.multiBoard.applySingleBoard(puzzle.singleBoard); // show correct solution
             this.setState(state => _.merge(state, {
                 gameState: GameState.Over
             }));
@@ -86,7 +87,9 @@ export class AppComponent extends Component<{}, AppState> {
         return (
             <div class={classNames({
                 "app": true,
-                "paused": state.gameState === GameState.Paused
+                "paused": state.gameState === GameState.Paused,
+                "solved": state.gameState === GameState.Solved,
+                "over": state.gameState === GameState.Over,
             })}>
                 <div class="app-top">
                     <div class="header">
@@ -102,7 +105,7 @@ export class AppComponent extends Component<{}, AppState> {
                         }
                         <TimerComponent timer={this.timer}/>
                     </div>
-                    <MultiBoardComponent puzzle={state.puzzle} refresh={this.refresh}/>
+                    <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh}/>
                 </div>
                 <HintsComponent hints={state.puzzle.hints}/>
             </div>
