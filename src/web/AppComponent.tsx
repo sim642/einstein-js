@@ -47,17 +47,21 @@ export class AppComponent extends Component<{}, AppState> {
     };
 
     private onClickPause = (e) => {
-        this.timer.pause();
-        this.setState(state => _.merge(state, {
-            gameState: GameState.Paused
-        }));
+        if (this.state.gameState === GameState.Playing) {
+            this.timer.pause();
+            this.setState(state => _.merge(state, {
+                gameState: GameState.Paused
+            }));
+        }
     };
 
     private onClickResume = (e) => {
-        this.timer.start();
-        this.setState(state => _.merge(state, {
-            gameState: GameState.Playing
-        }));
+        if (this.state.gameState === GameState.Paused) {
+            this.timer.start();
+            this.setState(state => _.merge(state, {
+                gameState: GameState.Playing
+            }));
+        }
     };
 
     private refresh = () => {
@@ -94,7 +98,7 @@ export class AppComponent extends Component<{}, AppState> {
                         {
                             state.gameState === GameState.Paused ?
                                 <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
-                                <button onClick={this.onClickPause}>Pause</button>
+                                <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickPause}>Pause</button>
                         }
                         <TimerComponent timer={this.timer}/>
                     </div>
