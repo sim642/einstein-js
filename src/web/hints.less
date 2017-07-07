@@ -24,9 +24,10 @@
 }
 
 .hints-horizontal, .hints-vertical {
-  display: flex;
+  // BUG: flexbox with vertical writing-mode uses wrong spacing on iOS
+  /*display: flex;
   flex-flow: row wrap;
-  align-items: center;
+  align-items: center;*/
   //justify-content: space-around;
 
   @media @phone, @tablet {
@@ -48,6 +49,7 @@
 
 .hint-outer {
   display: inline-block;
+  vertical-align: middle;
   @media @phone, @tablet {
     @media @landscape {
       writing-mode: horizontal-tb;
