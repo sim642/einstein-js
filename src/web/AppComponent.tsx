@@ -93,17 +93,20 @@ export class AppComponent extends Component<{}, AppState> {
             let puzzle = this.state.puzzle;
             if (puzzle.isSolved()) {
                 this.timer.pause();
-                alert(`Solved in ${formatDuration(this.timer.getTotalTime())}!`);
+                let time = this.timer.getTotalTime();
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Solved
-                }));
+                }), () => {
+                    alert(`Solved in ${formatDuration(time)}!`);
+                });
             }
             else if (puzzle.isOver()) {
                 this.timer.pause();
-                alert("Over!");
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Over
-                }));
+                }), () => {
+                    alert("Over!");
+                });
             }
         }
     };
