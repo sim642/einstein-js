@@ -89,25 +89,28 @@ export class AppComponent extends Component<{}, AppState> {
     };
 
     private refresh = () => {
-        let puzzle = this.state.puzzle;
-        if (puzzle.isSolved()) {
-            this.timer.pause();
-            alert(`Solved in ${formatDuration(this.timer.getTotalTime())}!`);
-            this.setState(state => _.merge(state, {
-                gameState: GameState.Solved
-            }));
-        }
-        else if (puzzle.isOver()) {
-            this.timer.pause();
-            alert("Over!");
-            puzzle.multiBoard.applySingleBoard(puzzle.singleBoard); // show correct solution
-            this.setState(state => _.merge(state, {
-                gameState: GameState.Over
-            }));
+        if (this.state.gameState === GameState.Playing) {
+            let puzzle = this.state.puzzle;
+            if (puzzle.isSolved()) {
+                this.timer.pause();
+                alert(`Solved in ${formatDuration(this.timer.getTotalTime())}!`);
+                this.setState(state => _.merge(state, {
+                    gameState: GameState.Solved
+                }));
+            }
+            else if (puzzle.isOver()) {
+                this.timer.pause();
+                alert("Over!");
+                this.setState(state => _.merge(state, {
+                    gameState: GameState.Over
+                }));
+            }
         }
     };
 
     render(props, state: AppState) {
+        let solvedOrOver = state.gameState === GameState.Solved || state.gameState === GameState.Over;
+        let showBoard = solvedOrOver ? state.puzzle.singleBoard : undefined;
         return (
             <div class={classNames({
                 "app": true,
@@ -129,7 +132,7 @@ export class AppComponent extends Component<{}, AppState> {
                         }
                         <TimerComponent timer={this.timer}/>
                     </div>
-                    <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh}/>
+                    <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                 </div>
                 <HintsComponent hints={state.puzzle.hints}/>
             </div>

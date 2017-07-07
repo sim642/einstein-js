@@ -6,15 +6,15 @@ import {Puzzle} from "../puzzle/Puzzle";
 import {LongTouchContextMenuHandler} from "./helper/LongTouchContextMenuHandler";
 import {LargeVariantIconComponent, SmallVariantIconComponent} from "./IconComponents";
 import "./multiboard.less";
+import {SingleBoard} from "../puzzle/board/SingleBoard";
 
 type Refresh = () => void;
 
-class SingleCellComponent extends Component<CellProps, any> {
-    render(props: CellProps) {
-        let variant = props.board.getSingle(props.row, props.col);
+class SingleCellComponent extends Component<VariantProps, any> {
+    render(props: VariantProps) {
         return (
             <div class="cell-single">
-                <LargeVariantIconComponent row={props.row} variant={variant}/>
+                <LargeVariantIconComponent row={props.row} variant={props.variant}/>
             </div>
         );
     }
@@ -98,17 +98,32 @@ class CellComponent extends Component<CellProps, any> {
     };
 
     render(props: CellProps) {
-        return (
-            <td>
-                <div class="cell" onContextMenu={this.onContextMenu}>
-                    {
-                        props.board.isSingle(props.row, props.col) ?
-                            <SingleCellComponent {...props}/> :
-                            <MultiCellComponent {...props}/>
-                    }
-                </div>
-            </td>
-        )
+        if (props.showBoard) {
+            let correct = props.board.isSingle(props.row, props.col) && props.board.getSingle(props.row, props.col) == props.showBoard.get(props.row, props.col);
+            return (
+                <td class={classNames({
+                    "cell-correct": correct,
+                    "cell-incorrect": !correct
+                })}>
+                    <div class="cell" onContextMenu={this.onContextMenu}>
+                        <SingleCellComponent {...props} variant={props.showBoard.get(props.row, props.col)}/>
+                    </div>
+                </td>
+            )
+        }
+        else {
+            return (
+                <td>
+                    <div class="cell" onContextMenu={this.onContextMenu}>
+                        {
+                            props.board.isSingle(props.row, props.col) ?
+                                <SingleCellComponent {...props} variant={props.board.getSingle(props.row, props.col)}/> :
+                                <MultiCellComponent {...props}/>
+                        }
+                    </div>
+                </td>
+            )
+        }
     }
 }
 
@@ -136,6 +151,7 @@ class RowComponent extends Component<RowProps, any> {
 export interface MultiBoardProps {
     board: MultiBoard;
     refresh: Refresh;
+    showBoard?: SingleBoard;
 }
 
 export class MultiBoardComponent extends Component<MultiBoardProps, any> {

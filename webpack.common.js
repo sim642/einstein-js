@@ -32,10 +32,22 @@ module.exports = {
             {
                 test: /\.less$/,
                 use: ExtractTextPlugin.extract({
-                    fallback: "style-loader",
+                    fallback: {
+                        loader: "style-loader",
+                        options: {
+                            sourceMap: true
+                        }
+                    },
                     use: [
                         {
                             loader: "css-loader",
+                            options: {
+                                sourceMap: true,
+                                importLoaders: 1 // https://github.com/webpack-contrib/css-loader#importloaders
+                            }
+                        },
+                        {
+                            loader: "postcss-loader",
                             options: {
                                 sourceMap: true
                             }
