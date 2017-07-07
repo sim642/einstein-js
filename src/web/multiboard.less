@@ -1,13 +1,5 @@
 @import "../common";
 
-.solved .multiboard {
-  background-color: fade(lime, 80%);
-}
-
-.over .multiboard {
-  background-color: fade(red, 80%);
-}
-
 .multiboard-outer {
   align-self: center;
 
@@ -28,10 +20,29 @@
 
   width: 100%;
 
-  border-radius: 1%; // for rounded .over/.solved corners
+  @cell-border-radius: 7.5%;
+  @cell-padding: 0.75%;
 
   td {
-    padding: 0.5%;
+    padding: @cell-padding;
+  }
+
+  // emulate border-radius on table via corner cells
+  & > tr:first-child {
+    & > td:first-child {
+      border-top-left-radius: @cell-border-radius;
+    }
+    & > td:last-child {
+      border-top-right-radius: @cell-border-radius;
+    }
+  }
+  & > tr:last-child {
+    & > td:first-child {
+      border-bottom-left-radius: @cell-border-radius;
+    }
+    & > td:last-child {
+      border-bottom-right-radius: @cell-border-radius;
+    }
   }
 }
 
@@ -53,7 +64,6 @@
 
   .table-equal;
   .table-gapless;
-  border-collapse: collapse;
 }
 
 .cell-multi-variant {
@@ -70,4 +80,12 @@
 
 .paused .multiboard .cell * {
   display: none;
+}
+
+.cell-correct {
+  background-color: fade(lime, 75%);
+}
+
+.cell-incorrect {
+  background-color: fade(red, 75%);
 }
