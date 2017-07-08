@@ -52,7 +52,7 @@ html, body {
   justify-content: space-between;
   align-items: center;
   @media @phone and @landscape {
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
   }
 
   margin: 0.7em;
@@ -106,6 +106,7 @@ html, body {
 .brand {
   font-weight: bold;
   color: yellow;
+  white-space: nowrap;
 
   small {
     font-weight: normal;
@@ -124,7 +125,7 @@ html, body {
   flex-flow: row wrap;
   justify-content: space-around;
   @media @phone and @landscape {
-    flex-flow: column wrap;
+    flex-flow: column nowrap;
   }
 
   button {
