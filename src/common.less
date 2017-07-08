@@ -21,6 +21,12 @@ button {
     opacity: 0.5;
     cursor: not-allowed;
   }
+
+  /* Remove button padding in FF - https://stackoverflow.com/a/4343517 */
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
+  }
 }
 
 .square {
