@@ -145,7 +145,13 @@ export class AppComponent extends Component<{}, AppState> {
 
                         <div class="buttons">
                             <button onClick={this.onClickNewGame}>New game</button>
-                            <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>Cheat</button>
+                            <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
+                                Cheat {
+                                    state.cheated > 0 ?
+                                        <span class="badge">{state.cheated}</span> :
+                                        null
+                                }
+                            </button>
                             {
                                 state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused ?
                                     <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
