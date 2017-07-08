@@ -22,6 +22,7 @@ export enum GameState {
 interface AppState {
     puzzle: Puzzle;
     gameState: GameState;
+    cheated: boolean;
 }
 
 export class AppComponent extends Component<{}, AppState> {
@@ -32,7 +33,8 @@ export class AppComponent extends Component<{}, AppState> {
         super();
         this.state = {
             puzzle: Puzzle.generate(),
-            gameState: GameState.Playing
+            gameState: GameState.Playing,
+            cheated: false
         };
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
     }
@@ -49,7 +51,8 @@ export class AppComponent extends Component<{}, AppState> {
     private onClickNewGame = (e) => {
         this.setState({
             puzzle: Puzzle.generate(),
-            gameState: GameState.Playing
+            gameState: GameState.Playing,
+            cheated: false
         });
         this.timer.reset();
         this.timer.start();
@@ -70,6 +73,17 @@ export class AppComponent extends Component<{}, AppState> {
             this.setState(state => _.merge(state, {
                 gameState: GameState.Playing
             }));
+        }
+    };
+
+    private onClickCheat = (e) => {
+        if (this.state.gameState === GameState.Playing) {
+            this.setState(state => {
+                let changed = state.puzzle.applySingleHint();
+                return _.merge(state, {
+                    cheated: changed
+                });
+            }, this.refresh);
         }
     };
 
@@ -128,6 +142,7 @@ export class AppComponent extends Component<{}, AppState> {
                         </div>
 
                         <button onClick={this.onClickNewGame}>New game</button>
+                        <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>Cheat</button>
                         {
                             state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused ?
                                 <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
