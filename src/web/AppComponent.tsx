@@ -22,7 +22,7 @@ export enum GameState {
 interface AppState {
     puzzle: Puzzle;
     gameState: GameState;
-    cheated: boolean;
+    cheated: number;
 }
 
 export class AppComponent extends Component<{}, AppState> {
@@ -34,7 +34,7 @@ export class AppComponent extends Component<{}, AppState> {
         this.state = {
             puzzle: Puzzle.generate(),
             gameState: GameState.Playing,
-            cheated: false
+            cheated: 0
         };
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
     }
@@ -52,7 +52,7 @@ export class AppComponent extends Component<{}, AppState> {
         this.setState({
             puzzle: Puzzle.generate(),
             gameState: GameState.Playing,
-            cheated: false
+            cheated: 0
         });
         this.timer.reset();
         this.timer.start();
@@ -78,10 +78,10 @@ export class AppComponent extends Component<{}, AppState> {
 
     private onClickCheat = (e) => {
         if (this.state.gameState === GameState.Playing) {
-            this.setState(state => {
+            this.setState((state: AppState) => {
                 let changed = state.puzzle.applySingleHint();
                 return _.merge(state, {
-                    cheated: changed
+                    cheated: state.cheated + (changed ? 1 : 0)
                 });
             }, this.refresh);
         }
@@ -111,7 +111,8 @@ export class AppComponent extends Component<{}, AppState> {
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Solved
                 }), () => {
-                    alert(`Solved in ${formatDuration(time)}!`);
+                    let cheated = this.state.cheated;
+                    alert(`Solved in ${formatDuration(time)}${cheated > 0 ? ` by cheating ${cheated} times` : ""}!`);
                 });
             }
             else if (puzzle.isOver()) {
@@ -134,6 +135,7 @@ export class AppComponent extends Component<{}, AppState> {
                 "paused": state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused,
                 "solved": state.gameState === GameState.Solved,
                 "over": state.gameState === GameState.Over,
+                "cheated": state.cheated > 0
             })}>
                 <div class="app-top">
                     <div class="header">
