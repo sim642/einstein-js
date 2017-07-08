@@ -54,7 +54,7 @@ export class TimerComponent extends Component<TimerProps, TimerState> {
 
     render(props: TimerProps, state: TimerState) {
         return (
-            <div>
+            <div class="timer">
                 {formatDuration(state.time)}
             </div>
         )

@@ -39,19 +39,26 @@ html, body {
   @media @phone and @landscape {
     flex-flow: row;
   }
+  @media @tablet and @landscape {
+    width: 75vmin;
+  }
+  @media @desktop {
+    // force width because flex-basis: 0 breaks Android Chrome
+    width: 60vmin;
+  }
 }
 
 .header {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
   @media @phone and @landscape {
-    flex-flow: column;
+    flex-flow: column nowrap;
   }
 
   margin: 0.7em;
-  padding: 0.4em;
+  padding: 0.2em;
   border-radius: 0.3em;
   background-color: @blue;
   color: white;
@@ -74,18 +81,61 @@ html, body {
   button {
     box-shadow: 0 0 0.4em lighten(@blue, 35%);
   }
+
+
+  .brand {
+    order: 0;
+  }
+  .buttons {
+    order: 1;
+  }
+  .timer {
+    order: 2;
+  }
+
+  @media @desktop, @phone and @portrait, @tablet and @landscape {
+    .buttons {
+      order: 3;
+      width: 100%; // force to second row
+    }
+  }
+
+  .brand, .timer {
+    margin: 0.2em;
+  }
 }
 
 .brand {
   font-weight: bold;
   color: yellow;
+  white-space: nowrap;
 
   small {
     font-weight: normal;
     color: white;
 
-    @media @phone {
-      display: none;
+    @media @phone and @landscape {
+      display: none; // TODO: make text properly wrap
+    }
+  }
+}
+
+.buttons {
+  flex-grow: 1;
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  @media @phone and @landscape {
+    flex-flow: column nowrap;
+  }
+
+  button {
+    flex-grow: 1;
+
+    margin: 0.2em 0.7em;
+    @media @phone and @landscape {
+      margin: 0.7em 0.2em;
     }
   }
 }

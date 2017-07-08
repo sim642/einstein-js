@@ -23,6 +23,10 @@ export class Puzzle {
         return !this.multiBoard.contains(this.singleBoard);
     }
 
+    applySingleHint(): boolean {
+        return this.multiBoard.applySingleHint(_.filter(this.hints, hint => hint.getType() !== HintType.Start));
+    }
+
     static generate(): Puzzle {
         let board = SingleBoard.random();
         return new Puzzle(board, Puzzle.pruneHints(board, Puzzle.generateHints(board)));

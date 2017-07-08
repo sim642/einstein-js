@@ -22,6 +22,7 @@ export enum GameState {
 interface AppState {
     puzzle: Puzzle;
     gameState: GameState;
+    cheated: number;
 }
 
 export class AppComponent extends Component<{}, AppState> {
@@ -32,7 +33,8 @@ export class AppComponent extends Component<{}, AppState> {
         super();
         this.state = {
             puzzle: Puzzle.generate(),
-            gameState: GameState.Playing
+            gameState: GameState.Playing,
+            cheated: 0
         };
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
     }
@@ -49,7 +51,8 @@ export class AppComponent extends Component<{}, AppState> {
     private onClickNewGame = (e) => {
         this.setState({
             puzzle: Puzzle.generate(),
-            gameState: GameState.Playing
+            gameState: GameState.Playing,
+            cheated: 0
         });
         this.timer.reset();
         this.timer.start();
@@ -73,6 +76,17 @@ export class AppComponent extends Component<{}, AppState> {
         }
     };
 
+    private onClickCheat = (e) => {
+        if (this.state.gameState === GameState.Playing) {
+            this.setState((state: AppState) => {
+                let changed = state.puzzle.applySingleHint();
+                return _.merge(state, {
+                    cheated: state.cheated + (changed ? 1 : 0)
+                });
+            }, this.refresh);
+        }
+    };
+
     private onVisibilityChange = visible => {
         if (visible && this.state.gameState === GameState.AutoPaused) {
             this.timer.start();
@@ -93,17 +107,21 @@ export class AppComponent extends Component<{}, AppState> {
             let puzzle = this.state.puzzle;
             if (puzzle.isSolved()) {
                 this.timer.pause();
-                alert(`Solved in ${formatDuration(this.timer.getTotalTime())}!`);
+                let time = this.timer.getTotalTime();
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Solved
-                }));
+                }), () => {
+                    let cheated = this.state.cheated;
+                    alert(`Solved in ${formatDuration(time)}${cheated > 0 ? ` by cheating ${cheated} times` : ""}!`);
+                });
             }
             else if (puzzle.isOver()) {
                 this.timer.pause();
-                alert("Over!");
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Over
-                }));
+                }), () => {
+                    alert("Over!");
+                });
             }
         }
     };
@@ -117,6 +135,7 @@ export class AppComponent extends Component<{}, AppState> {
                 "paused": state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused,
                 "solved": state.gameState === GameState.Solved,
                 "over": state.gameState === GameState.Over,
+                "cheated": state.cheated > 0
             })}>
                 <div class="app-top">
                     <div class="header">
@@ -124,12 +143,22 @@ export class AppComponent extends Component<{}, AppState> {
                             <a href="http://einstein.sim642.eu" title={`einstein-js ${Package.version}`}>einstein-js</a> <small>by <a href="https://github.com/sim642/einstein-js">sim642</a></small>
                         </div>
 
-                        <button onClick={this.onClickNewGame}>New game</button>
-                        {
-                            state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused ?
-                                <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
-                                <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickPause}>Pause</button>
-                        }
+                        <div class="buttons">
+                            <button onClick={this.onClickNewGame}>New game</button>
+                            <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
+                                Cheat {
+                                    state.cheated > 0 ?
+                                        <span class="badge">{state.cheated}</span> :
+                                        null
+                                }
+                            </button>
+                            {
+                                state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused ?
+                                    <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
+                                    <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickPause}>Pause</button>
+                            }
+                        </div>
+
                         <TimerComponent timer={this.timer}/>
                     </div>
                     <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>

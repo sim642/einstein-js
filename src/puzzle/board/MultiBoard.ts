@@ -103,6 +103,14 @@ export class MultiBoard extends Board<Variants> {
         return changed;
     }
 
+    applySingleHint(hints: Hint[]): boolean {
+        for (let hint of hints) {
+            if (this.applyHint(hint))
+                return true;
+        }
+        return false;
+    }
+
     isSolved(singleBoard: SingleBoard): boolean {
         return this.isSingleBoard() && this.contains(singleBoard);
     }

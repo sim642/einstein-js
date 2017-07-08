@@ -2,6 +2,21 @@
 
 @blue: #3000ff;
 
+.badge {
+  display: inline-block;
+  margin-top: -0.15em;
+  padding: 0.15em 0.2em;
+  min-width: 0.8em;
+  border-radius: 0.5em;
+  background-color: white;
+  color: @blue;
+  font-size: 85%;
+
+  text-align: center;
+  vertical-align: middle;
+  white-space: nowrap;
+}
+
 button {
   background-color: @blue;
   border: none;
@@ -20,6 +35,12 @@ button {
   &:disabled {
     opacity: 0.5;
     cursor: not-allowed;
+  }
+
+  /* Remove button padding in FF - https://stackoverflow.com/a/4343517 */
+  &::-moz-focus-inner {
+    border: 0;
+    padding: 0;
   }
 }
 
