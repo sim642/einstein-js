@@ -34,12 +34,15 @@ html, body {
 }
 
 .app-top {
-  flex-basis: 0; // prevent from growing with .header on @desktop when paused
-
   display: flex;
   flex-flow: column;
   @media @phone and @landscape {
     flex-flow: row;
+  }
+
+  @media @desktop {
+    // force width because flex-basis: 0 breaks Android Chrome
+    width: 60vmin;
   }
 }
 
