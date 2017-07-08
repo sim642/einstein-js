@@ -108,8 +108,8 @@ html, body {
     font-weight: normal;
     color: white;
 
-    @media @phone {
-      display: none;
+    @media @phone and @landscape {
+      display: none; // TODO: make text properly wrap
     }
   }
 }
