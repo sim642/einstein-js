@@ -39,7 +39,9 @@ html, body {
   @media @phone and @landscape {
     flex-flow: row;
   }
-
+  @media @tablet and @landscape {
+    width: 75vmin;
+  }
   @media @desktop {
     // force width because flex-basis: 0 breaks Android Chrome
     width: 60vmin;
@@ -91,7 +93,7 @@ html, body {
     order: 2;
   }
 
-  @media @desktop, @phone and @portrait {
+  @media @desktop, @phone and @portrait, @tablet and @landscape {
     .buttons {
       order: 3;
       width: 100%; // force to second row
