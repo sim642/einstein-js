@@ -143,13 +143,16 @@ export class AppComponent extends Component<{}, AppState> {
                             <a href="http://einstein.sim642.eu" title={`einstein-js ${Package.version}`}>einstein-js</a> <small>by <a href="https://github.com/sim642/einstein-js">sim642</a></small>
                         </div>
 
-                        <button onClick={this.onClickNewGame}>New game</button>
-                        <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>Cheat</button>
-                        {
-                            state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused ?
-                                <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
-                                <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickPause}>Pause</button>
-                        }
+                        <div class="buttons">
+                            <button onClick={this.onClickNewGame}>New game</button>
+                            <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>Cheat</button>
+                            {
+                                state.gameState === GameState.ManualPaused || state.gameState === GameState.AutoPaused ?
+                                    <button class="button-highlight" onClick={this.onClickResume}>Resume</button> :
+                                    <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickPause}>Pause</button>
+                            }
+                        </div>
+
                         <TimerComponent timer={this.timer}/>
                     </div>
                     <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>

@@ -34,6 +34,8 @@ html, body {
 }
 
 .app-top {
+  flex-basis: 0; // prevent from growing with .header on @desktop when paused
+
   display: flex;
   flex-flow: column;
   @media @phone and @landscape {
@@ -43,15 +45,15 @@ html, body {
 
 .header {
   display: flex;
-  flex-flow: row nowrap;
+  flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
   @media @phone and @landscape {
-    flex-flow: column;
+    flex-flow: column wrap;
   }
 
   margin: 0.7em;
-  padding: 0.4em;
+  padding: 0.2em;
   border-radius: 0.3em;
   background-color: @blue;
   color: white;
@@ -74,6 +76,28 @@ html, body {
   button {
     box-shadow: 0 0 0.4em lighten(@blue, 35%);
   }
+
+
+  .brand {
+    order: 0;
+  }
+  .buttons {
+    order: 1;
+  }
+  .timer {
+    order: 2;
+  }
+
+  @media @desktop, @phone and @portrait {
+    .buttons {
+      order: 3;
+      width: 100%; // force to second row
+    }
+  }
+
+  .brand, .timer {
+    margin: 0.2em;
+  }
 }
 
 .brand {
@@ -86,6 +110,26 @@ html, body {
 
     @media @phone {
       display: none;
+    }
+  }
+}
+
+.buttons {
+  flex-grow: 1;
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  @media @phone and @landscape {
+    flex-flow: column wrap;
+  }
+
+  button {
+    flex-grow: 1;
+
+    margin: 0.2em 0.7em;
+    @media @phone and @landscape {
+      margin: 0.7em 0.2em;
     }
   }
 }
