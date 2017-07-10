@@ -24,6 +24,15 @@ module.exports = Merge.smart(CommonConfig, {
                         name: "[name].[hash].[ext]"
                     }
                 }
+            },
+            {
+                test: /manifest\.json$/,
+                use: {
+                    loader: "file-loader",
+                    query: {
+                        name: "[name].[hash].[ext]"
+                    }
+                }
             }
         ]
     },

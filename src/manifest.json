@@ -1,0 +1,13 @@
+{
+  "lang": "en-US",
+  "description": "Einstein Puzzle 2.0 by Flowix Games ported to the web",
+  "start_url": ".",
+  "display": "standalone",
+  "background_color": "#CBE4FE",
+  "theme_color": "#3000ff",
+  "icons": [{
+    "src": "einstein-256.png",
+    "sizes": "256x256",
+    "type": "image/png"
+  }]
+}
