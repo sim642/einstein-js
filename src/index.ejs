@@ -7,6 +7,9 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
 
     <link rel="manifest" href="<%= require("./manifest.json") %>">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <link rel="apple-touch-icon" sizes="256x256" href="einstein-256.png">
 
     <%= htmlWebpackPlugin.files.webpackManifest %>
 </head>
