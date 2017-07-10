@@ -3,6 +3,7 @@ var webpack = require("webpack");
 
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var HtmlWebpackPlugin = require('html-webpack-plugin');
+var CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
     entry: {
@@ -70,6 +71,15 @@ module.exports = {
                         useRelativePath: true
                     }
                 }
+            },
+            {
+                test: /manifest\.json$/,
+                use: {
+                    loader: "file-loader",
+                    query: {
+                        name: "[name].[ext]"
+                    }
+                }
             }
         ]
     },
@@ -94,6 +104,14 @@ module.exports = {
             favicon: "./src/einstein.ico"
         }),
 
-        new webpack.NamedChunksPlugin()
+        new webpack.NamedChunksPlugin(),
+
+        new CopyWebpackPlugin([
+            {
+                from: "./src/einstein-*.png", // TODO: don't hardcode icon png
+                to: "./",
+                flatten: true
+            }
+        ])
     ]
 };

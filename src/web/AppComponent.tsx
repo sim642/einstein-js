@@ -10,6 +10,7 @@ import {HintsComponent} from "./HintsComponent";
 import {MultiBoardComponent} from "./MultiBoardComponent";
 import {TimerComponent} from "./TimerComponent";
 import {VisibilityChangeListener} from "./helper/VisibilityChangeListener";
+import {MessageUnloadListener} from "./helper/MessageUnloadListener";
 
 export enum GameState {
     Playing,
@@ -28,6 +29,7 @@ interface AppState {
 export class AppComponent extends Component<{}, AppState> {
     private timer = new Timer();
     private visibilityChange: VisibilityChangeListener;
+    private messageUnload: MessageUnloadListener;
 
     constructor() {
         super();
@@ -37,15 +39,18 @@ export class AppComponent extends Component<{}, AppState> {
             cheated: 0
         };
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
+        this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
     }
 
     componentDidMount() {
         this.timer.start();
         this.visibilityChange.add();
+        this.messageUnload.add();
     }
 
     componentWillUnmount() {
         this.visibilityChange.remove();
+        this.messageUnload.remove();
     }
 
     private onClickNewGame = (e) => {
@@ -99,6 +104,18 @@ export class AppComponent extends Component<{}, AppState> {
             this.setState(state => _.merge(state, {
                 gameState: GameState.AutoPaused
             }));
+        }
+    };
+
+    private onMessageUnload = () => {
+        switch (this.state.gameState) {
+            case GameState.Playing:
+            case GameState.ManualPaused:
+            case GameState.AutoPaused:
+                return "Are you sure you want to leave while the game is in progress?";
+
+            default:
+                return null;
         }
     };
 
