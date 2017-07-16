@@ -1,13 +1,13 @@
-import * as _ from 'lodash';
-import {Board} from './Board';
+import * as _ from "lodash";
 import {Hint} from "../hint/Hint";
+import {Board, BoardOptions} from "./Board";
 import {SingleBoard} from "./SingleBoard";
 
 type Variants = boolean[];
 
 export class MultiBoard extends Board<Variants> {
-    static full(): MultiBoard {
-        return new MultiBoard(_.times(Board.rows, row => _.times(Board.cols, col => _.times(Board.variants, _.constant(true)))));
+    static full(options: BoardOptions): MultiBoard {
+        return new MultiBoard(_.times(options.rows, row => _.times(options.cols, col => _.times(options.cols, _.constant(true)))), options);
     }
 
     remove(row: number, col: number, variant: number): void {

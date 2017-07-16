@@ -1,15 +1,16 @@
-export abstract class Board<T> {
-    public static readonly rows: number = 6;
-    public static readonly cols: number = 6;
-    public static readonly variants: number = Board.cols;
+export interface BoardOptions {
+    readonly rows: number;
+    readonly cols: number;
+}
 
-    constructor(private table: T[][]) {
+export abstract class Board<T> {
+    constructor(private table: T[][], protected options: BoardOptions) {
 
     }
 
-    readonly rows: number = this.table.length;
-    readonly cols: number = this.table[0].length;
-    readonly variants: number = this.cols;
+    readonly rows: number = this.options.rows;
+    readonly cols: number = this.options.cols;
+    readonly variants: number = this.options.cols;
 
     get(row: number, col: number): T {
         return this.table[row][col];
