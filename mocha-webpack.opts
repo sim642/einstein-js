@@ -1,2 +1,2 @@
 --webpack-config webpack.test.js
-"test/**/*.test.js"
+"test/**/*.test.ts"
