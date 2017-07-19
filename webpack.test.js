@@ -1,4 +1,6 @@
+var path = require("path");
 var nodeExternals = require("webpack-node-externals");
+var isCoverage = process.env.NYC_CWD !== undefined;
 
 module.exports = {
     output: {
@@ -16,11 +18,18 @@ module.exports = {
     },
 
     module: {
-        rules: [
+        // http://zinserjan.github.io/mocha-webpack/docs/guides/code-coverage.html
+        rules: [].concat(
+            isCoverage ? {
+                test: /\.(js|ts)x?$/,
+                include: path.resolve(__dirname, "src"), // instrument only testing sources with Istanbul, after ts-loader runs
+                loader: "istanbul-instrumenter-loader",
+                enforce: "post"
+            }: [],
             {
                 test: /\.tsx?$/,
                 use: "ts-loader"
             }
-        ]
+        )
     }
 };
