@@ -26,7 +26,8 @@
     "coverage": "nyc --reporter=lcov --reporter=text npm test",
     "deploy": "git push -f origin `git subtree split --prefix dist 2> /dev/null`:gh-pages",
     "test": "mocha-webpack",
-    "watch:dev": "webpack --env=dev --progress --profile --colors --watch"
+    "watch:dev": "webpack --env=dev --progress --profile --colors --watch",
+    "watch:test": "mocha-webpack --watch"
   },
   "dependencies": {
     "classnames": "^2.2.5",
