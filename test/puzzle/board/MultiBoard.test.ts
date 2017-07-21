@@ -43,8 +43,10 @@ describe("MultiBoard", function () {
     });
 
     let board3: MultiBoard;
+    let board4: MultiBoard;
     beforeEach(function () {
         board3 = MultiBoard.full({rows: 3, cols: 3});
+        board4 = MultiBoard.full({rows: 4, cols: 4});
     });
 
     describe("#remove()", function () {
@@ -54,7 +56,23 @@ describe("MultiBoard", function () {
             expect(board3.isPossible(0, 1, 2)).to.be.false;
         });
 
-        it("should prune singles");
+        context("should prune singles", function () {
+            it("should prune other cells if cell has single variant", function () {
+                board3.remove(0, 0, 0);
+                board3.remove(0, 0, 1);
+
+                expect(board3.isPossible(0, 1, 2)).to.be.false;
+                expect(board3.isPossible(0, 2, 2)).to.be.false;
+            });
+
+            it("should prune other variants if variant has single cell", function () {
+                board3.remove(0, 0, 0);
+                board3.remove(0, 1, 0);
+
+                expect(board3.isPossible(0, 2, 1)).to.be.false;
+                expect(board3.isPossible(0, 2, 2)).to.be.false;
+            });
+        });
     });
 
     describe("#set()", function () {
@@ -72,7 +90,27 @@ describe("MultiBoard", function () {
             expect(board3.isPossible(0, 2, 2)).to.be.false;
         });
 
-        it("should prune singles");
+        context("should prune singles", function () {
+            it("should prune other cells if cell has single variant", function () {
+                board4.remove(0, 1, 2);
+                board4.remove(0, 1, 3);
+
+                board4.set(0, 0, 0);
+
+                expect(board4.isPossible(0, 2, 1)).to.be.false;
+                expect(board4.isPossible(0, 3, 1)).to.be.false;
+            });
+
+            it("should prune other variants if variant has single cell", function () {
+                board4.remove(0, 2, 1);
+                board4.remove(0, 3, 1);
+
+                board4.set(0, 0, 0);
+
+                expect(board4.isPossible(0, 1, 2)).to.be.false;
+                expect(board4.isPossible(0, 1, 3)).to.be.false;
+            });
+        });
     });
 
     let board12: MultiBoard;
