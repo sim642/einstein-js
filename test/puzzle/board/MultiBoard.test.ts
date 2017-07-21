@@ -3,6 +3,7 @@ import * as _ from "lodash";
 import "mocha";
 import {BoardOptions} from "../../../src/puzzle/board/Board";
 import {MultiBoard} from "../../../src/puzzle/board/MultiBoard";
+import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
 
 describe("MultiBoard", function () {
     describe("#full()", function () {
@@ -174,6 +175,26 @@ describe("MultiBoard", function () {
             ]);
 
             expect(board.isSingleBoard()).to.be.false;
+        });
+    });
+
+    describe("#contains()", function () {
+        let singleBoard = new SingleBoard([
+            [0, 1],
+            [0, 1]
+        ]);
+
+        it("should return true if all variants are possible", function () {
+            let multiBoard = MultiBoard.full({rows: 2, cols: 2});
+
+            expect(multiBoard.contains(singleBoard)).to.be.true;
+        });
+
+        it("should return false if any variant is not possible", function () {
+            let multiBoard = MultiBoard.full({rows: 2, cols: 2});
+            multiBoard.remove(0, 0, 0);
+
+            expect(multiBoard.contains(singleBoard)).to.be.false;
         });
     });
 });
