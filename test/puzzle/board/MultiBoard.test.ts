@@ -42,13 +42,34 @@ describe("MultiBoard", function () {
         });
     });
 
+    let board3: MultiBoard;
+    beforeEach(function () {
+        board3 = MultiBoard.full({rows: 3, cols: 3});
+    });
+
     describe("#remove()", function () {
         it("should remove variant from cell", function () {
-            let board = MultiBoard.full({rows: 3, cols: 3});
+            board3.remove(0, 1, 2);
 
-            board.remove(0, 1, 2);
+            expect(board3.isPossible(0, 1, 2)).to.be.false;
+        });
 
-            expect(board.isPossible(0, 1, 2)).to.be.false;
+        it("should prune singles");
+    });
+
+    describe("#set()", function () {
+        it("should only keep variant in cell", function () {
+            board3.set(0, 1, 2);
+
+            expect(board3.isPossible(0, 1, 2)).to.be.true;
+            expect(board3.isSingle(0, 1)).to.be.true;
+        });
+
+        it("should remove variant from other cells in row", function () {
+            board3.set(0, 1, 2);
+
+            expect(board3.isPossible(0, 0, 2)).to.be.false;
+            expect(board3.isPossible(0, 2, 2)).to.be.false;
         });
 
         it("should prune singles");
