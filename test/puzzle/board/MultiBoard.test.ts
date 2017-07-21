@@ -74,4 +74,17 @@ describe("MultiBoard", function () {
 
         it("should prune singles");
     });
+
+    describe("#isPossible()", function () {
+        it("should return variant possibility in cell", function () {
+            let board = new MultiBoard([
+                [[true, false], [true, true]]
+            ], {rows: 1, cols: 2});
+
+            expect(board.isPossible(0, 0, 0)).to.be.true;
+            expect(board.isPossible(0, 0, 1)).to.be.false;
+            expect(board.isPossible(0, 1, 0)).to.be.true;
+            expect(board.isPossible(0, 1, 1)).to.be.true;
+        })
+    });
 });
