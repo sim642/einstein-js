@@ -79,7 +79,7 @@ describe("MultiBoard", function () {
     beforeEach(function () {
         board12 = new MultiBoard([
             [[true, false], [true, true]]
-        ], {rows: 1, cols: 2});
+        ]);
     });
 
     describe("#isPossible()", function () {
@@ -112,7 +112,7 @@ describe("MultiBoard", function () {
         it("should return single variant of single cell", function () {
             let board = new MultiBoard([
                 [[true, false], [false, true]]
-            ], {rows: 1, cols: 2});
+            ]);
 
             expect(board.getSingle(0, 0)).to.equal(0);
             expect(board.getSingle(0, 1)).to.equal(1);
