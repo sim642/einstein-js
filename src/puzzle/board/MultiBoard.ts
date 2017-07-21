@@ -4,10 +4,20 @@ import {Board, BoardOptions} from "./Board";
 import {SingleBoard} from "./SingleBoard";
 
 type Variants = boolean[];
+type NumberVariants = number[];
 
 export class MultiBoard extends Board<Variants> {
     static full(options: BoardOptions): MultiBoard {
         return new MultiBoard(_.times(options.rows, row => _.times(options.cols, col => _.times(options.cols, _.constant(true)))), options);
+    }
+
+    static numberVariants(table: NumberVariants[][], options?: BoardOptions): MultiBoard {
+        return new MultiBoard(_.map(table, rowCells => _.map(rowCells, cell => {
+            let variants = _.times(rowCells.length, _.constant(false));
+            for (let numberVariant of cell)
+                variants[numberVariant] = true;
+            return variants;
+        })), options);
     }
 
     remove(row: number, col: number, variant: number): void {

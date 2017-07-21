@@ -77,8 +77,8 @@ describe("MultiBoard", function () {
 
     let board12: MultiBoard;
     beforeEach(function () {
-        board12 = new MultiBoard([
-            [[true, false], [true, true]]
+        board12 = MultiBoard.numberVariants([
+            [[0], [0, 1]]
         ]);
     });
 
@@ -110,8 +110,8 @@ describe("MultiBoard", function () {
 
     describe("#getSingle()", function () {
         it("should return single variant of single cell", function () {
-            let board = new MultiBoard([
-                [[true, false], [false, true]]
+            let board = MultiBoard.numberVariants([
+                [[0], [1]]
             ]);
 
             expect(board.getSingle(0, 0)).to.equal(0);
