@@ -156,4 +156,24 @@ describe("MultiBoard", function () {
             expect(board.getSingle(0, 1)).to.equal(1);
         });
     });
+
+    describe("#isSingleBoard()", function () {
+        it("should return true if all cells are single", function () {
+            let board = MultiBoard.numberVariants([
+                [[0], [1]],
+                [[0], [1]]
+            ]);
+
+            expect(board.isSingleBoard()).to.be.true;
+        });
+
+        it("should return false if any cell is not single", function () {
+            let board = MultiBoard.numberVariants([
+                [[0], [1]],
+                [[0], [0, 1]]
+            ]);
+
+            expect(board.isSingleBoard()).to.be.false;
+        });
+    });
 });
