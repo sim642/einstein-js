@@ -158,6 +158,40 @@ describe("MultiBoard", function () {
         });
     });
 
+    describe("#isSolved()", function () {
+        let singleBoard = new SingleBoard([
+            [0, 1],
+            [0, 1]
+        ]);
+
+        it("should return true if is single and contains solution", function () {
+            let multiBoard = MultiBoard.numberVariants([
+                [[0], [1]],
+                [[0], [1]]
+            ]);
+
+            expect(multiBoard.isSolved(singleBoard)).to.be.true;
+        });
+
+        it("should return false if is not single", function () {
+            let multiBoard = MultiBoard.numberVariants([
+                [[0, 1], [1]],
+                [[0], [1]]
+            ]);
+
+            expect(multiBoard.isSolved(singleBoard)).to.be.false;
+        });
+
+        it("should return false if does not contain solution", function () {
+            let multiBoard = MultiBoard.numberVariants([
+                [[1], [0]],
+                [[0], [1]]
+            ]);
+
+            expect(multiBoard.isSolved(singleBoard)).to.be.false;
+        });
+    });
+
     describe("#isSingleBoard()", function () {
         it("should return true if all cells are single", function () {
             let board = MultiBoard.numberVariants([
