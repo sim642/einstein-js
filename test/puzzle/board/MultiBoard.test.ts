@@ -75,16 +75,26 @@ describe("MultiBoard", function () {
         it("should prune singles");
     });
 
+    let board12: MultiBoard;
+    beforeEach(function () {
+        board12 = new MultiBoard([
+            [[true, false], [true, true]]
+        ], {rows: 1, cols: 2});
+    });
+
     describe("#isPossible()", function () {
         it("should return variant possibility in cell", function () {
-            let board = new MultiBoard([
-                [[true, false], [true, true]]
-            ], {rows: 1, cols: 2});
-
-            expect(board.isPossible(0, 0, 0)).to.be.true;
-            expect(board.isPossible(0, 0, 1)).to.be.false;
-            expect(board.isPossible(0, 1, 0)).to.be.true;
-            expect(board.isPossible(0, 1, 1)).to.be.true;
+            expect(board12.isPossible(0, 0, 0)).to.be.true;
+            expect(board12.isPossible(0, 0, 1)).to.be.false;
+            expect(board12.isPossible(0, 1, 0)).to.be.true;
+            expect(board12.isPossible(0, 1, 1)).to.be.true;
         })
+    });
+
+    describe("#count()", function () {
+        it("should return variant count in cell", function () {
+            expect(board12.count(0, 0)).to.equal(1);
+            expect(board12.count(0, 1)).to.equal(2);
+        });
     });
 });
