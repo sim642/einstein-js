@@ -41,4 +41,16 @@ describe("MultiBoard", function () {
             });
         });
     });
+
+    describe("#remove()", function () {
+        it("should remove variant from cell", function () {
+            let board = MultiBoard.full({rows: 3, cols: 3});
+
+            board.remove(0, 1, 2);
+
+            expect(board.isPossible(0, 1, 2)).to.be.false;
+        });
+
+        it("should prune singles");
+    });
 });
