@@ -107,4 +107,15 @@ describe("MultiBoard", function () {
             expect(board12.isSingle(0, 1)).to.be.false;
         });
     });
+
+    describe("#getSingle()", function () {
+        it("should return single variant of single cell", function () {
+            let board = new MultiBoard([
+                [[true, false], [false, true]]
+            ], {rows: 1, cols: 2});
+
+            expect(board.getSingle(0, 0)).to.equal(0);
+            expect(board.getSingle(0, 1)).to.equal(1);
+        });
+    });
 });
