@@ -97,4 +97,14 @@ describe("MultiBoard", function () {
             expect(board12.count(0, 1)).to.equal(2);
         });
     });
+
+    describe("#isSingle()", function () {
+        it("should return true for cells with one variant", function () {
+            expect(board12.isSingle(0, 0)).to.be.true;
+        });
+
+        it("should return false for cells with multiple variant", function () {
+            expect(board12.isSingle(0, 1)).to.be.false;
+        });
+    });
 });
