@@ -1,9 +1,9 @@
 import {expect} from "chai";
-import * as _ from "lodash";
 import "mocha";
 import {MultiBoard} from "../../../src/puzzle/board/MultiBoard";
 import {HintType} from "../../../src/puzzle/hint/Hint";
 import {SameColumnHint} from "../../../src/puzzle/hint/SameColumnHint";
+import {param} from "../../param";
 
 function equivalents(hint: SameColumnHint): SameColumnHint[] {
     return [
@@ -12,20 +12,7 @@ function equivalents(hint: SameColumnHint): SameColumnHint[] {
     ];
 }
 
-function swaps<T>([first, second]: [T, T]): [T, T][] {
-    return [
-        [first, second],
-        [second, first]
-    ];
-}
-
-function param<T>(values: T[], callback: (value: T) => void): void {
-    _.forEach(values, value => {
-        context(JSON.stringify(value), function () {
-            callback(value);
-        });
-    });
-}
+const paramEquivalents = param.generate(equivalents);
 
 interface RowColVariant {
     row: number;
@@ -40,11 +27,11 @@ describe("SameColumnHint", function () {
             board = MultiBoard.full({rows: 3, cols: 3});
         });
 
-        param(swaps<RowColVariant>([
+        param.swaps<RowColVariant>([
             {row: 0, col: 2, variant: 1},
             {row: 1, col: 2, variant: 2}
-        ]), ([remove, possible]) => {
-            param(equivalents(new SameColumnHint(0, 1, 1, 2)), hint => {
+        ], ([remove, possible]) => {
+            paramEquivalents(new SameColumnHint(0, 1, 1, 2), hint => {
                 beforeEach(function () {
                     board.remove(remove.row, remove.col, remove.variant);
                 });

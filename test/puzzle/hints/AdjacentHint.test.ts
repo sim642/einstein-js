@@ -1,9 +1,9 @@
 import {expect} from "chai";
-import * as _ from "lodash";
 import "mocha";
 import {MultiBoard} from "../../../src/puzzle/board/MultiBoard";
 import {AdjacentHint} from "../../../src/puzzle/hint/AdjacentHint";
 import {HintType} from "../../../src/puzzle/hint/Hint";
+import {param} from "../../param";
 
 function equivalents(hint: AdjacentHint): AdjacentHint[] {
     return [
@@ -12,13 +12,7 @@ function equivalents(hint: AdjacentHint): AdjacentHint[] {
     ];
 }
 
-function param<T>(values: T[], callback: (value: T) => void): void {
-    _.forEach(values, value => {
-        context(JSON.stringify(value), function () {
-            callback(value);
-        });
-    });
-}
+const paramEquivalents = param.generate(equivalents);
 
 describe("AdjacentHint", function () {
     describe("#apply()", function () {
@@ -28,7 +22,7 @@ describe("AdjacentHint", function () {
         });
 
         context("first column", function () {
-            param(equivalents(new AdjacentHint(1, 0, 0, 2)), hint => {
+            paramEquivalents(new AdjacentHint(1, 0, 0, 2), hint => {
                 beforeEach(function () {
                     board.remove(0, 1, 2);
                 });
@@ -48,7 +42,7 @@ describe("AdjacentHint", function () {
         });
 
         context("last column", function () {
-            param(equivalents(new AdjacentHint(1, 0, 0, 2)), hint => {
+            paramEquivalents(new AdjacentHint(1, 0, 0, 2), hint => {
                 beforeEach(function () {
                     board.remove(0, 1, 2);
                 });
@@ -68,7 +62,7 @@ describe("AdjacentHint", function () {
         });
 
         context("other column", function () {
-            param(equivalents(new AdjacentHint(1, 0, 0, 2)), hint => {
+            paramEquivalents(new AdjacentHint(1, 0, 0, 2), hint => {
                 beforeEach(function () {
                     board.remove(0, 0, 2);
                     board.remove(0, 2, 2);
