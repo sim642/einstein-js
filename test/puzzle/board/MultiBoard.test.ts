@@ -4,6 +4,10 @@ import "mocha";
 import {BoardOptions} from "../../../src/puzzle/board/Board";
 import {MultiBoard} from "../../../src/puzzle/board/MultiBoard";
 import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
+import {OpenHint} from "../../../src/puzzle/hint/OpenHint";
+import {DirectionHint} from "../../../src/puzzle/hint/DirectionHint";
+import {SameColumnHint} from "../../../src/puzzle/hint/SameColumnHint";
+import {AdjacentHint} from "../../../src/puzzle/hint/AdjacentHint";
 
 describe("MultiBoard", function () {
     describe("#full()", function () {
@@ -155,6 +159,47 @@ describe("MultiBoard", function () {
 
             expect(board.getSingle(0, 0)).to.equal(0);
             expect(board.getSingle(0, 1)).to.equal(1);
+        });
+    });
+
+    describe("#applyHints()", function () {
+        it("should apply all hints repeatedly", function () {
+            let hints = [
+                new SameColumnHint(1, 0, 2, 1),
+                new DirectionHint(0, 2, 1, 0),
+                new OpenHint(0, 1, 2)
+            ]; // order important to check that hints list is repeatedly iterated, not once
+
+            board3.applyHints(hints);
+
+            let expectedBoard = MultiBoard.numberVariants([
+                [[0, 1], [2], [0, 1]],
+                [[1, 2], [1, 2], [0]],
+                [[0, 2], [0, 2], [1]]
+            ]);
+            expect(board3).to.deep.eq(expectedBoard);
+        });
+
+        it("should return true if variant is removed by any hint", function () {
+            let hints = [
+                new SameColumnHint(1, 0, 2, 1),
+                new DirectionHint(0, 2, 1, 0) // removes
+            ];
+
+            let changed = board3.applyHints(hints);
+
+            expect(changed).to.be.true;
+        });
+
+        it("should return false if variant is not removed by all hints", function () {
+            let hints = [
+                new SameColumnHint(1, 0, 2, 1),
+                new AdjacentHint(0, 1, 1, 2)
+            ];
+
+            let changed = board3.applyHints(hints);
+
+            expect(changed).to.be.false;
         });
     });
 
