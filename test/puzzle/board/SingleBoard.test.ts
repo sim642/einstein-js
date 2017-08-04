@@ -3,6 +3,8 @@ import * as _ from "lodash";
 import "mocha";
 import {BoardOptions} from "../../../src/puzzle/board/Board";
 import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
+import {SameColumnHint} from "../../../src/puzzle/hint/SameColumnHint";
+import {OpenHint} from "../../../src/puzzle/hint/OpenHint";
 
 describe("SingleBoard", function () {
     describe("#random()", function () {
@@ -37,6 +39,34 @@ describe("SingleBoard", function () {
                     });
                 });
             });
+        });
+    });
+
+    describe("#isSolvable()", function () {
+        const board = new SingleBoard([
+            [0, 1],
+            [1, 0]
+        ]);
+
+        it("should return true if board is solvable using hints", function () {
+            let hints = [
+                new SameColumnHint(0, 1, 1, 0),
+                new OpenHint(0, 0, 0)
+            ];
+
+            let solvable = board.isSolvable(hints);
+
+            expect(solvable).to.be.true;
+        });
+
+        it("should return false if board is not solvable using hints", function () {
+            let hints = [
+                new OpenHint(0, 0, 0)
+            ];
+
+            let solvable = board.isSolvable(hints);
+
+            expect(solvable).to.be.false;
         });
     });
 });
