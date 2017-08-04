@@ -315,4 +315,36 @@ describe("MultiBoard", function () {
             expect(multiBoard.contains(singleBoard)).to.be.false;
         });
     });
+
+    describe("#applySingleBoard()", function () {
+        const singleBoard = new SingleBoard([
+            [0, 1, 2],
+            [1, 2, 0],
+            [2, 0, 1]
+        ]);
+
+        it("should solve board", function () {
+            board3.applySingleBoard(singleBoard);
+
+            expect(board3.isSolved(singleBoard)).to.be.true;
+        });
+
+        it("should return true if solves board", function () {
+            let changed = board3.applySingleBoard(singleBoard);
+
+            expect(changed).to.be.true;
+        });
+
+        it("should return false if board already solved", function () {
+            let board = MultiBoard.numberVariants([
+                [[0], [1], [2]],
+                [[1], [2], [0]],
+                [[2], [0], [1]]
+            ]);
+
+            let changed = board.applySingleBoard(singleBoard);
+
+            expect(changed).to.be.false;
+        });
+    });
 });
