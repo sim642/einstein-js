@@ -203,6 +203,45 @@ describe("MultiBoard", function () {
         });
     });
 
+    describe("#applySingleHint()", function () {
+        it("should apply all hints until variant is removed", function () {
+            let hints = [
+                new SameColumnHint(1, 0, 2, 1),
+                new DirectionHint(0, 2, 1, 0), // removes
+                new OpenHint(0, 1, 2) // removes
+            ]; // order important to check that hints list is iterated until first removal
+
+            board3.applySingleHint(hints);
+
+            let expectedBoard = MultiBoard.full({rows: 3, cols: 3});
+            expectedBoard.remove(0, 2, 2);
+            expectedBoard.remove(1, 0, 0);
+            expect(board3).to.deep.eq(expectedBoard);
+        });
+
+        it("should return true if variant is removed by any hint", function () {
+            let hints = [
+                new SameColumnHint(1, 0, 2, 1),
+                new DirectionHint(0, 2, 1, 0) // removes
+            ];
+
+            let changed = board3.applySingleHint(hints);
+
+            expect(changed).to.be.true;
+        });
+
+        it("should return false if variant is not removed by all hints", function () {
+            let hints = [
+                new SameColumnHint(1, 0, 2, 1),
+                new AdjacentHint(0, 1, 1, 2)
+            ];
+
+            let changed = board3.applySingleHint(hints);
+
+            expect(changed).to.be.false;
+        });
+    });
+
     describe("#isSolved()", function () {
         let singleBoard = new SingleBoard([
             [0, 1],
