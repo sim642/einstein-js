@@ -102,14 +102,15 @@ export class MultiBoard extends Board<Variants> {
     }
 
     applyHints(hints: Hint[]): boolean {
-        let changed : boolean;
+        let changed = false;
+        let changed2: boolean;
         do {
-            changed = false;
+            changed2 = false;
             for (let hint of hints) {
                 if (this.applyHint(hint))
-                    changed = true;
+                    changed = changed2 = true;
             }
-        } while (changed);
+        } while (changed2);
         return changed;
     }
 
