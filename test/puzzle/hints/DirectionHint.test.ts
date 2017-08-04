@@ -53,6 +53,22 @@ describe("DirectionHint", function () {
             });
         });
 
+        it("should not remove more variants than necessary", function () {
+            board.remove(0, 3, 3);
+            board.remove(1, 0, 2);
+
+            board.applyHint(new DirectionHint(1, 2, 0, 3));
+
+            let expectedBoard = MultiBoard.full({rows: 4, cols: 4});
+            expectedBoard.remove(0, 3, 3);
+            expectedBoard.remove(1, 0, 2);
+            expectedBoard.remove(0, 0, 3);
+            expectedBoard.remove(1, 3, 2);
+            expectedBoard.remove(0, 1, 3);
+            expectedBoard.remove(1, 2, 2);
+            expect(board).to.deep.equal(expectedBoard);
+        });
+
         it("should return false if variant is not removed", function () {
             board.remove(0, 0, 3);
             board.remove(1, 3, 2);

@@ -125,6 +125,25 @@ describe("BetweenHint", function () {
             });
         });
 
+        paramEquivalents(new BetweenHint(0, 1, 1, 2, 2, 3), hint => {
+            it("should not remove more variants than necessary", function () {
+                board.remove(0, 1, 1);
+                board.remove(0, 3, 1);
+
+                board.applyHint(hint);
+
+                let expectedBoard = MultiBoard.full({rows: 5, cols: 5});
+                expectedBoard.remove(0, 1, 1);
+                expectedBoard.remove(0, 3, 1);
+                expectedBoard.remove(1, 2, 2);
+                expectedBoard.remove(1, 0, 2);
+                expectedBoard.remove(1, 4, 2);
+                expectedBoard.remove(2, 1, 3);
+                expectedBoard.remove(2, 3, 3);
+                expect(board).to.deep.equal(expectedBoard);
+            });
+        });
+
         it("should return false if variant is not removed", function () {
             board.remove(1, 0, 2);
             board.remove(1, 4, 2);

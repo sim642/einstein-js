@@ -50,6 +50,22 @@ describe("SameColumnHint", function () {
             });
         });
 
+        paramEquivalents(new SameColumnHint(0, 1, 1, 2), hint => {
+            it("should not remove more variants than necessary", function () {
+                board.remove(0, 0, 1);
+                board.remove(1, 2, 2);
+
+                board.applyHint(hint);
+
+                let expectedBoard = MultiBoard.full({rows: 3, cols: 3});
+                expectedBoard.remove(0, 0, 1);
+                expectedBoard.remove(1, 2, 2);
+                expectedBoard.remove(1, 0, 2);
+                expectedBoard.remove(0, 2, 1);
+                expect(board).to.deep.equal(expectedBoard);
+            });
+        });
+
         it("should return false if variant is not removed", function () {
             let changed = board.applyHint(new SameColumnHint(0, 1, 1, 2));
 

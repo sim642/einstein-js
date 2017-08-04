@@ -24,6 +24,14 @@ describe("OpenHint", function () {
             expect(changed).to.be.true;
         });
 
+        it("should not remove more variants than necessary", function () {
+            board.applyHint(new OpenHint(0, 1, 2));
+
+            let expectedBoard = MultiBoard.full({rows: 3, cols: 3});
+            expectedBoard.set(0, 1, 2);
+            expect(board).to.deep.equal(expectedBoard);
+        });
+
         it("should return false if variant already set", function () {
             board.set(0, 1, 2);
 
