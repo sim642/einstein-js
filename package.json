@@ -32,7 +32,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "lodash": "^4.17.4",
-    "preact": "^8.1.0"
+    "preact": "^8.2.1"
   },
   "devDependencies": {
     "@types/chai": "^4.0.1",
@@ -44,10 +44,10 @@
     "chunk-manifest-webpack-plugin": "^1.1.0",
     "copy-webpack-plugin": "^4.0.1",
     "css-loader": "^0.28.4",
-    "extract-text-webpack-plugin": "^2.1.2",
+    "extract-text-webpack-plugin": "^3.0.0",
     "file-loader": "^0.11.2",
     "html-webpack-plugin": "^2.29.0",
-    "istanbul-instrumenter-loader": "^2.0.0",
+    "istanbul-instrumenter-loader": "^3.0.0",
     "less": "^2.7.2",
     "less-loader": "^4.0.4",
     "mocha": "^3.4.2",
@@ -57,7 +57,7 @@
     "postcss-loader": "^2.0.6",
     "style-loader": "^0.18.2",
     "ts-loader": "^2.2.0",
-    "typescript": "~2.3.4",
+    "typescript": "^2.4.2",
     "webpack": "^3.0.0",
     "webpack-chunk-hash": "^0.4.0",
     "webpack-merge": "^4.1.0",
