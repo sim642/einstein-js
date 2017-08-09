@@ -181,6 +181,11 @@ export class AppComponent extends Component<{}, AppState> {
 
                         <TimerComponent timer={this.timer}/>
                     </div>
+                    <div class="birthday">
+                        <p>
+                            Happy birthday, Elisabeth!
+                        </p>
+                    </div>
                     <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                 </div>
                 <HintsComponent hints={state.puzzle.hints}/>

@@ -48,15 +48,7 @@ html, body {
   }
 }
 
-.header {
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-between;
-  align-items: center;
-  @media @phone and @landscape {
-    flex-flow: column nowrap;
-  }
-
+.box {
   margin: 0.7em;
   padding: 0.2em;
   border-radius: 0.3em;
@@ -80,6 +72,18 @@ html, body {
 
   button {
     box-shadow: 0 0 0.4em lighten(@blue, 35%);
+  }
+}
+
+.header {
+  .box;
+
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-between;
+  align-items: center;
+  @media @phone and @landscape {
+    flex-flow: column nowrap;
   }
 
 
@@ -137,5 +141,27 @@ html, body {
     @media @phone and @landscape {
       margin: 0.7em 0.2em;
     }
+  }
+}
+
+.birthday {
+  .box;
+  align-self: center;
+
+  p {
+    margin: 0.2em;
+  }
+
+  @media @phone and @landscape {
+    p {
+      writing-mode: vertical-rl;
+
+      // required for Firefox and Chromium to initially render with correct size
+      @height: 1em;
+      line-height: @height;
+      width: @height;
+    }
+
+    transform: rotate(180deg);
   }
 }
