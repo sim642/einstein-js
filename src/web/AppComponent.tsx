@@ -11,6 +11,7 @@ import {MultiBoardComponent} from "./MultiBoardComponent";
 import {TimerComponent} from "./TimerComponent";
 import {VisibilityChangeListener} from "./helper/VisibilityChangeListener";
 import {MessageUnloadListener} from "./helper/MessageUnloadListener";
+import {BirthdayComponent} from "./BirthdayComponent";
 
 export enum GameState {
     Playing,
@@ -181,11 +182,7 @@ export class AppComponent extends Component<{}, AppState> {
 
                         <TimerComponent timer={this.timer}/>
                     </div>
-                    <div class="birthday">
-                        <p>
-                            Happy birthday, Elisabeth!
-                        </p>
-                    </div>
+                    <BirthdayComponent month={10} day={22} name="Elisabeth"/>
                     <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                 </div>
                 <HintsComponent hints={state.puzzle.hints}/>
