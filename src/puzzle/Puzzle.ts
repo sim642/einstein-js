@@ -80,6 +80,7 @@ export class Puzzle {
                 hintFactory = new BetweenHintFactory();
                 break;
 
+            // istanbul ignore next: impossible case
             default:
                 throw new Error("Unhandled random HintFactory value");
         }
