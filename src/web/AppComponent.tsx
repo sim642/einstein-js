@@ -42,8 +42,8 @@ export class AppComponent extends Component<{}, AppState> {
     private generateState(): AppState {
         return {
             puzzle: Puzzle.generate({
-                rows: 6,
-                cols: 6
+                rows: 5,
+                cols: 3
             }),
             gameState: GameState.Playing,
             cheated: 0
