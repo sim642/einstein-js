@@ -1,11 +1,11 @@
 import {expect} from "chai";
-import * as _ from "lodash";
 import "mocha";
-import {Puzzle, PuzzleOptions} from "../../src/puzzle/Puzzle";
-import {SingleBoard} from "../../src/puzzle/board/SingleBoard";
 import {MultiBoard} from "../../src/puzzle/board/MultiBoard";
+import {SingleBoard} from "../../src/puzzle/board/SingleBoard";
 import {OpenHint} from "../../src/puzzle/hint/OpenHint";
 import {SameColumnHint} from "../../src/puzzle/hint/SameColumnHint";
+import {Puzzle, PuzzleOptions} from "../../src/puzzle/Puzzle";
+import {paramPuzzleOptions} from "./paramPuzzle";
 
 describe("Puzzle", function () {
     const options: PuzzleOptions = {
@@ -72,29 +72,22 @@ describe("Puzzle", function () {
     });
 
     describe("#generate()", function () {
-        _.forEach([
-            {rows: 6, cols: 6},
-            {rows: 5, cols: 5},
-            {rows: 4, cols: 4},
-            {rows: 6, cols: 4}
-        ], (options: PuzzleOptions) => {
-            context(`with ${options.rows} rows, ${options.cols} cols`, function () {
-                const puzzle = Puzzle.generate(options);
+        paramPuzzleOptions(function (options) {
+            const puzzle = Puzzle.generate(options);
 
-                it("should return puzzle with correct size boards", function () {
-                    // singleboard
-                    expect(puzzle.singleBoard.rows).to.equal(options.rows);
-                    expect(puzzle.singleBoard.cols).to.equal(options.cols);
-                    // multiboard
-                    expect(puzzle.multiBoard.rows).to.equal(options.rows);
-                    expect(puzzle.multiBoard.cols).to.equal(options.cols);
-                });
+            it("should return puzzle with correct size boards", function () {
+                // singleboard
+                expect(puzzle.singleBoard.rows).to.equal(options.rows);
+                expect(puzzle.singleBoard.cols).to.equal(options.cols);
+                // multiboard
+                expect(puzzle.multiBoard.rows).to.equal(options.rows);
+                expect(puzzle.multiBoard.cols).to.equal(options.cols);
+            });
 
-                it("should return puzzle which is solvable", function () {
-                    let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
+            it("should return puzzle which is solvable", function () {
+                let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
 
-                    expect(solvable).to.be.true;
-                });
+                expect(solvable).to.be.true;
             });
         });
     });
