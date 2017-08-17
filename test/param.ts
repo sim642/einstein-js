@@ -38,6 +38,10 @@ export namespace param {
     export function swaps<T>(value: [T, T], callback: Callback<[T, T]>): void {
         generate(swapsGenerator)(value, callback);
     }
+
+    export function repeat<T>(count: number, generator: () => T, callback: Callback<T>): void {
+        param(_.times(count, generator), callback);
+    }
 }
 
 // export = param;
