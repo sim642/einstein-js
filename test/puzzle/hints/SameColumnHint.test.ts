@@ -2,8 +2,10 @@ import {expect} from "chai";
 import "mocha";
 import {MultiBoard} from "../../../src/puzzle/board/MultiBoard";
 import {HintType} from "../../../src/puzzle/hint/Hint";
-import {SameColumnHint} from "../../../src/puzzle/hint/SameColumnHint";
+import {SameColumnHint, SameColumnHintFactory} from "../../../src/puzzle/hint/SameColumnHint";
 import {param} from "../../param";
+import {BoardOptions} from "../../../src/puzzle/board/Board";
+import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
 
 function equivalents(hint: SameColumnHint): SameColumnHint[] {
     return [
@@ -75,5 +77,35 @@ describe("SameColumnHint", function () {
 
     it("should have Vertical type", function () {
         expect(new SameColumnHint(0, 1, 2, 3).getType()).to.equal(HintType.Vertical);
+    });
+});
+
+describe("SameColumnHintFactory", function () {
+    describe("#random()", function () {
+        context("returned hint", function () {
+            const options: BoardOptions = {rows: 6, cols: 6};
+            const board = SingleBoard.random(options);
+            const factory = new SameColumnHintFactory();
+
+            param.repeat(100, () => factory.random(board), function (hint) {
+                it("should have valid row1, row2", function () {
+                    expect(hint.row1).to.be.within(0, board.rows - 1);
+                    expect(hint.row2).to.be.within(0, board.rows - 1);
+                });
+
+                it("should have different rows", function () {
+                    expect(hint.row1).to.not.eq(hint.row2);
+                });
+
+                it("should have variants from same column", function () {
+                    let col1 = board.getCol(hint.row1, hint.variant1);
+                    let col2 = board.getCol(hint.row2, hint.variant2);
+
+                    expect(col1).to.be.at.least(0);
+                    expect(col2).to.be.at.least(0);
+                    expect(col1).to.equal(col2);
+                });
+            });
+        });
     });
 });

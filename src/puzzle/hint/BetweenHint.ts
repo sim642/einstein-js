@@ -67,7 +67,7 @@ export class BetweenHint implements Hint {
 }
 
 export class BetweenHintFactory implements HintFactory {
-    random(board: SingleBoard): Hint {
+    random(board: SingleBoard): BetweenHint {
         let row1 = _.random(0, board.rows - 1);
         let rowMiddle = _.random(0, board.rows - 1);
         let colMiddle = _.random(1, board.cols - 2);

@@ -1,8 +1,11 @@
 import {expect} from "chai";
 import "mocha";
 import {MultiBoard} from "../../../src/puzzle/board/MultiBoard";
-import {DirectionHint} from "../../../src/puzzle/hint/DirectionHint";
+import {DirectionHint, DirectionHintFactory} from "../../../src/puzzle/hint/DirectionHint";
 import {HintType} from "../../../src/puzzle/hint/Hint";
+import {BoardOptions} from "../../../src/puzzle/board/Board";
+import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
+import {param} from "../../param";
 
 describe("DirectionHint", function () {
     describe("#apply()", function () {
@@ -81,5 +84,31 @@ describe("DirectionHint", function () {
 
     it("should have Horizontal type", function () {
         expect(new DirectionHint(0, 1, 2, 3).getType()).to.equal(HintType.Horizontal);
+    });
+});
+
+describe("DirectionHintFactory", function () {
+    describe("#random()", function () {
+        context("returned hint", function () {
+            const options: BoardOptions = {rows: 6, cols: 6};
+            const board = SingleBoard.random(options);
+            const factory = new DirectionHintFactory();
+
+            param.repeat(100, () => factory.random(board), function (hint) {
+                it("should have valid rowLeft, rowRight", function () {
+                    expect(hint.rowLeft).to.be.within(0, board.rows - 1);
+                    expect(hint.rowRight).to.be.within(0, board.rows - 1);
+                });
+
+                it("should have left and right variant in the correct order", function () {
+                    let colLeft = board.getCol(hint.rowLeft, hint.variantLeft);
+                    let colRight = board.getCol(hint.rowRight, hint.variantRight);
+
+                    expect(colLeft).to.be.at.least(0);
+                    expect(colRight).to.be.at.least(0);
+                    expect(colLeft).to.be.lessThan(colRight);
+                });
+            });
+        });
     });
 });

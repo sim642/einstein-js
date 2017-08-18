@@ -23,7 +23,7 @@ export class OpenHint implements Hint {
 }
 
 export class OpenHintFactory implements HintFactory {
-    random(board: SingleBoard): Hint {
+    random(board: SingleBoard): OpenHint {
         let row = _.random(0, board.rows - 1);
         let col = _.random(0, board.cols - 1);
         return new OpenHint(row, col, board.get(row, col));

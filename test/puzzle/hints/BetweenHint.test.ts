@@ -1,9 +1,11 @@
 import {expect} from "chai";
 import "mocha";
 import {MultiBoard} from "../../../src/puzzle/board/MultiBoard";
-import {BetweenHint} from "../../../src/puzzle/hint/BetweenHint";
+import {BetweenHint, BetweenHintFactory} from "../../../src/puzzle/hint/BetweenHint";
 import {HintType} from "../../../src/puzzle/hint/Hint";
 import {param} from "../../param";
+import {BoardOptions} from "../../../src/puzzle/board/Board";
+import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
 
 function equivalents(hint: BetweenHint): BetweenHint[] {
     return [
@@ -156,5 +158,39 @@ describe("BetweenHint", function () {
 
     it("should have Horizontal type", function () {
         expect(new BetweenHint(0, 1, 1, 2, 2, 3).getType()).to.equal(HintType.Horizontal);
+    });
+});
+
+describe("BetweenHintFactory", function () {
+    describe("#random()", function () {
+        context("returned hint", function () {
+            const options: BoardOptions = {rows: 6, cols: 6};
+            const board = SingleBoard.random(options);
+            const factory = new BetweenHintFactory();
+
+            param.repeat(100, () => factory.random(board), function (hint) {
+                it("should have valid row1, rowMiddle, row2", function () {
+                    expect(hint.row1).to.be.within(0, board.rows - 1);
+                    expect(hint.rowMiddle).to.be.within(0, board.rows - 1);
+                    expect(hint.row2).to.be.within(0, board.rows - 1);
+                });
+
+                it("should have side variants adjacent to middle variant on different sides", function () {
+                    let col1 = board.getCol(hint.row1, hint.variant1);
+                    let colMiddle = board.getCol(hint.rowMiddle, hint.variantMiddle);
+                    let col2 = board.getCol(hint.row2, hint.variant2);
+
+                    let col1Diff = col1 - colMiddle;
+                    let col2Diff = col2 - colMiddle;
+
+                    expect(col1).to.be.at.least(0);
+                    expect(colMiddle).to.be.at.least(0);
+                    expect(col2).to.be.at.least(0);
+                    expect(col1Diff).to.be.oneOf([-1, 1]);
+                    expect(col2Diff).to.be.oneOf([-1, 1]);
+                    expect(col1Diff).to.not.equal(col2Diff);
+                });
+            });
+        });
     });
 });

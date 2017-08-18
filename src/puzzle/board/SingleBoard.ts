@@ -8,6 +8,14 @@ export class SingleBoard extends Board<number> {
         return new SingleBoard(_.times(options.rows, row => _.shuffle(_.range(options.cols))), options);
     }
 
+    getCol(row: number, variant: number): number {
+        for (let col = 0; col < this.cols; col++) {
+            if (this.get(row, col) === variant)
+                return col;
+        }
+        return -1;
+    }
+
     isSolvable(hints: Hint[]) {
         let multiBoard = MultiBoard.full(this.options);
         multiBoard.applyHints(hints);
