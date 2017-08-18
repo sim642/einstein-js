@@ -6,6 +6,7 @@ import {OpenHint} from "../../src/puzzle/hint/OpenHint";
 import {SameColumnHint} from "../../src/puzzle/hint/SameColumnHint";
 import {Puzzle, PuzzleOptions} from "../../src/puzzle/Puzzle";
 import {paramPuzzleOptions} from "./paramPuzzle";
+import {param} from "../param";
 
 describe("Puzzle", function () {
     const options: PuzzleOptions = {
@@ -72,22 +73,24 @@ describe("Puzzle", function () {
     });
 
     describe("#generate()", function () {
-        paramPuzzleOptions(function (options) {
-            const puzzle = Puzzle.generate(options);
+        context("returned puzzle", function () {
+            paramPuzzleOptions(function (options) {
+                param.repeat(20, () => Puzzle.generate(options), function (puzzle) {
+                    it("should have correct size boards", function () {
+                        // singleboard
+                        expect(puzzle.singleBoard.rows).to.equal(options.rows);
+                        expect(puzzle.singleBoard.cols).to.equal(options.cols);
+                        // multiboard
+                        expect(puzzle.multiBoard.rows).to.equal(options.rows);
+                        expect(puzzle.multiBoard.cols).to.equal(options.cols);
+                    });
 
-            it("should return puzzle with correct size boards", function () {
-                // singleboard
-                expect(puzzle.singleBoard.rows).to.equal(options.rows);
-                expect(puzzle.singleBoard.cols).to.equal(options.cols);
-                // multiboard
-                expect(puzzle.multiBoard.rows).to.equal(options.rows);
-                expect(puzzle.multiBoard.cols).to.equal(options.cols);
-            });
+                    it("should be solvable", function () {
+                        let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
 
-            it("should return puzzle which is solvable", function () {
-                let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
-
-                expect(solvable).to.be.true;
+                        expect(solvable).to.be.true;
+                    });
+                });
             });
         });
     });
