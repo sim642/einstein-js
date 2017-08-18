@@ -33,6 +33,32 @@ describe("SingleBoard", function () {
         });
     });
 
+    describe("#getCol()", function () {
+        const board = new SingleBoard([
+            [2, 1, 0],
+            [1, 2, 0],
+            [1, 0, 2]
+        ]);
+
+        it("should return column of variant in row", function () {
+            expect(board.getCol(0, 2)).to.equal(0);
+            expect(board.getCol(0, 1)).to.equal(1);
+            expect(board.getCol(0, 0)).to.equal(2);
+
+            expect(board.getCol(1, 1)).to.equal(0);
+            expect(board.getCol(1, 2)).to.equal(1);
+            expect(board.getCol(1, 0)).to.equal(2);
+
+            expect(board.getCol(2, 1)).to.equal(0);
+            expect(board.getCol(2, 0)).to.equal(1);
+            expect(board.getCol(2, 2)).to.equal(2);
+        });
+
+        it("should return -1 if variant not in row", function () {
+            expect(board.getCol(0, 3)).to.equal(-1);
+        });
+    });
+
     describe("#isSolvable()", function () {
         const board = new SingleBoard([
             [0, 1],
