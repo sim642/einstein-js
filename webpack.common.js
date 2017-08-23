@@ -2,8 +2,9 @@ var path = require("path");
 var webpack = require("webpack");
 
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
-var HtmlWebpackPlugin = require('html-webpack-plugin');
-var CopyWebpackPlugin = require('copy-webpack-plugin');
+var HtmlWebpackPlugin = require("html-webpack-plugin");
+var CopyWebpackPlugin = require("copy-webpack-plugin");
+var CleanWebpackPlugin = require("clean-webpack-plugin");
 
 module.exports = {
     entry: {
@@ -85,6 +86,9 @@ module.exports = {
     },
 
     plugins: [
+        // https://webpack.js.org/guides/output-management/#cleaning-up-the-dist-folder
+        new CleanWebpackPlugin(['dist']),
+
         // https://webpack.js.org/guides/code-splitting-libraries/#manifest-file
         new webpack.optimize.CommonsChunkPlugin({
             name: "vendor",
