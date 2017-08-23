@@ -2,7 +2,7 @@ import * as classNames from "classnames";
 import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
-import {Puzzle} from "../puzzle/Puzzle";
+import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
 import {formatDuration} from "../time";
 import {Timer} from "../Timer";
 import "./app.less";
@@ -12,8 +12,10 @@ import {TimerComponent} from "./TimerComponent";
 import {VisibilityChangeListener} from "./helper/VisibilityChangeListener";
 import {MessageUnloadListener} from "./helper/MessageUnloadListener";
 import {BirthdayComponent} from "./BirthdayComponent";
+import {OptionsComponent} from "./OptionsComponent";
 
 export enum GameState {
+    Options,
     Playing,
     ManualPaused,
     AutoPaused,
@@ -22,6 +24,7 @@ export enum GameState {
 }
 
 interface AppState {
+    options: PuzzleOptions;
     puzzle: Puzzle;
     gameState: GameState;
     cheated: number;
@@ -40,18 +43,19 @@ export class AppComponent extends Component<{}, AppState> {
     }
 
     private generateState(): AppState {
+        let options = {
+            rows: 6,
+            cols: 6
+        };
         return {
-            puzzle: Puzzle.generate({
-                rows: 6,
-                cols: 6
-            }),
-            gameState: GameState.Playing,
+            options: options,
+            puzzle: Puzzle.generate(options),
+            gameState: GameState.Options,
             cheated: 0
         };
     }
 
     componentDidMount() {
-        this.timer.start();
         this.visibilityChange.add();
         this.messageUnload.add();
     }
@@ -64,7 +68,6 @@ export class AppComponent extends Component<{}, AppState> {
     private onClickNewGame = (e) => {
         this.setState(this.generateState());
         this.timer.reset();
-        this.timer.start();
     };
 
     private onClickPause = (e) => {
@@ -121,6 +124,17 @@ export class AppComponent extends Component<{}, AppState> {
             default:
                 return null;
         }
+    };
+
+    private submitOptions = (options: PuzzleOptions) => {
+        this.setState({
+            options: options,
+            puzzle: Puzzle.generate(options),
+            gameState: GameState.Playing,
+            cheated: 0
+        }, () => {
+            this.timer.start();
+        });
     };
 
     private refresh = () => {
@@ -183,9 +197,17 @@ export class AppComponent extends Component<{}, AppState> {
                         <TimerComponent timer={this.timer}/>
                     </div>
                     <BirthdayComponent month={10} day={22} name="Elisabeth"/>
-                    <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
+                    {
+                        state.gameState === GameState.Options ?
+                            <OptionsComponent options={state.options} submit={this.submitOptions}/> :
+                            <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
+                    }
                 </div>
-                <HintsComponent hints={state.puzzle.hints}/>
+                {
+                    state.gameState !== GameState.Options ?
+                        <HintsComponent hints={state.puzzle.hints}/> :
+                        null
+                }
             </div>
         );
     }
