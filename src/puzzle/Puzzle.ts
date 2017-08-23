@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import {BoardOptions} from "./board/Board";
 import {MultiBoard} from "./board/MultiBoard";
 import {SingleBoard} from "./board/SingleBoard";
 import {AdjacentHintFactory} from "./hint/AdjacentHint";
@@ -8,10 +9,15 @@ import {Hint, HintFactory, HintType} from "./hint/Hint";
 import {OpenHintFactory} from "./hint/OpenHint";
 import {SameColumnHintFactory} from "./hint/SameColumnHint";
 
-export class Puzzle {
-    public multiBoard: MultiBoard = MultiBoard.full();
+export interface PuzzleOptions extends BoardOptions {
 
-    constructor(public singleBoard: SingleBoard, public hints: Hint[]) {
+}
+
+export class Puzzle {
+    public multiBoard: MultiBoard;
+
+    constructor(public singleBoard: SingleBoard, public hints: Hint[], private options: PuzzleOptions) {
+        this.multiBoard = MultiBoard.full(options);
         this.multiBoard.applyHints(_.filter(hints, hint => hint.getType() === HintType.Start));
     }
 
@@ -27,9 +33,9 @@ export class Puzzle {
         return this.multiBoard.applySingleHint(_.filter(this.hints, hint => hint.getType() !== HintType.Start));
     }
 
-    static generate(): Puzzle {
-        let board = SingleBoard.random();
-        return new Puzzle(board, Puzzle.pruneHints(board, Puzzle.generateHints(board)));
+    static generate(options: PuzzleOptions): Puzzle {
+        let board = SingleBoard.random(options);
+        return new Puzzle(board, Puzzle.pruneHints(board, Puzzle.generateHints(board)), options);
     }
 
     private static generateHints(board: SingleBoard): Hint[] {
@@ -74,6 +80,7 @@ export class Puzzle {
                 hintFactory = new BetweenHintFactory();
                 break;
 
+            // istanbul ignore next: impossible case
             default:
                 throw new Error("Unhandled random HintFactory value");
         }

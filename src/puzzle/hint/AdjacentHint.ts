@@ -38,7 +38,7 @@ export class AdjacentHint implements Hint {
 }
 
 export class AdjacentHintFactory implements HintFactory {
-    random(board: SingleBoard): Hint {
+    random(board: SingleBoard): AdjacentHint {
         let row1 = _.random(0, board.rows - 1);
         let col1 = _.random(0, board.cols - 1);
         let row2 = _.random(0, board.rows - 1);

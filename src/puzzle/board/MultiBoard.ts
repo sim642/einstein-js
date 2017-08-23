@@ -1,13 +1,23 @@
-import * as _ from 'lodash';
-import {Board} from './Board';
+import * as _ from "lodash";
 import {Hint} from "../hint/Hint";
+import {Board, BoardOptions} from "./Board";
 import {SingleBoard} from "./SingleBoard";
 
 type Variants = boolean[];
+type NumberVariants = number[];
 
 export class MultiBoard extends Board<Variants> {
-    static full(): MultiBoard {
-        return new MultiBoard(_.times(Board.rows, row => _.times(Board.cols, col => _.times(Board.variants, _.constant(true)))));
+    static full(options: BoardOptions): MultiBoard {
+        return new MultiBoard(_.times(options.rows, row => _.times(options.cols, col => _.times(options.cols, _.constant(true)))), options);
+    }
+
+    static numberVariants(table: NumberVariants[][], options?: BoardOptions): MultiBoard {
+        return new MultiBoard(_.map(table, rowCells => _.map(rowCells, cell => {
+            let variants = _.times(rowCells.length, _.constant(false));
+            for (let numberVariant of cell)
+                variants[numberVariant] = true;
+            return variants;
+        })), options);
     }
 
     remove(row: number, col: number, variant: number): void {
@@ -92,14 +102,15 @@ export class MultiBoard extends Board<Variants> {
     }
 
     applyHints(hints: Hint[]): boolean {
-        let changed : boolean;
+        let changed = false;
+        let changed2: boolean;
         do {
-            changed = false;
+            changed2 = false;
             for (let hint of hints) {
                 if (this.applyHint(hint))
-                    changed = true;
+                    changed = changed2 = true;
             }
-        } while (changed);
+        } while (changed2);
         return changed;
     }
 

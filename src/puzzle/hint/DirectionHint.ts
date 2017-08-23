@@ -38,7 +38,7 @@ export class DirectionHint implements Hint {
 }
 
 export class DirectionHintFactory implements HintFactory {
-    random(board: SingleBoard): Hint {
+    random(board: SingleBoard): DirectionHint {
         let rowLeft = _.random(0, board.rows - 1);
         let colLeft = _.random(0, board.cols - 2);
         let rowRight = _.random(0, board.rows - 1);

@@ -49,37 +49,14 @@ html, body {
 }
 
 .header {
+  .box;
+
   display: flex;
   flex-flow: row wrap;
   justify-content: space-between;
   align-items: center;
   @media @phone and @landscape {
     flex-flow: column nowrap;
-  }
-
-  margin: 0.7em;
-  padding: 0.2em;
-  border-radius: 0.3em;
-  background-color: @blue;
-  color: white;
-
-  box-shadow: 0 0 0.3em 0.2em @blue;
-
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-
-  a:hover, a:active {
-    opacity: 0.9;
-  }
-
-  @media @tablet {
-    font-size: 110%;
-  }
-
-  button {
-    box-shadow: 0 0 0.4em lighten(@blue, 35%);
   }
 
 

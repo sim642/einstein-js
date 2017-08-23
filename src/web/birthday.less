@@ -1,0 +1,23 @@
+@import "../common";
+
+.birthday {
+  .box;
+  align-self: center;
+
+  p {
+    margin: 0.2em;
+  }
+
+  @media @phone and @landscape {
+    p {
+      writing-mode: vertical-rl;
+
+      // required for Firefox and Chromium to initially render with correct size
+      @height: 1em;
+      line-height: @height;
+      width: @height;
+    }
+
+    transform: rotate(180deg);
+  }
+}

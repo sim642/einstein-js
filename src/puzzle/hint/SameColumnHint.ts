@@ -34,7 +34,7 @@ export class SameColumnHint implements Hint {
 }
 
 export class SameColumnHintFactory implements HintFactory {
-    random(board: SingleBoard): Hint {
+    random(board: SingleBoard): SameColumnHint {
         let col = _.random(0, board.cols - 1);
         let row1 = _.random(0, board.rows - 1);
         let row2;
