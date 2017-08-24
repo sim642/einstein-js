@@ -37,22 +37,18 @@ export class AppComponent extends Component<{}, AppState> {
 
     constructor() {
         super();
-        this.state = this.generateState();
-        this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
-        this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
-    }
-
-    private generateState(): AppState {
         let options = {
             rows: 6,
             cols: 6
         };
-        return {
+        this.state = {
             options: options,
-            puzzle: Puzzle.generate(options),
+            puzzle: Puzzle.generate(options), // TODO: don't generate puzzle before setting options
             gameState: GameState.Options,
             cheated: 0
         };
+        this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
+        this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
     }
 
     componentDidMount() {
@@ -66,7 +62,10 @@ export class AppComponent extends Component<{}, AppState> {
     }
 
     private onClickNewGame = (e) => {
-        this.setState(this.generateState());
+        this.setState({
+            gameState: GameState.Options,
+            cheated: 0
+        });
         this.timer.reset();
     };
 
