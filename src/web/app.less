@@ -80,6 +80,10 @@ html, body {
   .brand, .timer {
     margin: 0.2em;
   }
+
+  .buttons {
+    flex-grow: 1;
+  }
 }
 
 .brand {
@@ -93,26 +97,6 @@ html, body {
 
     @media @phone and @landscape {
       display: none; // TODO: make text properly wrap
-    }
-  }
-}
-
-.buttons {
-  flex-grow: 1;
-
-  display: flex;
-  flex-flow: row wrap;
-  justify-content: space-around;
-  @media @phone and @landscape {
-    flex-flow: column nowrap;
-  }
-
-  button {
-    flex-grow: 1;
-
-    margin: 0.2em 0.7em;
-    @media @phone and @landscape {
-      margin: 0.7em 0.2em;
     }
   }
 }

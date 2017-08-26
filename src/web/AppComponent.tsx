@@ -177,7 +177,7 @@ export class AppComponent extends Component<{}, AppState> {
                             <a href="http://einstein.sim642.eu" title={`einstein-js ${Package.version}`}>einstein-js</a> <small>by <a href="https://github.com/sim642/einstein-js">sim642</a></small>
                         </div>
 
-                        <div class="buttons">
+                        <div class="buttons buttons-responsive">
                             <button onClick={this.onClickNewGame}>New game</button>
                             <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
                                 Cheat {
