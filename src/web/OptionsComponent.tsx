@@ -20,10 +20,17 @@ class InputRangeComponent extends Component<RangeProps, {}> {
     };
 
     render(props: RangeProps) {
+        let listId = `${props.id}-list`;
         return (
             <span class="input input-range">
-                <input type="range" {...props} value={props.value.toString()} onChange={this.onChange} onInput={this.onChange}/>
+                <input type="range" {...props} value={props.value.toString()} list={listId} onChange={this.onChange} onInput={this.onChange}/>
                 <output for={props.id}>{props.value}</output>
+
+                <datalist id={listId}>
+                    {_.map(_.range(props.min, props.max + 1), value =>
+                        <option value={value.toString()}/>
+                    )}
+                </datalist>
             </span>
         );
     }
