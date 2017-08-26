@@ -41,6 +41,7 @@
     "@types/webpack-env": "^1.13.0",
     "autoprefixer": "^7.1.2",
     "chai": "^4.1.0",
+    "chi-squared": "^1.1.0",
     "chunk-manifest-webpack-plugin": "1.1.0",
     "clean-webpack-plugin": "^0.1.16",
     "copy-webpack-plugin": "^4.0.1",
