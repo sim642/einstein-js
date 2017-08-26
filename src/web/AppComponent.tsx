@@ -178,7 +178,9 @@ export class AppComponent extends Component<{}, AppState> {
                         </div>
 
                         <div class="buttons buttons-responsive">
-                            <button onClick={this.onClickNewGame}>New game</button>
+                            <button class={classNames({
+                                "button-highlight": solvedOrOver
+                            })} onClick={this.onClickNewGame}>New game</button>
                             <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
                                 Cheat {
                                     state.cheated > 0 ?

@@ -80,7 +80,7 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                     <InputRangeComponent id="option-cols" min={3} max={6} value={state.options.cols} onChange={this.onChange("cols")}/>
                 </div>
                 <div class="form-group buttons">
-                    <button type="submit">Play</button>
+                    <button class="button-highlight" type="submit">Play</button>
                 </div>
             </form>
         );
