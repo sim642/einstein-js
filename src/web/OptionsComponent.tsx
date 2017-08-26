@@ -21,7 +21,10 @@ class InputRangeComponent extends Component<RangeProps, {}> {
 
     render(props: RangeProps) {
         return (
-            <input type="range" {...props} value={props.value.toString()} onChange={this.onChange}/>
+            <span class="input input-range">
+                <input type="range" {...props} value={props.value.toString()} onChange={this.onChange} onInput={this.onChange}/>
+                <output for={props.id}>{props.value}</output>
+            </span>
         );
     }
 }
