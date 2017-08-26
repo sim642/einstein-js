@@ -3,6 +3,29 @@ import {Component, h} from "preact";
 import "./options.less";
 import {PuzzleOptions} from "../puzzle/Puzzle";
 
+interface RangeProps {
+    value: number;
+    min: number;
+    max: number;
+    onChange: (value: number) => void;
+    id?: string;
+}
+
+class InputRangeComponent extends Component<RangeProps, {}> {
+    private onChange = (e) => {
+        e.preventDefault();
+
+        let value = parseInt(e.target.value);
+        this.props.onChange(value);
+    };
+
+    render(props: RangeProps) {
+        return (
+            <input type="range" {...props} value={props.value.toString()} onChange={this.onChange}/>
+        );
+    }
+}
+
 export interface OptionsProps {
     options: PuzzleOptions;
     submit: (PuzzleOptions) => void;
@@ -21,11 +44,10 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
     }
 
     private onChange(field: keyof PuzzleOptions) {
-        return (e) => {
-            e.preventDefault();
+        return (value: number) => {
             this.setState(state => _.merge(state, {
                 options: {
-                    [field]: parseInt(e.target.value) // TODO: typecheck this
+                    [field]: value // TODO: typecheck this
                 }
             }));
         };
@@ -41,11 +63,11 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
             <form class="options" onSubmit={this.onSubmit}>
                 <div class="form-group">
                     <label for="option-rows">Rows</label>
-                    <input id="option-rows" type="range" min="3" max="6" step="1" value={state.options.rows.toString()} onChange={this.onChange("rows")}/>
+                    <InputRangeComponent id="option-rows" min={3} max={6} value={state.options.rows} onChange={this.onChange("rows")}/>
                 </div>
                 <div class="form-group">
                     <label for="option-cols">Columns</label>
-                    <input id="option-cols" type="range" min="3" max="6" step="1" value={state.options.cols.toString()} onChange={this.onChange("cols")}/>
+                    <InputRangeComponent id="option-cols" min={3} max={6} value={state.options.cols} onChange={this.onChange("cols")}/>
                 </div>
                 <div class="form-group buttons">
                     <button type="submit">Play</button>
