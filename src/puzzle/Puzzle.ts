@@ -6,7 +6,7 @@ import {Hint, HintFactory, HintType} from "./hint/Hint";
 import {RandomHintFactory} from "./RandomHint";
 
 export interface PuzzleOptions extends BoardOptions {
-
+    extraHintsPercent: number;
 }
 
 export class Puzzle {
@@ -31,7 +31,10 @@ export class Puzzle {
 
     static generate(options: PuzzleOptions): Puzzle {
         let board = SingleBoard.random(options);
-        return new Puzzle(board, Puzzle.pruneHints(board, Puzzle.generateHints(board)), options);
+        let hints = Puzzle.generateHints(board);
+        hints = Puzzle.pruneHints(board, hints);
+        hints = Puzzle.generateExtraHints(options, board, hints);
+        return new Puzzle(board, hints, options);
     }
 
     private static hintFactory: HintFactory = new RandomHintFactory();
@@ -62,6 +65,17 @@ export class Puzzle {
             }
         } while (changed);
         console.debug(`After pruneHints: ${hints.length}`);
+        return hints;
+    }
+
+    private static generateExtraHints(options: PuzzleOptions, board: SingleBoard, hints: Hint[]): Hint[] {
+        hints = _.clone(hints);
+        let extraHints = Math.round((options.extraHintsPercent / 100) * hints.length);
+        console.debug(`Adding extra hints: ${extraHints}`);
+        for (let i = 0; i < extraHints; i++) {
+            let hint = Puzzle.hintFactory.random(board);
+            hints.push(hint);
+        }
         return hints;
     }
 }

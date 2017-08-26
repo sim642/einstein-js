@@ -37,9 +37,10 @@ export class AppComponent extends Component<{}, AppState> {
 
     constructor() {
         super();
-        let options = {
+        let options: PuzzleOptions = {
             rows: 6,
-            cols: 6
+            cols: 6,
+            extraHintsPercent: 0
         };
         this.state = {
             options: options,

@@ -14,10 +14,14 @@ export function paramBoardOptions(callback: (options: BoardOptions) => void): vo
 
 export function paramPuzzleOptions(callback: (options: PuzzleOptions) => void): void {
     param<PuzzleOptions>([
-        {rows: 6, cols: 6},
-        {rows: 5, cols: 5},
-        {rows: 4, cols: 4},
-        {rows: 6, cols: 4},
-        {rows: 3, cols: 3}
+        {rows: 6, cols: 6, extraHintsPercent: 0},
+        {rows: 5, cols: 5, extraHintsPercent: 0},
+        {rows: 4, cols: 4, extraHintsPercent: 0},
+        {rows: 6, cols: 4, extraHintsPercent: 0},
+        {rows: 3, cols: 3, extraHintsPercent: 0},
+
+        {rows: 6, cols: 6, extraHintsPercent: 25},
+        {rows: 6, cols: 6, extraHintsPercent: 50},
+        {rows: 6, cols: 6, extraHintsPercent: 100}
     ], callback);
 }

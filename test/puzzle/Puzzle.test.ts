@@ -11,7 +11,8 @@ import {param} from "../param";
 describe("Puzzle", function () {
     const options: PuzzleOptions = {
         rows: 3,
-        cols: 3
+        cols: 3,
+        extraHintsPercent: 0
     };
     const singleBoard: SingleBoard = new SingleBoard([
         [0, 1, 2],

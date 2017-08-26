@@ -7,8 +7,10 @@ interface RangeProps {
     value: number;
     min: number;
     max: number;
+    step?: number;
     onChange: (value: number) => void;
     id?: string;
+    unit?: string;
 }
 
 class InputRangeComponent extends Component<RangeProps, {}> {
@@ -24,10 +26,10 @@ class InputRangeComponent extends Component<RangeProps, {}> {
         return (
             <span class="input input-range">
                 <input type="range" {...props} value={props.value.toString()} list={listId} onChange={this.onChange} onInput={this.onChange}/>
-                <output for={props.id}>{props.value}</output>
+                <output for={props.id}>{props.value}{props.unit}</output>
 
                 <datalist id={listId}>
-                    {_.map(_.range(props.min, props.max + 1), value =>
+                    {_.map(_.range(props.min, props.max + 1, props.step), value =>
                         <option value={value.toString()}/>
                     )}
                 </datalist>
@@ -78,6 +80,10 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                 <div class="form-group">
                     <label for="option-cols">Columns</label>
                     <InputRangeComponent id="option-cols" min={3} max={6} value={state.options.cols} onChange={this.onChange("cols")}/>
+                </div>
+                <div class="form-group">
+                    <label for="option-extra-hints">Extra hints</label>
+                    <InputRangeComponent id="option-extra-hints" min={0} max={100} step={10} value={state.options.extraHintsPercent} onChange={this.onChange("extraHintsPercent")} unit="%"/>
                 </div>
                 <div class="form-group buttons">
                     <button class="button-highlight" type="submit">Play</button>
