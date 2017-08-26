@@ -41,6 +41,7 @@ class InputRangeComponent extends Component<RangeProps, {}> {
 export interface OptionsProps {
     options: PuzzleOptions;
     submit: (PuzzleOptions) => void;
+    defaultOptions: PuzzleOptions;
 }
 
 interface OptionsState {
@@ -70,6 +71,14 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
         this.props.submit(this.state.options);
     };
 
+    // No onReset on <form>
+    private onReset = (e) => {
+        e.preventDefault();
+        this.setState({
+            options: _.clone(this.props.defaultOptions)
+        })
+    };
+
     render(props: OptionsProps, state: OptionsState) {
         return (
             <form class="options" onSubmit={this.onSubmit}>
@@ -86,7 +95,8 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                     <InputRangeComponent id="option-extra-hints" min={0} max={100} step={10} value={state.options.extraHintsPercent} onChange={this.onChange("extraHintsPercent")} unit="%"/>
                 </div>
                 <div class="form-group buttons">
-                    <button class="button-highlight" type="submit">Play</button>
+                    <button type="reset" onClick={this.onReset}>Reset</button>
+                    <button class="button-highlight button-wide" type="submit">Play</button>
                 </div>
             </form>
         );

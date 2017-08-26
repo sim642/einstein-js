@@ -35,16 +35,17 @@ export class AppComponent extends Component<{}, AppState> {
     private visibilityChange: VisibilityChangeListener;
     private messageUnload: MessageUnloadListener;
 
+    private static readonly defaultOptions: PuzzleOptions = {
+        rows: 6,
+        cols: 6,
+        extraHintsPercent: 0
+    };
+
     constructor() {
         super();
-        let options: PuzzleOptions = {
-            rows: 6,
-            cols: 6,
-            extraHintsPercent: 0
-        };
         this.state = {
-            options: options,
-            puzzle: Puzzle.generate(options), // TODO: don't generate puzzle before setting options
+            options: AppComponent.defaultOptions,
+            puzzle: Puzzle.generate(AppComponent.defaultOptions), // TODO: don't generate puzzle before setting options
             gameState: GameState.Options,
             cheated: 0
         };
@@ -201,7 +202,7 @@ export class AppComponent extends Component<{}, AppState> {
                     <BirthdayComponent month={10} day={22} name="Elisabeth"/>
                     {
                         state.gameState === GameState.Options ?
-                            <OptionsComponent options={state.options} submit={this.submitOptions}/> :
+                            <OptionsComponent options={state.options} submit={this.submitOptions} defaultOptions={AppComponent.defaultOptions}/> :
                             <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                     }
                 </div>
