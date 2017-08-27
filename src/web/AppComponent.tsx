@@ -147,8 +147,11 @@ export class AppComponent extends Component<{}, AppState> {
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Solved
                 }), () => {
+                    let options = puzzle.options;
+                    let extraHintsText = options.extraHintsPercent > 0 ? ` with ${options.extraHintsPercent}% extra hints` : "";
                     let cheated = this.state.cheated;
-                    alert(`Solved in ${formatDuration(time)}${cheated > 0 ? ` by cheating ${cheated} times` : ""}!`);
+                    let cheatedText = cheated > 0 ? ` by cheating ${cheated} times` : "";
+                    alert(`Solved ${options.rows}×${options.cols} puzzle${extraHintsText} in ${formatDuration(time)}${cheatedText}!`);
                 });
             }
             else if (puzzle.isOver()) {

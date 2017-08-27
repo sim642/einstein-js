@@ -6,13 +6,13 @@ import {Hint, HintFactory, HintType} from "./hint/Hint";
 import {RandomHintFactory} from "./RandomHint";
 
 export interface PuzzleOptions extends BoardOptions {
-    extraHintsPercent: number;
+    readonly extraHintsPercent: number;
 }
 
 export class Puzzle {
     public multiBoard: MultiBoard;
 
-    constructor(public singleBoard: SingleBoard, public hints: Hint[], private options: PuzzleOptions) {
+    constructor(public singleBoard: SingleBoard, public hints: Hint[], public readonly options: PuzzleOptions) {
         this.multiBoard = MultiBoard.full(options);
         this.multiBoard.applyHints(_.filter(hints, hint => hint.getType() === HintType.Start));
     }
