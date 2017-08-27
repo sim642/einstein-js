@@ -1,22 +1,24 @@
 @import "../common";
 
+@multiboard-width-phone: 100vmin;
+@multiboard-width-tablet: 75vmin;
+@multiboard-width-desktop: 60vmin;
+
 .multiboard-outer {
   align-self: center;
 
   @media @phone {
-    width: 100vmin;
+    width: @multiboard-width-phone;
   }
   @media @tablet {
-    width: 75vmin;
+    width: @multiboard-width-tablet;
   }
   @media @desktop {
-    width: 60vmin;
+    width: @multiboard-width-desktop;
   }
 }
 
 .multiboard {
-  margin: 0 auto;
-
   .table-equal;
   .table-gapless;
 
@@ -54,8 +56,18 @@
 .generate-multiboard-rows(@rows) when (@rows > 0) {
   .generate-multiboard-cols(@cols) when (@cols > 0) {
     // issue #21
-    .multiboard[data-rows='@{rows}'][data-cols='@{cols}'] when (@rows > @cols) {
-      width: (@cols / @rows * 100%);
+    @data-attrs: ~"[data-rows='@{rows}'][data-cols='@{cols}']";
+
+    .multiboard-outer@{data-attrs} when (@rows > @cols) {
+      @media @phone {
+        width: (@cols / @rows * @multiboard-width-phone);
+      }
+      @media @tablet {
+        width: (@cols / @rows * @multiboard-width-tablet);
+      }
+      @media @desktop {
+        width: (@cols / @rows * @multiboard-width-desktop);
+      }
     }
 
     .generate-multiboard-cols((@cols - 1));
