@@ -1,0 +1,42 @@
+@import "../common";
+
+.options {
+  .box;
+
+  align-self: center;
+}
+
+.form-group {
+  margin: 0.2em;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-between;
+  align-items: center;
+
+  label {
+    margin-right: 0.75em;
+  }
+}
+
+.form-group + .form-group {
+  margin-top: 0.2em + 0.4em;
+}
+
+.input-range {
+  white-space: nowrap; // keep input and output together
+
+  input, output {
+    vertical-align: middle;
+    margin: 0;
+  }
+
+  output {
+    margin-left: 0.5em;
+    display: inline-block;
+  }
+}
+
+.options .input-range output {
+  width: 2.5em;
+}

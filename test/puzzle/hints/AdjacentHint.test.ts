@@ -1,9 +1,11 @@
 import {expect} from "chai";
 import "mocha";
 import {MultiBoard} from "../../../src/puzzle/board/MultiBoard";
-import {AdjacentHint} from "../../../src/puzzle/hint/AdjacentHint";
+import {AdjacentHint, AdjacentHintFactory} from "../../../src/puzzle/hint/AdjacentHint";
 import {HintType} from "../../../src/puzzle/hint/Hint";
 import {param} from "../../param";
+import {BoardOptions} from "../../../src/puzzle/board/Board";
+import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
 
 function equivalents(hint: AdjacentHint): AdjacentHint[] {
     return [
@@ -105,5 +107,31 @@ describe("AdjacentHint", function () {
 
     it("should have Horizontal type", function () {
         expect(new AdjacentHint(0, 1, 2, 3).getType()).to.equal(HintType.Horizontal);
+    });
+});
+
+describe("AdjacentHintFactory", function () {
+    describe("#random()", function () {
+        context("returned hint", function () {
+            const options: BoardOptions = {rows: 6, cols: 6};
+            const board = SingleBoard.random(options);
+            const factory = new AdjacentHintFactory();
+
+            param.repeat(100, () => factory.random(board), function (hint) {
+                it("should have valid row1, row2", function () {
+                    expect(hint.row1).to.be.within(0, board.rows - 1);
+                    expect(hint.row2).to.be.within(0, board.rows - 1);
+                });
+
+                it("should have variants adjacent", function () {
+                    let col1 = board.getCol(hint.row1, hint.variant1);
+                    let col2 = board.getCol(hint.row2, hint.variant2);
+
+                    expect(col1).to.be.at.least(0);
+                    expect(col2).to.be.at.least(0);
+                    expect(col1 - col2).to.be.oneOf([-1, 1]);
+                });
+            });
+        });
     });
 });
