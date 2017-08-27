@@ -40,11 +40,13 @@ html, body {
     flex-flow: row;
   }
   @media @tablet and @landscape {
-    width: 75vmin;
+    width: @multiboard-width-tablet;
+    min-width: @multiboard-width-tablet;
   }
   @media @desktop {
     // force width because flex-basis: 0 breaks Android Chrome
-    width: 60vmin;
+    width: @multiboard-width-desktop;
+    min-width: @multiboard-width-desktop; // force harder
   }
 }
 
