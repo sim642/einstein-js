@@ -2,6 +2,10 @@
 
 @blue: #3000ff;
 
+@multiboard-width-phone: 100vmin;
+@multiboard-width-tablet: 75vmin;
+@multiboard-width-desktop: 60vmin;
+
 .badge {
   display: inline-block;
   margin-top: -0.15em;
@@ -41,6 +45,31 @@ button {
   &::-moz-focus-inner {
     border: 0;
     padding: 0;
+  }
+}
+
+.buttons {
+  display: flex;
+  flex-flow: row wrap;
+  justify-content: space-around;
+  button {
+    flex-grow: 1;
+
+    margin: 0.2em 0.7em;
+
+    &.button-wide {
+      flex-grow: 4;
+    }
+  }
+}
+
+.buttons-responsive {
+  @media @phone and @landscape {
+    flex-flow: column nowrap;
+
+    button {
+      margin: 0.7em 0.2em;
+    }
   }
 }
 

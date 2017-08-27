@@ -156,10 +156,17 @@ export interface MultiBoardProps {
 
 export class MultiBoardComponent extends Component<MultiBoardProps, any> {
     render(props: MultiBoardProps) {
+        let board = props.board;
+
+        let data = {
+            "data-rows": board.rows,
+            "data-cols": board.cols
+        };
+
         return (
-            <div class="multiboard-outer">
-                <table class="multiboard">
-                    {_.times(props.board.rows, row =>
+            <div class="multiboard-outer" {...data}>
+                <table class="multiboard" {...data}>
+                    {_.times(board.rows, row =>
                         <RowComponent {...props} row={row}/>
                     )}
                 </table>

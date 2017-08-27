@@ -4,13 +4,13 @@
   align-self: center;
 
   @media @phone {
-    width: 100vmin;
+    width: @multiboard-width-phone;
   }
   @media @tablet {
-    width: 75vmin;
+    width: @multiboard-width-tablet;
   }
   @media @desktop {
-    width: 60vmin;
+    width: @multiboard-width-desktop;
   }
 }
 
@@ -45,6 +45,34 @@
     }
   }
 }
+
+@rows-max: 6;
+@cols-max: 6;
+
+.generate-multiboard-rows(@rows) when (@rows > 0) {
+  .generate-multiboard-cols(@cols) when (@cols > 0) {
+    // issue #21
+    @data-attrs: ~"[data-rows='@{rows}'][data-cols='@{cols}']";
+
+    .multiboard-outer@{data-attrs} when (@rows > @cols) {
+      @media @phone {
+        width: (@cols / @rows * @multiboard-width-phone);
+      }
+      @media @tablet {
+        width: (@cols / @rows * @multiboard-width-tablet);
+      }
+      @media @desktop {
+        width: (@cols / @rows * @multiboard-width-desktop);
+      }
+    }
+
+    .generate-multiboard-cols((@cols - 1));
+  }
+  .generate-multiboard-cols(@cols-max);
+
+  .generate-multiboard-rows((@rows - 1));
+}
+.generate-multiboard-rows(@rows-max);
 
 .cell {
   .square;

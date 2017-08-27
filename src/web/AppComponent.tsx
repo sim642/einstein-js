@@ -2,7 +2,7 @@ import * as classNames from "classnames";
 import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
-import {Puzzle} from "../puzzle/Puzzle";
+import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
 import {formatDuration} from "../time";
 import {Timer} from "../Timer";
 import "./app.less";
@@ -12,8 +12,10 @@ import {TimerComponent} from "./TimerComponent";
 import {VisibilityChangeListener} from "./helper/VisibilityChangeListener";
 import {MessageUnloadListener} from "./helper/MessageUnloadListener";
 import {BirthdayComponent} from "./BirthdayComponent";
+import {OptionsComponent} from "./OptionsComponent";
 
 export enum GameState {
+    Options,
     Playing,
     ManualPaused,
     AutoPaused,
@@ -22,6 +24,7 @@ export enum GameState {
 }
 
 interface AppState {
+    options: PuzzleOptions;
     puzzle: Puzzle;
     gameState: GameState;
     cheated: number;
@@ -32,26 +35,25 @@ export class AppComponent extends Component<{}, AppState> {
     private visibilityChange: VisibilityChangeListener;
     private messageUnload: MessageUnloadListener;
 
+    private static readonly defaultOptions: PuzzleOptions = {
+        rows: 6,
+        cols: 6,
+        extraHintsPercent: 0
+    };
+
     constructor() {
         super();
-        this.state = this.generateState();
+        this.state = {
+            options: AppComponent.defaultOptions,
+            puzzle: Puzzle.generate(AppComponent.defaultOptions), // TODO: don't generate puzzle before setting options
+            gameState: GameState.Options,
+            cheated: 0
+        };
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
         this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
     }
 
-    private generateState(): AppState {
-        return {
-            puzzle: Puzzle.generate({
-                rows: 6,
-                cols: 6
-            }),
-            gameState: GameState.Playing,
-            cheated: 0
-        };
-    }
-
     componentDidMount() {
-        this.timer.start();
         this.visibilityChange.add();
         this.messageUnload.add();
     }
@@ -62,9 +64,11 @@ export class AppComponent extends Component<{}, AppState> {
     }
 
     private onClickNewGame = (e) => {
-        this.setState(this.generateState());
+        this.setState({
+            gameState: GameState.Options,
+            cheated: 0
+        });
         this.timer.reset();
-        this.timer.start();
     };
 
     private onClickPause = (e) => {
@@ -123,6 +127,17 @@ export class AppComponent extends Component<{}, AppState> {
         }
     };
 
+    private submitOptions = (options: PuzzleOptions) => {
+        this.setState({
+            options: options,
+            puzzle: Puzzle.generate(options),
+            gameState: GameState.Playing,
+            cheated: 0
+        }, () => {
+            this.timer.start();
+        });
+    };
+
     private refresh = () => {
         if (this.state.gameState === GameState.Playing) {
             let puzzle = this.state.puzzle;
@@ -132,8 +147,11 @@ export class AppComponent extends Component<{}, AppState> {
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Solved
                 }), () => {
+                    let options = puzzle.options;
+                    let extraHintsText = options.extraHintsPercent > 0 ? ` with ${options.extraHintsPercent}% extra hints` : "";
                     let cheated = this.state.cheated;
-                    alert(`Solved in ${formatDuration(time)}${cheated > 0 ? ` by cheating ${cheated} times` : ""}!`);
+                    let cheatedText = cheated > 0 ? ` by cheating ${cheated} times` : "";
+                    alert(`Solved ${options.rows}×${options.cols} puzzle${extraHintsText} in ${formatDuration(time)}${cheatedText}!`);
                 });
             }
             else if (puzzle.isOver()) {
@@ -164,8 +182,10 @@ export class AppComponent extends Component<{}, AppState> {
                             <a href="http://einstein.sim642.eu" title={`einstein-js ${Package.version}`}>einstein-js</a> <small>by <a href="https://github.com/sim642/einstein-js">sim642</a></small>
                         </div>
 
-                        <div class="buttons">
-                            <button onClick={this.onClickNewGame}>New game</button>
+                        <div class="buttons buttons-responsive">
+                            <button class={classNames({
+                                "button-highlight": solvedOrOver
+                            })} onClick={this.onClickNewGame}>New game</button>
                             <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
                                 Cheat {
                                     state.cheated > 0 ?
@@ -183,9 +203,17 @@ export class AppComponent extends Component<{}, AppState> {
                         <TimerComponent timer={this.timer}/>
                     </div>
                     <BirthdayComponent month={10} day={22} name="Elisabeth"/>
-                    <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
+                    {
+                        state.gameState === GameState.Options ?
+                            <OptionsComponent options={state.options} submit={this.submitOptions} defaultOptions={AppComponent.defaultOptions}/> :
+                            <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
+                    }
                 </div>
-                <HintsComponent hints={state.puzzle.hints}/>
+                {
+                    state.gameState !== GameState.Options ?
+                        <HintsComponent hints={state.puzzle.hints}/> :
+                        null
+                }
             </div>
         );
     }
