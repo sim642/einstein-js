@@ -158,16 +158,14 @@ export class MultiBoardComponent extends Component<MultiBoardProps, any> {
     render(props: MultiBoardProps) {
         let board = props.board;
 
-        let multiBoardStyle = {};
-        if (board.rows > board.cols) {
-            multiBoardStyle = {
-                width: `${board.cols / board.rows * 100}%`
-            };
-        }
+        let data = {
+            "data-rows": board.rows,
+            "data-cols": board.cols
+        };
 
         return (
-            <div class="multiboard-outer">
-                <table class="multiboard" style={multiBoardStyle}>
+            <div class="multiboard-outer" {...data}>
+                <table class="multiboard" {...data}>
                     {_.times(board.rows, row =>
                         <RowComponent {...props} row={row}/>
                     )}

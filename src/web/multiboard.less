@@ -48,6 +48,24 @@
   }
 }
 
+@rows-max: 6;
+@cols-max: 6;
+
+.generate-multiboard-rows(@rows) when (@rows > 0) {
+  .generate-multiboard-cols(@cols) when (@cols > 0) {
+    // issue #21
+    .multiboard[data-rows='@{rows}'][data-cols='@{cols}'] when (@rows > @cols) {
+      width: (@cols / @rows * 100%);
+    }
+
+    .generate-multiboard-cols((@cols - 1));
+  }
+  .generate-multiboard-cols(@cols-max);
+
+  .generate-multiboard-rows((@rows - 1));
+}
+.generate-multiboard-rows(@rows-max);
+
 .cell {
   .square;
   .center-outer;
