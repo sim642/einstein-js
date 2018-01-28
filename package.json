@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "dexie": "^2.0.1",
     "lodash": "^4.17.4",
     "preact": "^8.2.1"
   },

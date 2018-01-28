@@ -2,6 +2,7 @@ import * as classNames from "classnames";
 import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
+import {db} from "../db";
 import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
 import {formatDuration} from "../time";
 import {Timer} from "../Timer";
@@ -152,6 +153,19 @@ export class AppComponent extends Component<{}, AppState> {
                     let cheated = this.state.cheated;
                     let cheatedText = cheated > 0 ? ` by cheating ${cheated} times` : "";
                     alert(`Solved ${options.rows}×${options.cols} puzzle${extraHintsText} in ${formatDuration(time)}${cheatedText}!`);
+
+                    if (!cheated) {
+                        let timesItem = {
+                            ...options,
+                            time: time,
+                            date: new Date()
+                        };
+                        db.times.add(timesItem).then(id => {
+                            db.times.where({...options}).toArray().then(items => {
+                                console.debug(items)
+                            });
+                        });
+                    }
                 });
             }
             else if (puzzle.isOver()) {
