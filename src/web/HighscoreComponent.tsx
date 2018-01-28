@@ -16,7 +16,7 @@ class HighscoreItemComponent extends Component<HighscoreItemProps, {}> {
         return (
             <tr>
                 <td class="highscore-i">{`${props.i + 1}.`}</td>
-                <td class="highscore-name">{props.item.date.toISOString()}</td>
+                <td class="highscore-name" title={props.item.date.toISOString()}>{props.item.name}</td>
                 <td class="highscore-time">{formatDuration(props.item.time)}</td>
             </tr>
         )

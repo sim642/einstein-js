@@ -164,7 +164,15 @@ export class AppComponent extends Component<{}, AppState> {
                     alert(`Solved ${formatOptions(options)} in ${formatDuration(time)}${cheatedText}!`);
 
                     if (!cheated) {
-                        Times.add(options, time);
+                        Times.isInTop10(options, time).then(isInTop10 => {
+                            let name;
+                            if (isInTop10 && (name = prompt("Name")) !== null)
+                                return name;
+                            else
+                                return undefined;
+                        }).then(name => {
+                            return Times.add(options, time, name);
+                        });
                     }
                 });
             }
