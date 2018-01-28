@@ -41,6 +41,7 @@ class InputRangeComponent extends Component<RangeProps, {}> {
 export interface OptionsProps {
     options: PuzzleOptions;
     submit: (PuzzleOptions) => void;
+    highscore: (PuzzleOptions) => void;
     defaultOptions: PuzzleOptions;
 }
 
@@ -79,6 +80,10 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
         })
     };
 
+    private onHighscore = (e) => {
+        this.props.highscore(this.state.options);
+    };
+
     render(props: OptionsProps, state: OptionsState) {
         return (
             <form class="options" onSubmit={this.onSubmit}>
@@ -96,6 +101,7 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                 </div>
                 <div class="form-group buttons">
                     <button type="reset" onClick={this.onReset}>Reset</button>
+                    <button type="button" onClick={this.onHighscore}>High scores</button>
                     <button class="button-highlight button-wide" type="submit">Play</button>
                 </div>
             </form>

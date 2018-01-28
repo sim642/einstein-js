@@ -7,8 +7,10 @@ import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
 import {formatDuration} from "../time";
 import {Timer} from "../Timer";
 import "./app.less";
+import {HighscoreComponent} from "./HighscoreComponent";
 import {HintsComponent} from "./HintsComponent";
 import {MultiBoardComponent} from "./MultiBoardComponent";
+import {formatOptions} from "./PuzzleOptionsUtils";
 import {TimerComponent} from "./TimerComponent";
 import {VisibilityChangeListener} from "./helper/VisibilityChangeListener";
 import {MessageUnloadListener} from "./helper/MessageUnloadListener";
@@ -17,6 +19,7 @@ import {OptionsComponent} from "./OptionsComponent";
 
 export enum GameState {
     Options,
+    Highscore,
     Playing,
     ManualPaused,
     AutoPaused,
@@ -37,8 +40,8 @@ export class AppComponent extends Component<{}, AppState> {
     private messageUnload: MessageUnloadListener;
 
     private static readonly defaultOptions: PuzzleOptions = {
-        rows: 6,
-        cols: 6,
+        rows: 3, // TODO change back
+        cols: 3,
         extraHintsPercent: 0
     };
 
@@ -139,6 +142,13 @@ export class AppComponent extends Component<{}, AppState> {
         });
     };
 
+    private highscoreOptions = (options: PuzzleOptions) => {
+        this.setState({
+            options: options,
+            gameState: GameState.Highscore
+        });
+    };
+
     private refresh = () => {
         if (this.state.gameState === GameState.Playing) {
             let puzzle = this.state.puzzle;
@@ -149,10 +159,9 @@ export class AppComponent extends Component<{}, AppState> {
                     gameState: GameState.Solved
                 }), () => {
                     let options = puzzle.options;
-                    let extraHintsText = options.extraHintsPercent > 0 ? ` with ${options.extraHintsPercent}% extra hints` : "";
                     let cheated = this.state.cheated;
                     let cheatedText = cheated > 0 ? ` by cheating ${cheated} times` : "";
-                    alert(`Solved ${options.rows}×${options.cols} puzzle${extraHintsText} in ${formatDuration(time)}${cheatedText}!`);
+                    alert(`Solved ${formatOptions(options)} in ${formatDuration(time)}${cheatedText}!`);
 
                     if (!cheated) {
                         let timesItem = {
@@ -198,7 +207,7 @@ export class AppComponent extends Component<{}, AppState> {
 
                         <div class="buttons buttons-responsive">
                             <button class={classNames({
-                                "button-highlight": solvedOrOver
+                                "button-highlight": solvedOrOver || state.gameState === GameState.Highscore
                             })} onClick={this.onClickNewGame}>New game</button>
                             <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
                                 Cheat {
@@ -219,12 +228,14 @@ export class AppComponent extends Component<{}, AppState> {
                     <BirthdayComponent month={10} day={22} name="Elisabeth"/>
                     {
                         state.gameState === GameState.Options ?
-                            <OptionsComponent options={state.options} submit={this.submitOptions} defaultOptions={AppComponent.defaultOptions}/> :
-                            <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
+                            <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions}/> :
+                            state.gameState === GameState.Highscore ?
+                                <HighscoreComponent options={state.options}/> :
+                                <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                     }
                 </div>
                 {
-                    state.gameState !== GameState.Options ?
+                    state.gameState !== GameState.Options && state.gameState !== GameState.Highscore ?
                         <HintsComponent hints={state.puzzle.hints}/> :
                         null
                 }
