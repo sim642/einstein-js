@@ -1,8 +1,7 @@
 import * as _ from "lodash";
 import {Component, h} from "preact";
 import "./highscore.less";
-import {db} from "../db";
-import {TimesItem} from "../EinsteinDatabase";
+import {Times, TimesItem} from "../storage/Times";
 import {PuzzleOptions} from "../puzzle/Puzzle";
 import {formatDuration} from "../time";
 import {formatOptions} from "./PuzzleOptionsUtils";
@@ -48,8 +47,7 @@ export class HighscoreComponent extends Component<HighscoreProps, HighscoreState
     }
 
     private fetchTop10(props: HighscoreProps) {
-        db.times.where({...props.options}).sortBy("time").then(timesItems => {
-            let top10 = _.take(timesItems, 10);
+        Times.getTop10(props.options).then(top10 => {
             this.setState({
                 top10: top10
             });

@@ -1,10 +1,5 @@
 import Dexie from "dexie";
-import {PuzzleOptions} from "./puzzle/Puzzle";
-
-export interface TimesItem extends PuzzleOptions {
-    time: number;
-    date: Date;
-}
+import {TimesItem} from "./Times";
 
 export class EinsteinDatabase extends Dexie {
     times: Dexie.Table<TimesItem, any>;
