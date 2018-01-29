@@ -72,10 +72,9 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                 options: {
                     [field]: value // TODO: typecheck this
                 }
-            }), () => {
-                Config.set({
-                    options: this.state.options
-                });
+            }));
+            Config.set({
+                options: this.state.options
             });
         };
     }
@@ -91,6 +90,9 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
         this.setState({
             options: _.clone(this.props.defaultOptions)
         })
+        Config.set({
+            options: this.state.options
+        });
     };
 
     private onHighscore = (e) => {
