@@ -56,38 +56,38 @@ export class HighscoreComponent extends Component<HighscoreProps, HighscoreState
 
     render(props: HighscoreProps, state: HighscoreState) {
         return (
-            <table class="highscore">
-                <thead>
-                    <tr class="highscore-title">
-                        <th colSpan={3}>
-                            {`High scores for ${formatOptions(props.options)}`}
-                        </th>
-                    </tr>
-                    <tr>
-                        <th class="highscore-i">#&nbsp;</th>
-                        <th class="highscore-name">Name</th>
-                        <th class="highscore-time">Time</th>
-                    </tr>
-                </thead>
+            <div class="highscore-outer">
+                <div class="highscore-title">
+                    {formatOptions(props.options)}
+                </div>
+                <table class="highscore">
+                    <thead>
+                        <tr>
+                            <th class="highscore-i">#&nbsp;</th>
+                            <th class="highscore-name">Name</th>
+                            <th class="highscore-time">Time</th>
+                        </tr>
+                    </thead>
 
-                <tbody>
-                    {
-                        state.top10 !== undefined && state.top10.length > 0 ?
-                            _.map(state.top10, (timesItem, i) =>
-                                <HighscoreItemComponent i={i} item={timesItem}/>
-                            ) :
-                            <tr class="highscore-text">
-                                <td colSpan={3}>
-                                    {
-                                        state.top10 !== undefined ?
-                                            "No times" :
-                                            "Loading..."
-                                    }
-                                </td>
-                            </tr>
-                    }
-                </tbody>
-            </table>
+                    <tbody>
+                        {
+                            state.top10 !== undefined && state.top10.length > 0 ?
+                                _.map(state.top10, (timesItem, i) =>
+                                    <HighscoreItemComponent i={i} item={timesItem}/>
+                                ) :
+                                <tr class="highscore-text">
+                                    <td colSpan={3}>
+                                        {
+                                            state.top10 !== undefined ?
+                                                "No times" :
+                                                "Loading..."
+                                        }
+                                    </td>
+                                </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
         );
     }
 }

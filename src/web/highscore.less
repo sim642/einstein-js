@@ -4,17 +4,56 @@
   width: 1px;
 }
 
-.highscore {
-  .box;
+.highscore-outer {
+  display: flex;
+  flex-flow: column nowrap;
+  align-items: center;
 
   align-self: center;
 
-  border-collapse: separate;
-  border-spacing: 0.3em;
+  .box;
+}
+
+.highscore {
+  //.box;
+
+  //align-self: center;
+
+  //border-collapse: separate;
+  //border-spacing: 0.3em;
+  border-collapse: collapse;
+
+  margin: 0.2em;
+
+  td, th {
+    padding: 0.2em;
+  }
+
+  thead tr:last-child th {
+    border-bottom: 0.15em solid fade(white, 75%);
+    padding-bottom: 0.1em;
+  }
+
+  tbody {
+    tr:first-child td {
+      padding-top: 0.3em;
+    }
+
+    // highlight on hover
+    /*tr:hover {
+      background-color: fade(white, 15%);
+    }*/
+
+    // highlight every 2nd line
+    tr:nth-child(even) {
+      background-color: fade(white, 10%);
+    }
+  }
 }
 
 .highscore-title {
-
+  font-weight: bold;
+  margin: 0.2em;
 }
 
 .highscore-i {
@@ -26,8 +65,8 @@
 }
 
 .highscore-name {
-  //padding-left: 0.5em;
-  //padding-right: 0.5em;
+  padding-left: 0.6em !important;
+  padding-right: 1em !important;
 
   text-align: left;
 
