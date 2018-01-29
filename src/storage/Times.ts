@@ -33,9 +33,12 @@ export namespace Times {
         );
     }
 
-    export function isInTop10(options: PuzzleOptions, time: number): Promise<boolean> {
+    export function isInTop10(options: PuzzleOptions, time: number): Promise<false | number> {
         return getSortedTimes(options).then(timesItems => {
-            return timesItems.length < 10 || time < timesItems[10 - 1].time;
+            if (timesItems.length < 10 || time < timesItems[10 - 1].time)
+                return _.sortedIndexBy(timesItems, {time: time}, timesItem => timesItem.time);
+            else
+                return false;
         });
     }
 

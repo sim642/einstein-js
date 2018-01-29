@@ -198,7 +198,8 @@ export class AppComponent extends Component<{}, AppState> {
                     if (!cheated) {
                         Times.isInTop10(options, time).then<string | undefined>(isInTop10 => {
                             let name;
-                            if (isInTop10 && (name = prompt("Name", this.state.defaultName)) !== null) // TODO change prompt text
+                            if (isInTop10 !== false &&
+                                (name = prompt(`Enter name for ${isInTop10 + 1}. place in high scores:`, this.state.defaultName)) !== null)
                                 return this.configDefaultName(name);
                             else
                                 return undefined;
