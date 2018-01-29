@@ -168,7 +168,7 @@ export class AppComponent extends Component<{}, AppState> {
         });
     }
 
-    private configDefaultName(name) {
+    private configDefaultName(name: string): Promise<string> {
         return Dexie.Promise.all([
             new Dexie.Promise((resolve, reject) => {
                 this.setState({
@@ -196,7 +196,7 @@ export class AppComponent extends Component<{}, AppState> {
                     alert(`Solved ${formatOptions(options)} in ${formatDuration(time)}${cheatedText}!`);
 
                     if (!cheated) {
-                        Times.isInTop10(options, time).then(isInTop10 => {
+                        Times.isInTop10(options, time).then<string | undefined>(isInTop10 => {
                             let name;
                             if (isInTop10 && (name = prompt("Name", this.state.defaultName)) !== null) // TODO change prompt text
                                 return this.configDefaultName(name);
