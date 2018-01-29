@@ -3,6 +3,7 @@ import {Component, h} from "preact";
 import "./options.less";
 import {PuzzleOptions} from "../puzzle/Puzzle";
 import {Config} from "../storage/Config";
+import {Times} from "../storage/Times";
 
 interface RangeProps {
     value: number;
@@ -48,21 +49,26 @@ export interface OptionsProps {
 
 interface OptionsState {
     options: PuzzleOptions;
+    hasTimes: boolean;
 }
 
 export class OptionsComponent extends Component<OptionsProps, OptionsState> {
     constructor(props: OptionsProps) {
         super();
         this.state = {
-            options: _.clone(props.options)
+            options: _.clone(props.options),
+            hasTimes: false
         };
+        this.fetchHasTimes(props.options);
     }
 
     componentWillReceiveProps(nextProps: OptionsProps) {
         if (!_.eq(this.props, nextProps)) {
             this.setState({
-                options: _.clone(nextProps.options)
+                options: _.clone(nextProps.options),
+                hasTimes: false
             });
+            this.fetchHasTimes(nextProps.options);
         }
     }
 
@@ -70,13 +76,23 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
         return (value: number) => {
             this.setState(state => _.merge(state, {
                 options: {
-                    [field]: value // TODO: typecheck this
-                }
+                    [field]: value // TODO: typecheck this,
+                },
+                hasTimes: false
             }));
+            this.fetchHasTimes(this.state.options);
             Config.set({
                 options: this.state.options
             });
         };
+    }
+
+    private fetchHasTimes(options: PuzzleOptions) {
+        Times.hasTimes(options).then(hasTimes => {
+            this.setState({
+                hasTimes: hasTimes
+            });
+        })
     }
 
     private onSubmit = (e) => {
@@ -88,8 +104,10 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
     private onReset = (e) => {
         e.preventDefault();
         this.setState({
-            options: _.clone(this.props.defaultOptions)
-        })
+            options: _.clone(this.props.defaultOptions),
+            hasTimes: false
+        });
+        this.fetchHasTimes(this.state.options);
         Config.set({
             options: this.state.options
         });
@@ -116,7 +134,7 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                 </div>
                 <div class="form-group buttons">
                     <button type="reset" onClick={this.onReset}>Reset</button>
-                    <button type="button" onClick={this.onHighscore}>High scores</button>
+                    <button type="button" disabled={!state.hasTimes} onClick={this.onHighscore}>High scores</button>
                     <button class="button-highlight button-wide" type="submit">Play</button>
                 </div>
             </form>

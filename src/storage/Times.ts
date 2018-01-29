@@ -38,4 +38,8 @@ export namespace Times {
             return timesItems.length < 10 || time < timesItems[10 - 1].time;
         });
     }
+
+    export function hasTimes(options: PuzzleOptions): Promise<boolean> {
+        return db.times.where({...options}).count(count => count > 0);
+    }
 }
