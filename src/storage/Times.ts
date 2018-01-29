@@ -36,7 +36,7 @@ export namespace Times {
     export function isInTop10(options: PuzzleOptions, time: number): Promise<false | number> {
         return getSortedTimes(options).then(timesItems => {
             if (timesItems.length < 10 || time < timesItems[10 - 1].time)
-                return _.sortedIndexBy(timesItems, {time: time}, timesItem => timesItem.time);
+                return _.sortedIndexBy(timesItems.slice(0, 10), {time: time}, timesItem => timesItem.time);
             else
                 return false;
         });
