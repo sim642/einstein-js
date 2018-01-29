@@ -60,10 +60,10 @@ export class AppComponent extends Component<{}, AppState> {
         this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
 
         Config.get().then(config => {
-            this.setState(state => _.merge(state, {
+            this.setState(state => _.assignWith(state, {
                 options: config.options,
                 defaultName: config.name
-            }));
+            }, (stateValue, sourceValue) => _.isUndefined(sourceValue) ? stateValue : sourceValue));
         });
     }
 
