@@ -1,41 +1,49 @@
 @import "../common";
 
+.table-col-minimize() {
+  width: 1px;
+}
+
 .highscore {
   .box;
 
   align-self: center;
+
+  border-collapse: separate;
+  border-spacing: 0.3em;
 }
 
 .highscore-title {
 
 }
 
-.highscore tbody {
+.highscore-i {
+  //width: 1.5em;
+  //padding-right: 0.5em;
+  text-align: right;
 
-  .highscore-i {
-    //width: 1.5em;
-    //padding-right: 0.5em;
-    text-align: right;
-  }
+  .table-col-minimize;
+}
 
-  .highscore-name {
-    padding-left: 0.5em;
-    padding-right: 0.5em;
+.highscore-name {
+  //padding-left: 0.5em;
+  //padding-right: 0.5em;
 
-    text-align: left;
+  text-align: left;
 
-    /*white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: 30vmin;*/
-    word-break: break-all;
-  }
+  /*white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  max-width: 30vmin;*/
+  word-break: break-all;
+}
 
-  .highscore-time {
-    //width: 4em;
-    //padding-left: 0.5em;
-    text-align: center;
-  }
+.highscore-time {
+  //width: 4em;
+  //padding-left: 0.5em;
+  text-align: center;
+
+  .table-col-minimize;
 }
 
 .highscore-text {

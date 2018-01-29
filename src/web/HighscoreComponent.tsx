@@ -64,7 +64,7 @@ export class HighscoreComponent extends Component<HighscoreProps, HighscoreState
                         </th>
                     </tr>
                     <tr>
-                        <th class="highscore-i">#</th>
+                        <th class="highscore-i">#&nbsp;</th>
                         <th class="highscore-name">Name</th>
                         <th class="highscore-time">Time</th>
                     </tr>
