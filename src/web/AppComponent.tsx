@@ -1,8 +1,10 @@
 import * as classNames from "classnames";
+import Dexie from "dexie";
 import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
 import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
+import {Config} from "../storage/Config";
 import {Times} from "../storage/Times";
 import {formatDuration} from "../time";
 import {Timer} from "../Timer";
@@ -165,13 +167,18 @@ export class AppComponent extends Component<{}, AppState> {
 
                     if (!cheated) {
                         Times.isInTop10(options, time).then(isInTop10 => {
-                            let name;
-                            if (isInTop10 && (name = prompt("Name")) !== null)
-                                return name;
-                            else
-                                return undefined;
+                            return Config.get<string>("name").then(defaultName => { // TODO better type safety
+                                let name;
+                                if (isInTop10 && (name = prompt("Name", defaultName)) !== null)
+                                    return name;
+                                else
+                                    return undefined;
+                            })
                         }).then(name => {
-                            return Times.add(options, time, name);
+                            return Dexie.Promise.all([
+                                Times.add(options, time, name),
+                                Config.set("name", name)
+                            ]);
                         });
                     }
                 });
