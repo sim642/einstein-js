@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import {Component, h} from "preact";
 import "./options.less";
 import {PuzzleOptions} from "../puzzle/Puzzle";
+import {Config} from "../storage/Config";
 
 interface RangeProps {
     value: number;
@@ -57,13 +58,25 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
         };
     }
 
+    componentWillReceiveProps(nextProps: OptionsProps) {
+        if (!_.eq(this.props, nextProps)) {
+            this.setState({
+                options: _.clone(nextProps.options)
+            });
+        }
+    }
+
     private onChange(field: keyof PuzzleOptions) {
         return (value: number) => {
             this.setState(state => _.merge(state, {
                 options: {
                     [field]: value // TODO: typecheck this
                 }
-            }));
+            }), () => {
+                Config.set({
+                    options: this.state.options
+                });
+            });
         };
     }
 

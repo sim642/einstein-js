@@ -43,8 +43,8 @@ export class AppComponent extends Component<{}, AppState> {
     private messageUnload: MessageUnloadListener;
 
     private static readonly defaultOptions: PuzzleOptions = {
-        rows: 3, // TODO change back
-        cols: 3,
+        rows: 6,
+        cols: 6,
         extraHintsPercent: 0
     };
 
@@ -60,10 +60,10 @@ export class AppComponent extends Component<{}, AppState> {
         this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
 
         Config.get().then(config => {
-            this.setState({
-                // options: config.options,
+            this.setState(state => _.merge(state, {
+                options: config.options,
                 defaultName: config.name
-            });
+            }));
         });
     }
 
@@ -142,8 +142,8 @@ export class AppComponent extends Component<{}, AppState> {
     };
 
     private submitOptions = (options: PuzzleOptions) => {
+        this.configOptions(options);
         this.setState({
-            options: options,
             puzzle: Puzzle.generate(options),
             gameState: GameState.Playing,
             cheated: 0
@@ -153,11 +153,20 @@ export class AppComponent extends Component<{}, AppState> {
     };
 
     private highscoreOptions = (options: PuzzleOptions) => {
+        this.configOptions(options);
         this.setState({
-            options: options,
             gameState: GameState.Highscore
         });
     };
+
+    private configOptions(options: PuzzleOptions) {
+        this.setState({
+            options: options
+        });
+        Config.set({
+            options: options
+        });
+    }
 
     private configDefaultName(name) {
         return Dexie.Promise.all([
@@ -166,7 +175,9 @@ export class AppComponent extends Component<{}, AppState> {
                     defaultName: name
                 }, () => resolve(name));
             }),
-            Config.set({name: name})
+            Config.set({
+                name: name
+            })
         ]).then(() => name);
     }
 
