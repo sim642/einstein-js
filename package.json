@@ -1,6 +1,6 @@
 {
   "name": "einstein",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "Einstein Puzzle 2.0 by Flowix Games ported to the web",
   "author": "Simmo Saan",
   "keywords": [
@@ -31,6 +31,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
+    "dexie": "^2.0.1",
     "lodash": "^4.17.4",
     "preact": "^8.2.1"
   },

@@ -1,13 +1,19 @@
 import * as classNames from "classnames";
+import Dexie from "dexie";
 import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
 import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
+import {Config} from "../storage/Config";
+import {Counts} from "../storage/Counts";
+import {Times} from "../storage/Times";
 import {formatDuration} from "../time";
 import {Timer} from "../Timer";
 import "./app.less";
+import {HighscoreComponent} from "./HighscoreComponent";
 import {HintsComponent} from "./HintsComponent";
 import {MultiBoardComponent} from "./MultiBoardComponent";
+import {formatOptions} from "./PuzzleOptionsUtils";
 import {TimerComponent} from "./TimerComponent";
 import {VisibilityChangeListener} from "./helper/VisibilityChangeListener";
 import {MessageUnloadListener} from "./helper/MessageUnloadListener";
@@ -16,6 +22,7 @@ import {OptionsComponent} from "./OptionsComponent";
 
 export enum GameState {
     Options,
+    Highscore,
     Playing,
     ManualPaused,
     AutoPaused,
@@ -28,6 +35,7 @@ interface AppState {
     puzzle: Puzzle;
     gameState: GameState;
     cheated: number;
+    defaultName?: string;
 }
 
 export class AppComponent extends Component<{}, AppState> {
@@ -51,6 +59,13 @@ export class AppComponent extends Component<{}, AppState> {
         };
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
         this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
+
+        Config.get().then(config => {
+            this.setState(state => _.assignWith(state, {
+                options: config.options,
+                defaultName: config.name
+            }, (stateValue, sourceValue) => _.isUndefined(sourceValue) ? stateValue : sourceValue));
+        });
     }
 
     componentDidMount() {
@@ -128,8 +143,8 @@ export class AppComponent extends Component<{}, AppState> {
     };
 
     private submitOptions = (options: PuzzleOptions) => {
+        this.configOptions(options);
         this.setState({
-            options: options,
             puzzle: Puzzle.generate(options),
             gameState: GameState.Playing,
             cheated: 0
@@ -137,6 +152,35 @@ export class AppComponent extends Component<{}, AppState> {
             this.timer.start();
         });
     };
+
+    private highscoreOptions = (options: PuzzleOptions) => {
+        this.configOptions(options);
+        this.setState({
+            gameState: GameState.Highscore
+        });
+    };
+
+    private configOptions(options: PuzzleOptions) {
+        this.setState({
+            options: options
+        });
+        Config.set({
+            options: options
+        });
+    }
+
+    private configDefaultName(name: string): Promise<string> {
+        return Dexie.Promise.all([
+            new Dexie.Promise((resolve, reject) => {
+                this.setState({
+                    defaultName: name
+                }, () => resolve(name));
+            }),
+            Config.set({
+                name: name
+            })
+        ]).then(() => name);
+    }
 
     private refresh = () => {
         if (this.state.gameState === GameState.Playing) {
@@ -148,10 +192,24 @@ export class AppComponent extends Component<{}, AppState> {
                     gameState: GameState.Solved
                 }), () => {
                     let options = puzzle.options;
-                    let extraHintsText = options.extraHintsPercent > 0 ? ` with ${options.extraHintsPercent}% extra hints` : "";
                     let cheated = this.state.cheated;
+                    Counts.increase(options, cheated ? "solvedCheated" : "solved");
+
                     let cheatedText = cheated > 0 ? ` by cheating ${cheated} times` : "";
-                    alert(`Solved ${options.rows}×${options.cols} puzzle${extraHintsText} in ${formatDuration(time)}${cheatedText}!`);
+                    alert(`Solved ${formatOptions(options)} in ${formatDuration(time)}${cheatedText}!`);
+
+                    if (!cheated) {
+                        Times.isInTop10(options, time).then<string | undefined>(isInTop10 => {
+                            let name;
+                            if (isInTop10 !== false &&
+                                (name = prompt(`Enter name for ${isInTop10 + 1}. place in high scores:`, this.state.defaultName)) !== null)
+                                return this.configDefaultName(name);
+                            else
+                                return undefined;
+                        }).then(name =>
+                            Times.add(options, time, name)
+                        );
+                    }
                 });
             }
             else if (puzzle.isOver()) {
@@ -159,6 +217,8 @@ export class AppComponent extends Component<{}, AppState> {
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Over
                 }), () => {
+                    Counts.increase(puzzle.options, "over");
+
                     alert("Over!");
                 });
             }
@@ -184,7 +244,7 @@ export class AppComponent extends Component<{}, AppState> {
 
                         <div class="buttons buttons-responsive">
                             <button class={classNames({
-                                "button-highlight": solvedOrOver
+                                "button-highlight": solvedOrOver || state.gameState === GameState.Highscore
                             })} onClick={this.onClickNewGame}>New game</button>
                             <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
                                 Cheat {
@@ -205,12 +265,14 @@ export class AppComponent extends Component<{}, AppState> {
                     <BirthdayComponent month={10} day={22} name="Elisabeth"/>
                     {
                         state.gameState === GameState.Options ?
-                            <OptionsComponent options={state.options} submit={this.submitOptions} defaultOptions={AppComponent.defaultOptions}/> :
-                            <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
+                            <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions}/> :
+                            state.gameState === GameState.Highscore ?
+                                <HighscoreComponent options={state.options}/> :
+                                <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                     }
                 </div>
                 {
-                    state.gameState !== GameState.Options ?
+                    state.gameState !== GameState.Options && state.gameState !== GameState.Highscore ?
                         <HintsComponent hints={state.puzzle.hints}/> :
                         null
                 }
