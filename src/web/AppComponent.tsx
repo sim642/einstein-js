@@ -5,6 +5,7 @@ import * as Package from "package.json";
 import {Component, h} from "preact";
 import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
 import {Config} from "../storage/Config";
+import {Counts} from "../storage/Counts";
 import {Times} from "../storage/Times";
 import {formatDuration} from "../time";
 import {Timer} from "../Timer";
@@ -192,6 +193,8 @@ export class AppComponent extends Component<{}, AppState> {
                 }), () => {
                     let options = puzzle.options;
                     let cheated = this.state.cheated;
+                    Counts.increase(options, cheated ? "solvedCheated" : "solved");
+
                     let cheatedText = cheated > 0 ? ` by cheating ${cheated} times` : "";
                     alert(`Solved ${formatOptions(options)} in ${formatDuration(time)}${cheatedText}!`);
 
@@ -214,6 +217,8 @@ export class AppComponent extends Component<{}, AppState> {
                 this.setState(state => _.merge(state, {
                     gameState: GameState.Over
                 }), () => {
+                    Counts.increase(puzzle.options, "over");
+
                     alert("Over!");
                 });
             }
