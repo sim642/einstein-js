@@ -130,7 +130,7 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                 </div>
                 <div class="form-group">
                     <label for="option-extra-hints">Extra hints</label>
-                    <InputRangeComponent id="option-extra-hints" min={0} max={100} step={10} value={state.options.extraHintsPercent} onChange={this.onChange("extraHintsPercent")} unit="%"/>
+                    <InputRangeComponent id="option-extra-hints" min={0} max={100} step={20} value={state.options.extraHintsPercent} onChange={this.onChange("extraHintsPercent")} unit="%"/>
                 </div>
                 <div class="form-group buttons">
                     <button type="reset" onClick={this.onReset}>Reset</button>
