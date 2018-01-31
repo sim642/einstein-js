@@ -1,3 +1,4 @@
+import {BoardOptions} from "../board/Board";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
 
@@ -13,5 +14,6 @@ export interface Hint {
 }
 
 export interface HintFactory {
+    supports(options: BoardOptions): boolean;
     random(board: SingleBoard): Hint;
 }

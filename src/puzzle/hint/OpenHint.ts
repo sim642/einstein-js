@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import {BoardOptions} from "../board/Board";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
 import {Hint, HintFactory, HintType} from "./Hint";
@@ -23,6 +24,10 @@ export class OpenHint implements Hint {
 }
 
 export class OpenHintFactory implements HintFactory {
+    supports(options: BoardOptions): boolean {
+        return options.rows >= 1 && options.cols >= 1;
+    }
+
     random(board: SingleBoard): OpenHint {
         let row = _.random(0, board.rows - 1);
         let col = _.random(0, board.cols - 1);

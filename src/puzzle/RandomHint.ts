@@ -1,5 +1,6 @@
 import * as _ from "lodash";
 import {Distribution} from "../math/distribution";
+import {BoardOptions} from "./board/Board";
 import {SingleBoard} from "./board/SingleBoard";
 import {AdjacentHintFactory} from "./hint/AdjacentHint";
 import {BetweenHintFactory} from "./hint/BetweenHint";
@@ -18,8 +19,13 @@ export class RandomHintFactory implements HintFactory {
         [new BetweenHintFactory(), 3]
     ];
 
+    supports(options: BoardOptions): boolean {
+        return _.some(this.defaultDist, pair => pair[0].supports(options));
+    }
+
     random(board: SingleBoard): Hint {
-        let hintFactory: HintFactory = Distribution.random(this.defaultDist);
+        let dist = _.filter(this.defaultDist, pair => pair[0].supports(board.options));
+        let hintFactory: HintFactory = Distribution.random(dist);
         return hintFactory.random(board);
     }
 }

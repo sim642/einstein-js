@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import {BoardOptions} from "../board/Board";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
 import {Hint, HintFactory, HintType} from "./Hint";
@@ -38,6 +39,10 @@ export class AdjacentHint implements Hint {
 }
 
 export class AdjacentHintFactory implements HintFactory {
+    supports(options: BoardOptions): boolean {
+        return options.rows >= 1 && options.cols >= 2;
+    }
+
     random(board: SingleBoard): AdjacentHint {
         let row1 = _.random(0, board.rows - 1);
         let col1 = _.random(0, board.cols - 1);
