@@ -150,6 +150,7 @@ export class AppComponent extends Component<{}, AppState> {
             cheated: 0
         }, () => {
             this.timer.start();
+            this.refresh(); // check win in case everything opened on start
         });
     };
 
