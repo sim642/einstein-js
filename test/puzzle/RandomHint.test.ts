@@ -1,10 +1,29 @@
 import "mocha";
+import {expect} from "chai";
 import {SingleBoard} from "../../src/puzzle/board/SingleBoard";
 import {RandomHintFactory} from "../../src/puzzle/RandomHint";
 import {Distribution} from "../../src/math/distribution";
+import {paramBoardOptionsExtra} from "./paramPuzzle";
 
 describe("RandomHintFactory", function () {
     const factory = new RandomHintFactory();
+
+    describe("#supports()", function () {
+        context("large enough board", function () {
+            paramBoardOptionsExtra([
+                {rows: 1, cols: 2},
+                {rows: 2, cols: 1},
+                {rows: 1, cols: 1}
+            ], function (options) {
+                it("should return true", function () {
+                    expect(factory.supports(options)).to.be.true;
+                });
+            });
+        });
+
+        // no too small boards
+    });
+
 
     describe("#random()", function () {
         it("should have original einstein 2.0 hint distribution", function () {

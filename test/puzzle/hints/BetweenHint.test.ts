@@ -162,11 +162,43 @@ describe("BetweenHint", function () {
 });
 
 describe("BetweenHintFactory", function () {
+    const factory = new BetweenHintFactory();
+
+    describe("#supports()", function () {
+        context("large enough board", function () {
+            param<BoardOptions>([
+                {rows: 6, cols: 6},
+                {rows: 5, cols: 5},
+                {rows: 4, cols: 4},
+                {rows: 6, cols: 4},
+                {rows: 3, cols: 3},
+                // no 2×2
+                {rows: 2, cols: 3},
+                {rows: 1, cols: 3},
+            ], function (options) {
+                it("should return true", function () {
+                    expect(factory.supports(options)).to.be.true;
+                });
+            });
+        });
+
+        context("too small board", function () {
+            param<BoardOptions>([
+                {rows: 1, cols: 1},
+                {rows: 2, cols: 1},
+                {rows: 2, cols: 2},
+            ], function (options) {
+                it("should return false", function () {
+                    expect(factory.supports(options)).to.be.false;
+                });
+            });
+        });
+    });
+
     describe("#random()", function () {
         context("returned hint", function () {
             const options: BoardOptions = {rows: 6, cols: 6};
             const board = SingleBoard.random(options);
-            const factory = new BetweenHintFactory();
 
             param.repeat(100, () => factory.random(board), function (hint) {
                 it("should have valid row1, rowMiddle, row2", function () {

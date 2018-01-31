@@ -6,6 +6,7 @@ import {HintType} from "../../../src/puzzle/hint/Hint";
 import {param} from "../../param";
 import {BoardOptions} from "../../../src/puzzle/board/Board";
 import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
+import {paramBoardOptionsExtra} from "../paramPuzzle";
 
 function equivalents(hint: AdjacentHint): AdjacentHint[] {
     return [
@@ -111,11 +112,35 @@ describe("AdjacentHint", function () {
 });
 
 describe("AdjacentHintFactory", function () {
+    const factory = new AdjacentHintFactory();
+
+    describe("#supports()", function () {
+        context("large enough board", function () {
+            paramBoardOptionsExtra([
+                {rows: 1, cols: 2}
+            ], function (options) {
+                it("should return true", function () {
+                    expect(factory.supports(options)).to.be.true;
+                });
+            });
+        });
+
+        context("too small board", function () {
+            param<BoardOptions>([
+                {rows: 1, cols: 1},
+                {rows: 2, cols: 1},
+            ], function (options) {
+                it("should return false", function () {
+                    expect(factory.supports(options)).to.be.false;
+                });
+            });
+        });
+    });
+
     describe("#random()", function () {
         context("returned hint", function () {
             const options: BoardOptions = {rows: 6, cols: 6};
             const board = SingleBoard.random(options);
-            const factory = new AdjacentHintFactory();
 
             param.repeat(100, () => factory.random(board), function (hint) {
                 it("should have valid row1, row2", function () {
