@@ -57,4 +57,18 @@ export namespace Distribution {
         let pValue = ChiSq.test(observed, expected);
         expect(pValue).to.not.be.lessThan(significanceLevel);
     }
+
+    export function random<T>(dist: Distribution<T>): T {
+        // https://en.wikipedia.org/wiki/Fitness_proportionate_selection
+        // http://www.keithschwarz.com/darts-dice-coins/ - Roulette Wheel Selection (linear)
+        let cumFreq = Math.random() * n(dist);
+        for (let i = 0; i < dist.length; i++) {
+            let [value, freq] = dist[i];
+            if (cumFreq < freq) // value has range [0, freq)
+                return value;
+            else
+                cumFreq -= freq;
+        }
+        return dist[dist.length - 1][0]; // must return in case of bad rounding
+    }
 }
