@@ -122,11 +122,11 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
             <form class="options" onSubmit={this.onSubmit}>
                 <div class="form-group">
                     <label for="option-rows">Rows</label>
-                    <InputRangeComponent id="option-rows" min={3} max={6} value={state.options.rows} onChange={this.onChange("rows")}/>
+                    <InputRangeComponent id="option-rows" min={2} max={6} value={state.options.rows} onChange={this.onChange("rows")}/>
                 </div>
                 <div class="form-group">
                     <label for="option-cols">Columns</label>
-                    <InputRangeComponent id="option-cols" min={3} max={6} value={state.options.cols} onChange={this.onChange("cols")}/>
+                    <InputRangeComponent id="option-cols" min={2} max={6} value={state.options.cols} onChange={this.onChange("cols")}/>
                 </div>
                 <div class="form-group">
                     <label for="option-extra-hints">Extra hints</label>
