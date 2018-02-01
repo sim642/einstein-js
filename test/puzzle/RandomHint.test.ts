@@ -1,8 +1,9 @@
 import "mocha";
 import {expect} from "chai";
+import {ObjectDistribution} from "../../src/math/ObjectDistribution";
 import {SingleBoard} from "../../src/puzzle/board/SingleBoard";
 import {RandomHintFactory} from "../../src/puzzle/RandomHint";
-import {Distribution} from "../../src/math/distribution";
+import {Distribution} from "../../src/math/Distribution";
 import {paramBoardOptionsExtra} from "./paramPuzzle";
 
 describe("RandomHintFactory", function () {
@@ -28,12 +29,12 @@ describe("RandomHintFactory", function () {
     describe("#random()", function () {
         it("should have original einstein 2.0 hint distribution", function () {
             let board = SingleBoard.random({rows: 6, cols: 6});
-            let observed: Distribution<string> = Distribution.monteCarlo(10000, () => {
+            let observed: Distribution<string> = ObjectDistribution.monteCarlo(10000, () => {
                 let hint = factory.random(board);
                 return (hint.constructor as any).name; // TODO: don't use any
             });
 
-            let expected: Distribution<string> = Distribution.fromObject({
+            let expected: Distribution<string> = new ObjectDistribution({
                 AdjacentHint: 4,
                 OpenHint: 1,
                 SameColumnHint: 2,
