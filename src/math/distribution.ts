@@ -4,7 +4,7 @@ import {ChiSq} from "./statistics";
 
 export type Distribution<T> = [T, number][];
 
-interface ObjectDistribution {
+export interface ObjectDistribution {
     [value: string]: number;
 }
 

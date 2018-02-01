@@ -5,11 +5,15 @@ interface Callback<T> {
     (value: T): void;
 }
 
+export function contextObject<T>(value: T, callback: Callback<T>): void {
+    context(JSON.stringify(value), function () {
+        callback(value);
+    });
+}
+
 export function param<T>(values: T[], callback: Callback<T>): void {
     _.forEach(values, value => {
-        context(JSON.stringify(value), function () {
-            callback(value);
-        });
+        contextObject(value, callback);
     });
 }
 
