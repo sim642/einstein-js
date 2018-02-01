@@ -27,6 +27,7 @@ export function paramPuzzleOptions(callback: (options: PuzzleOptions) => void): 
         {rows: 4, cols: 4, extraHintsPercent: 0},
         {rows: 6, cols: 4, extraHintsPercent: 0},
         {rows: 3, cols: 3, extraHintsPercent: 0},
+        {rows: 2, cols: 2, extraHintsPercent: 0},
 
         {rows: 6, cols: 6, extraHintsPercent: 25},
         {rows: 6, cols: 6, extraHintsPercent: 50},
