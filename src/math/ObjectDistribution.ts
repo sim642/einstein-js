@@ -1,7 +1,7 @@
 import * as _ from "lodash";
 import {AbstractDistribution} from "./AbstractDistribution";
 
-type Object = {
+export type Object = {
     [value: string]: number;
 }
 

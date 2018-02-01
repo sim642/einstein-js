@@ -1,9 +1,11 @@
 import "mocha";
 import {expect} from "chai";
-import {ObjectDistribution} from "../../src/math/ObjectDistribution";
+import {Distribution} from "../../src/math/Distribution";
+import {Object, ObjectDistribution} from "../../src/math/ObjectDistribution";
 import {SingleBoard} from "../../src/puzzle/board/SingleBoard";
 import {RandomHintFactory} from "../../src/puzzle/RandomHint";
-import {Distribution} from "../../src/math/Distribution";
+import {BoardOptions} from "../../src/puzzle/board/Board";
+import {contextObject, param} from "../param";
 import {paramBoardOptionsExtra} from "./paramPuzzle";
 
 describe("RandomHintFactory", function () {
@@ -27,22 +29,48 @@ describe("RandomHintFactory", function () {
 
 
     describe("#random()", function () {
-        it("should have original einstein 2.0 hint distribution", function () {
-            let board = SingleBoard.random({rows: 6, cols: 6});
+        function testDistribution(options: BoardOptions, expectedObject: Object) {
+            let board = SingleBoard.random(options);
             let observed: Distribution<string> = ObjectDistribution.monteCarlo(10000, () => {
                 let hint = factory.random(board);
                 return (hint.constructor as any).name; // TODO: don't use any
             });
 
-            let expected: Distribution<string> = new ObjectDistribution({
-                AdjacentHint: 4,
-                OpenHint: 1,
-                SameColumnHint: 2,
-                DirectionHint: 4,
-                BetweenHint: 3
-            });
+            let expected: Distribution<string> = new ObjectDistribution(expectedObject);
 
             Distribution.expectSame(observed, expected, 0.001);
+        }
+
+        context("large enough board", function () {
+            param<BoardOptions>([
+                {rows: 6, cols: 6},
+                {rows: 5, cols: 5},
+                {rows: 4, cols: 4},
+                {rows: 3, cols: 3},
+            ], function (options) {
+                it("should have original einstein 2.0 hint distribution", function () {
+                    testDistribution(options, {
+                        AdjacentHint: 4,
+                        OpenHint: 1,
+                        SameColumnHint: 2,
+                        DirectionHint: 4,
+                        BetweenHint: 3
+                    });
+                })
+            });
+        });
+
+        context("too small board", function () {
+            contextObject<BoardOptions>({rows: 2, cols: 2}, function (options) {
+                it("should have original einstein 2.0 hint distribution without BetweenHint", function () {
+                    testDistribution(options, {
+                        AdjacentHint: 4,
+                        OpenHint: 1,
+                        SameColumnHint: 2,
+                        DirectionHint: 4
+                    });
+                })
+            });
         });
     });
 });
