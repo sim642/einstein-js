@@ -1,9 +1,10 @@
 import "mocha";
 import {expect} from "chai";
-import {BoardOptions} from "../../src/puzzle/board/Board";
+import {Distribution} from "../../src/math/Distribution";
+import {NumericObject, ObjectDistribution} from "../../src/math/ObjectDistribution";
 import {SingleBoard} from "../../src/puzzle/board/SingleBoard";
 import {RandomHintFactory} from "../../src/puzzle/RandomHint";
-import {Distribution, ObjectDistribution} from "../../src/math/distribution";
+import {BoardOptions} from "../../src/puzzle/board/Board";
 import {contextObject, param} from "../param";
 import {paramBoardOptionsExtra} from "./paramPuzzle";
 
@@ -28,14 +29,14 @@ describe("RandomHintFactory", function () {
 
 
     describe("#random()", function () {
-        function testDistribution(options: BoardOptions, expectedObject: ObjectDistribution) {
+        function testDistribution(options: BoardOptions, expectedObject: NumericObject) {
             let board = SingleBoard.random(options);
-            let observed: Distribution<string> = Distribution.monteCarlo(10000, () => {
+            let observed: Distribution<string> = ObjectDistribution.monteCarlo(10000, () => {
                 let hint = factory.random(board);
                 return (hint.constructor as any).name; // TODO: don't use any
             });
 
-            let expected: Distribution<string> = Distribution.fromObject(expectedObject);
+            let expected: Distribution<string> = new ObjectDistribution(expectedObject);
 
             Distribution.expectSame(observed, expected, 0.001);
         }
