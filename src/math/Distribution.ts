@@ -4,8 +4,8 @@ import {ChiSq} from "./ChiSq";
 export interface Distribution<T> {
     get(value: T): number | undefined;
 
-    n: number;
-    classes: number;
+    readonly n: number;
+    readonly classes: number;
 
     mapFreqs(f: (freq: number, value: T) => number): Distribution<T>;
     map<U>(f: (freq: number, value: T) => U): U[];

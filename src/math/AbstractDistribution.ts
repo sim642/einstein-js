@@ -4,8 +4,8 @@ import {NumericPairs} from "./PairsDistribution";
 export abstract class AbstractDistribution<T> implements Distribution<T> {
     abstract get(value: T): number | undefined;
 
-    abstract n: number;
-    abstract classes: number;
+    abstract readonly n: number;
+    abstract readonly classes: number;
 
     abstract mapFreqs(f: (freq: number, value: T) => number): Distribution<T>;
     abstract map<U>(f: (freq: number, value: T) => U): U[];
@@ -37,6 +37,5 @@ export abstract class AbstractDistribution<T> implements Distribution<T> {
                 cumFreq -= freq;
         }
         return pairs[pairs.length - 1][0]; // must return in case of bad rounding
-
     }
 }
