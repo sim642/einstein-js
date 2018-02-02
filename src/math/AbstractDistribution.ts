@@ -1,5 +1,5 @@
 import {Distribution} from "./Distribution";
-import {Pairs} from "./PairsDistribution";
+import {NumericPairs} from "./PairsDistribution";
 
 export abstract class AbstractDistribution<T> implements Distribution<T> {
     abstract get(value: T): number | undefined;
@@ -20,8 +20,8 @@ export abstract class AbstractDistribution<T> implements Distribution<T> {
         return this.scale(targetDist.n);
     }
 
-    protected toPairs(): Pairs<T> {
-        return this.map((freq, value) => [value, freq]) as Pairs<T>;
+    protected toPairs(): NumericPairs<T> {
+        return this.map((freq, value) => [value, freq]) as NumericPairs<T>;
     }
 
     random(): T {

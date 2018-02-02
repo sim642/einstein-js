@@ -1,7 +1,7 @@
 import "mocha";
 import {expect} from "chai";
 import {Distribution} from "../../src/math/Distribution";
-import {Object, ObjectDistribution} from "../../src/math/ObjectDistribution";
+import {NumericObject, ObjectDistribution} from "../../src/math/ObjectDistribution";
 import {SingleBoard} from "../../src/puzzle/board/SingleBoard";
 import {RandomHintFactory} from "../../src/puzzle/RandomHint";
 import {BoardOptions} from "../../src/puzzle/board/Board";
@@ -29,7 +29,7 @@ describe("RandomHintFactory", function () {
 
 
     describe("#random()", function () {
-        function testDistribution(options: BoardOptions, expectedObject: Object) {
+        function testDistribution(options: BoardOptions, expectedObject: NumericObject) {
             let board = SingleBoard.random(options);
             let observed: Distribution<string> = ObjectDistribution.monteCarlo(10000, () => {
                 let hint = factory.random(board);

@@ -1,12 +1,12 @@
 import * as _ from "lodash";
 import {AbstractDistribution} from "./AbstractDistribution";
 
-export type Object = {
+export type NumericObject = {
     [value: string]: number;
 }
 
 export class ObjectDistribution extends AbstractDistribution<string> {
-    constructor(private readonly object: Object) {
+    constructor(private readonly object: NumericObject) {
         super();
     }
 
@@ -35,7 +35,7 @@ export class ObjectDistribution extends AbstractDistribution<string> {
     }
 
     static monteCarlo(n: number, generator: () => string): ObjectDistribution {
-        let observed: Object = {};
+        let observed: NumericObject = {};
         for (let i = 0; i < n; i++) {
             let value = generator();
             if (!(value in observed))
