@@ -5,6 +5,8 @@ import {Times, TimesItem} from "../storage/Times";
 import {PuzzleOptions} from "../puzzle/Puzzle";
 import {formatDuration} from "../time";
 import {formatOptions} from "./PuzzleOptionsUtils";
+import * as statistics from "../math/statistics";
+import * as sortedStatistics from "../math/sortedStatistics";
 
 interface HighscoreItemProps {
     i: number;
@@ -23,33 +25,121 @@ class HighscoreItemComponent extends Component<HighscoreItemProps, {}> {
     }
 }
 
+
+interface HighscoreTableProps {
+    top10?: TimesItem[];
+}
+
+class HighscoreTableComponent extends Component<HighscoreTableProps, {}> {
+    render(props: HighscoreTableProps) {
+        return (
+            <table class="highscore">
+                <thead>
+                <tr>
+                    <th class="highscore-i">#&nbsp;</th>
+                    <th class="highscore-name">Name</th>
+                    <th class="highscore-time">Time</th>
+                </tr>
+                </thead>
+
+                <tbody>
+                {
+                    props.top10 !== undefined && props.top10.length > 0 ?
+                        _.map(props.top10, (timesItem, i) =>
+                            <HighscoreItemComponent i={i} item={timesItem}/>
+                        ) :
+                        <tr class="highscore-text">
+                            <td colSpan={3}>
+                                {
+                                    props.top10 !== undefined ?
+                                        "No times" :
+                                        "Loading..."
+                                }
+                            </td>
+                        </tr>
+                }
+                </tbody>
+            </table>
+        );
+    }
+}
+
+
+interface Stats {
+    count: number;
+    mean: number;
+    median: number;
+    lowerQuartile: number;
+    upperQuartile: number;
+    stdDev: number;
+}
+
+interface StatsProps {
+    stats?: Stats;
+}
+
+class StatsComponent extends Component<StatsProps, {}> {
+    render(props: StatsProps) {
+        return (
+            props.stats !== undefined ?
+                // TODO nice design
+                <ul style={{
+                    paddingLeft: 0,
+                    listStylePosition: "inside"
+                }}>
+                    {_.map({...props.stats}, (value, key) =>
+                        <li>{key}: {key !== "count" ? formatDuration(Math.round(value)) : value}</li>
+                    )}
+                </ul> :
+                null
+        );
+    }
+}
+
+
 export interface HighscoreProps {
     options: PuzzleOptions;
 }
 
 interface HighscoreState {
     top10?: TimesItem[];
+    stats?: Stats;
 }
 
 export class HighscoreComponent extends Component<HighscoreProps, HighscoreState> {
     constructor(props: HighscoreProps) {
         super();
         this.state = {
-            top10: undefined
+            top10: undefined,
+            stats: undefined
         };
-        this.fetchTop10(props);
+        this.fetchTimes(props);
     }
 
     componentWillReceiveProps(nextProps: HighscoreProps) {
         if (this.props.options !== nextProps.options) {
-            this.fetchTop10(nextProps);
+            this.fetchTimes(nextProps);
         }
     }
 
-    private fetchTop10(props: HighscoreProps) {
-        Times.getTop10(props.options).then(top10 => {
+    private static calculateStats(timesItems: TimesItem[]): Stats {
+        let sortedTimes: number[] = _.map(timesItems, "time");
+        let mean = statistics.mean(sortedTimes);
+        return {
+            count: sortedTimes.length,
+            mean: mean,
+            median: sortedStatistics.median(sortedTimes),
+            lowerQuartile: sortedStatistics.lowerQuartile(sortedTimes),
+            upperQuartile: sortedStatistics.upperQuartile(sortedTimes),
+            stdDev: statistics.stdDev(sortedTimes, mean)
+        };
+    }
+
+    private fetchTimes(props: HighscoreProps) {
+        Times.getSortedTimes(props.options).then(timesItems => {
             this.setState({
-                top10: top10
+                top10: _.take(timesItems, 10),
+                stats: HighscoreComponent.calculateStats(timesItems)
             });
         });
     }
@@ -60,33 +150,9 @@ export class HighscoreComponent extends Component<HighscoreProps, HighscoreState
                 <div class="highscore-title">
                     {formatOptions(props.options)}
                 </div>
-                <table class="highscore">
-                    <thead>
-                        <tr>
-                            <th class="highscore-i">#&nbsp;</th>
-                            <th class="highscore-name">Name</th>
-                            <th class="highscore-time">Time</th>
-                        </tr>
-                    </thead>
 
-                    <tbody>
-                        {
-                            state.top10 !== undefined && state.top10.length > 0 ?
-                                _.map(state.top10, (timesItem, i) =>
-                                    <HighscoreItemComponent i={i} item={timesItem}/>
-                                ) :
-                                <tr class="highscore-text">
-                                    <td colSpan={3}>
-                                        {
-                                            state.top10 !== undefined ?
-                                                "No times" :
-                                                "Loading..."
-                                        }
-                                    </td>
-                                </tr>
-                        }
-                    </tbody>
-                </table>
+                <HighscoreTableComponent top10={state.top10}/>
+                <StatsComponent stats={state.stats}/>
             </div>
         );
     }
