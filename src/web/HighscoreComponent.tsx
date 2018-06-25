@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import {Component, h} from "preact";
 import "./highscore.less";
+import {Counts} from "../storage/Counts";
 import {Times, TimesItem} from "../storage/Times";
 import {PuzzleOptions} from "../puzzle/Puzzle";
 import {formatDuration} from "../time";
@@ -68,31 +69,118 @@ class HighscoreTableComponent extends Component<HighscoreTableProps, {}> {
 interface Stats {
     count: number;
     mean: number;
-    median: number;
-    lowerQuartile: number;
-    upperQuartile: number;
     stdDev: number;
+    lowerQuartile: number;
+    median: number;
+    upperQuartile: number;
+    max: number;
 }
 
 interface StatsProps {
+    options: PuzzleOptions;
     stats?: Stats;
 }
 
-class StatsComponent extends Component<StatsProps, {}> {
-    render(props: StatsProps) {
-        return (
-            props.stats !== undefined ?
-                // TODO nice design
-                <ul style={{
-                    paddingLeft: 0,
-                    listStylePosition: "inside"
-                }}>
-                    {_.map({...props.stats}, (value, key) =>
-                        <li>{key}: {key !== "count" ? formatDuration(Math.round(value)) : value}</li>
-                    )}
-                </ul> :
-                null
-        );
+interface StatsState {
+    counts?: Counts;
+}
+
+class StatsComponent extends Component<StatsProps, StatsState> {
+    constructor(props: StatsProps) {
+        super();
+        this.state = {
+            counts: undefined
+        };
+        this.fetchCounts(props);
+    }
+
+    componentWillReceiveProps(nextProps: StatsProps) {
+        if (this.props.options !== nextProps.options) {
+            this.fetchCounts(nextProps);
+        }
+    }
+
+    private fetchCounts(props: StatsProps) {
+        Counts.get(props.options).then(countsItem => {
+            this.setState({
+                counts: countsItem
+            });
+        });
+    }
+
+    render(props: StatsProps, state: StatsState) {
+        const stats = props.stats;
+        const counts = state.counts;
+
+        if (stats !== undefined && counts !== undefined) {
+            let total = counts.solved + counts.solvedCheated + counts.over;
+
+            let countWithPercentage = (count) => {
+                let percentage = count / total * 100;
+                return (
+                    <dd>{count} <small class="small-number">({percentage.toFixed(0)}%)</small></dd>
+                );
+            };
+
+            return (
+                <div class="stats">
+                    <dl>
+                        <div>
+                            <dt>Games played</dt>
+                            <dd>{total}</dd>
+                        </div>
+                        <dl>
+                            <div>
+                                <dt>Solved</dt>
+                                {countWithPercentage(counts.solved)}
+                            </div>
+                            <div>
+                                <dt>Solved <small>w/</small> cheats</dt>
+                                {countWithPercentage(counts.solvedCheated)}
+                            </div>
+                            <div>
+                                <dt>Over</dt>
+                                {countWithPercentage(counts.over)}
+                            </div>
+                        </dl>
+
+                        <div>
+                            <dt>Time average</dt>
+                            <dd>{formatDuration(stats.mean)}</dd>
+                        </div>
+                        <dl>
+                            <div>
+                                <dt>Std. dev.</dt>
+                                <dd>{formatDuration(stats.stdDev)}</dd>
+                            </div>
+                        </dl>
+
+                        <div>
+                            <dt>Time quartiles</dt>
+                        </div>
+                        <dl>
+                            <div>
+                                <dt>Lower <small>(25%)</small></dt>
+                                <dd>{formatDuration(stats.lowerQuartile)}</dd>
+                            </div>
+                            <div>
+                                <dt>Median <small>(50%)</small></dt>
+                                <dd>{formatDuration(stats.median)}</dd>
+                            </div>
+                            <div>
+                                <dt>Upper <small>(75%)</small></dt>
+                                <dd>{formatDuration(stats.upperQuartile)}</dd>
+                            </div>
+                            <div>
+                                <dt>Max</dt>
+                                <dd>{formatDuration(stats.max)}</dd>
+                            </div>
+                        </dl>
+                    </dl>
+                </div>
+            );
+        } else
+            return null;
     }
 }
 
@@ -128,10 +216,11 @@ export class HighscoreComponent extends Component<HighscoreProps, HighscoreState
         return {
             count: sortedTimes.length,
             mean: mean,
-            median: sortedStatistics.median(sortedTimes),
+            stdDev: statistics.stdDev(sortedTimes, mean),
             lowerQuartile: sortedStatistics.lowerQuartile(sortedTimes),
+            median: sortedStatistics.median(sortedTimes),
             upperQuartile: sortedStatistics.upperQuartile(sortedTimes),
-            stdDev: statistics.stdDev(sortedTimes, mean)
+            max: _.max(sortedTimes) as number // never undefined because always has times
         };
     }
 
@@ -152,7 +241,8 @@ export class HighscoreComponent extends Component<HighscoreProps, HighscoreState
                 </div>
 
                 <HighscoreTableComponent top10={state.top10}/>
-                <StatsComponent stats={state.stats}/>
+                <hr/>
+                <StatsComponent options={props.options} stats={state.stats}/>
             </div>
         );
     }
