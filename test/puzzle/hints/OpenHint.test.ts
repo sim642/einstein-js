@@ -6,6 +6,7 @@ import {HintType} from "../../../src/puzzle/hint/Hint";
 import {BoardOptions} from "../../../src/puzzle/board/Board";
 import {SingleBoard} from "../../../src/puzzle/board/SingleBoard";
 import {param} from "../../param";
+import {paramBoardOptionsExtra} from "../paramPuzzle";
 
 describe("OpenHint", function () {
     describe("#apply()", function () {
@@ -50,11 +51,28 @@ describe("OpenHint", function () {
 });
 
 describe("OpenHintFactory", function () {
+    const factory = new OpenHintFactory();
+
+    describe("#supports()", function () {
+        context("large enough board", function () {
+            paramBoardOptionsExtra([
+                {rows: 1, cols: 2},
+                {rows: 2, cols: 1},
+                {rows: 1, cols: 1}
+            ], function (options) {
+                it("should return true", function () {
+                    expect(factory.supports(options)).to.be.true;
+                });
+            });
+        });
+
+        // no too small boards
+    });
+
     describe("#random()", function () {
         context("returned hint", function () {
             const options: BoardOptions = {rows: 6, cols: 6};
             const board = SingleBoard.random(options);
-            const factory = new OpenHintFactory();
 
             param.repeat(100, () => factory.random(board), function (hint) {
                 it("should have valid row, col", function () {

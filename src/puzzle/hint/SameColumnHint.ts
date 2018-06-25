@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import {BoardOptions} from "../board/Board";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
 import {Hint, HintFactory, HintType} from "./Hint";
@@ -34,6 +35,10 @@ export class SameColumnHint implements Hint {
 }
 
 export class SameColumnHintFactory implements HintFactory {
+    supports(options: BoardOptions): boolean {
+        return options.rows >= 2 && options.cols >= 1;
+    }
+
     random(board: SingleBoard): SameColumnHint {
         let col = _.random(0, board.cols - 1);
         let row1 = _.random(0, board.rows - 1);

@@ -2,7 +2,7 @@ import * as _ from "lodash";
 import {PuzzleOptions} from "../puzzle/Puzzle";
 import {db} from "./db";
 
-interface Counts {
+export interface Counts {
     solved: number;
     solvedCheated: number;
     over: number;

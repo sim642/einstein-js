@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import {BoardOptions} from "../board/Board";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
 import {Hint, HintFactory, HintType} from "./Hint";
@@ -67,6 +68,10 @@ export class BetweenHint implements Hint {
 }
 
 export class BetweenHintFactory implements HintFactory {
+    supports(options: BoardOptions): boolean {
+        return options.rows >= 1 && options.cols >= 3;
+    }
+
     random(board: SingleBoard): BetweenHint {
         let row1 = _.random(0, board.rows - 1);
         let rowMiddle = _.random(0, board.rows - 1);

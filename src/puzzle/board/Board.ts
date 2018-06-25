@@ -4,7 +4,7 @@ export interface BoardOptions {
 }
 
 export abstract class Board<T> {
-    constructor(private table: T[][], protected options: BoardOptions = {
+    constructor(private table: T[][], public readonly options: BoardOptions = {
         rows: table.length,
         cols: table[0].length
     }) {
