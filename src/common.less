@@ -88,7 +88,7 @@ button {
   }
 
   a:hover, a:active {
-    opacity: 0.9;
+    opacity: 0.8;
   }
 
   @media @tablet {
@@ -139,4 +139,18 @@ button {
     padding: 0;
     line-height: 0;
   }
+}
+
+a:hover {
+  .clickable; // force href-less a-s to be clickable
+}
+
+small {
+  display: inline-block;
+  vertical-align: bottom;
+  margin-bottom: 0.05em;
+}
+
+.small-number {
+  margin-bottom: 0.10em;
 }

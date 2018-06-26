@@ -3,7 +3,9 @@ import {Component, h} from "preact";
 import "./options.less";
 import {PuzzleOptions} from "../puzzle/Puzzle";
 import {Config} from "../storage/Config";
+import {Counts, CountsItem} from "../storage/Counts";
 import {Times} from "../storage/Times";
+import {formatOptions} from "./PuzzleOptionsUtils";
 
 interface RangeProps {
     value: number;
@@ -37,6 +39,71 @@ class InputRangeComponent extends Component<RangeProps, {}> {
                 </datalist>
             </span>
         );
+    }
+}
+
+interface TopOptionsProps {
+    set: (PuzzleOptions) => void;
+}
+
+interface TopOptionsState {
+    topCounts?: CountsItem[];
+}
+
+class TopOptionsComponent extends Component<TopOptionsProps, TopOptionsState> {
+    constructor() {
+        super();
+        this.state = {
+            topCounts: undefined
+        };
+        this.fetchTopCounts();
+    }
+
+    private fetchTopCounts() {
+        Counts.getTopCounts().then(topCounts => {
+            this.setState({
+                topCounts: topCounts
+            });
+        });
+    }
+
+    private onClick(countsItem: CountsItem) {
+        let options: PuzzleOptions = {
+            rows: countsItem.rows,
+            cols: countsItem.cols,
+            extraHintsPercent: countsItem.extraHintsPercent
+        }; // options shouldn't contain Counts fields, breaks IndexedDB query
+
+        return (e) => {
+            e.preventDefault();
+            this.props.set(options);
+        };
+    }
+
+    render(props: TopOptionsProps, state: TopOptionsState) {
+        if (state.topCounts !== undefined && state.topCounts.length > 0) {
+            return (
+                <div class="top-options">
+                    <hr/>
+
+                    <span class="options-title">Most played:</span>
+                    <ol>
+                        {
+                            _.map(_.take(state.topCounts, 5), countsItem =>
+                                <li>
+                                    <a onClick={this.onClick(countsItem)}>
+                                        {formatOptions(countsItem)}
+                                        {/*<small className="small-number">({countsItem.solved + countsItem.solvedCheated + countsItem.over})</small>*/} {/* TODO: update counts between games */}
+                                    </a>
+                                </li>
+                            )
+                        }
+                    </ol>
+                </div>
+            );
+        }
+        else
+            return null;
     }
 }
 
@@ -117,6 +184,17 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
         this.props.highscore(this.state.options);
     };
 
+    private setOptions = (options: PuzzleOptions) => {
+        this.setState({
+            options: _.clone(options),
+            hasTimes: false
+        });
+        this.fetchHasTimes(this.state.options);
+        Config.set({
+            options: this.state.options
+        });
+    };
+
     render(props: OptionsProps, state: OptionsState) {
         return (
             <form class="options" onSubmit={this.onSubmit}>
@@ -137,6 +215,8 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                     <button type="button" disabled={!state.hasTimes} onClick={this.onHighscore}>High scores</button>
                     <button class="button-highlight button-wide" type="submit">Play</button>
                 </div>
+
+                <TopOptionsComponent set={this.setOptions}/>
             </form>
         );
     }
