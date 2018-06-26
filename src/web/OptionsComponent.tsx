@@ -92,8 +92,7 @@ class TopOptionsComponent extends Component<TopOptionsProps, TopOptionsState> {
                             _.map(_.take(state.topCounts, 5), countsItem =>
                                 <li>
                                     <a onClick={this.onClick(countsItem)}>
-                                        {formatOptions(countsItem)}
-                                        {/*<small className="small-number">({countsItem.solved + countsItem.solvedCheated + countsItem.over})</small>*/} {/* TODO: update counts between games */}
+                                        {formatOptions(countsItem)} <small className="small-number">({countsItem.solved + countsItem.solvedCheated + countsItem.over})</small>
                                     </a>
                                 </li>
                             )
