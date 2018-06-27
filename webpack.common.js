@@ -25,6 +25,10 @@ module.exports = {
         }
     },
 
+    node: {
+        fs: "empty"
+    },
+
     module: {
         rules: [
             {
@@ -115,6 +119,10 @@ module.exports = {
                 from: "./src/einstein-*.png", // TODO: don't hardcode icon png
                 to: "./",
                 flatten: true
+            },
+            {
+                from: "./src/z3/z3smt2w.wasm",
+                to: "./"
             }
         ])
     ]

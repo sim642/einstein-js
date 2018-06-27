@@ -44,8 +44,8 @@ export class AppComponent extends Component<{}, AppState> {
     private messageUnload: MessageUnloadListener;
 
     private static readonly defaultOptions: PuzzleOptions = {
-        rows: 6,
-        cols: 6,
+        rows: 2,
+        cols: 2,
         extraHintsPercent: 0
     };
 
