@@ -81,8 +81,8 @@ export class SingleBoard extends Board<number> {
             };
 
             setup("x");
-            let sat1 = ask("(check-sat)").trim();
-            let solvable = sat1 == "sat";
+            // let sat1 = ask("(check-sat)").trim();
+            // let solvable = sat1 == "sat";
 
             setup("y");
             let ds = "";
@@ -102,7 +102,8 @@ export class SingleBoard extends Board<number> {
 
             z3.destroy(ctx);
 
-            return solvable && unique;
+            // return solvable && unique;
+            return unique;
         }
         else {
             // alert("crap");
