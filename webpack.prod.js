@@ -33,6 +33,15 @@ module.exports = Merge.smart(CommonConfig, {
                         name: "[name].[hash].[ext]"
                     }
                 }
+            },
+            {
+                test: /\.wasm$/,
+                use: {
+                    loader: "file-loader",
+                    query: {
+                        name: "[name].[hash].[ext]"
+                    }
+                }
             }
         ]
     },

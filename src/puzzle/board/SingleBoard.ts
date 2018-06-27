@@ -25,17 +25,19 @@ export class SingleBoard extends Board<number> {
     isSolvable(hints: Hint[]) {
         let z3 = z;
         if (z3 !== null) {
-            let ctx = z3.init();
+            let cfg = z3.mk_config();
+            let ctx = z3.mk_context(cfg);
+            z3.del_config(cfg);
 
-            z3.setParam("model", "true");
-            z3.setParam("auto_config", "false");
-            z3.setParam("smtlib2_compliant", "false");
+            // z3.setParam("model", "true");
+            // z3.setParam("auto_config", "false");
+            // z3.setParam("smtlib2_compliant", "false");
 
             let ss = "";
             let ask = s => {
                 // console.log(s);
                 ss += s + "\n";
-                return (z3 as Z3).ask(ctx, s);
+                return (z3 as Z3).eval_smtlib2_string(ctx, s);
             };
 
             let setup = v => {
@@ -94,13 +96,13 @@ export class SingleBoard extends Board<number> {
                 }
             }
             ask(`(assert (or${ds}))`);
-            let sat2 = ask("(check-sat)").trim();
-            let unique = sat2 == "unsat";
-
             console.log(ss);
+            let sat2 = ask("(check-sat)").trim();
+
+            let unique = sat2 == "unsat";
             // alert(`${sat1} ${solvable}\n${sat2} ${unique}`);
 
-            z3.destroy(ctx);
+            z3.del_context(ctx);
 
             // return solvable && unique;
             return unique;
