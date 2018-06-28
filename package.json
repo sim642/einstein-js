@@ -33,7 +33,8 @@
     "classnames": "^2.2.5",
     "dexie": "^2.0.1",
     "lodash": "^4.17.4",
-    "preact": "^8.2.1"
+    "preact": "^8.2.1",
+    "tslib": "^1.9.3"
   },
   "devDependencies": {
     "@types/chai": "^4.0.1",
