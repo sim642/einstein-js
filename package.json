@@ -34,7 +34,7 @@
     "dexie": "^2.0.1",
     "lodash": "^4.17.4",
     "preact": "^8.2.1",
-    "z3em": "0.0.1"
+    "z3em": "^0.0.2"
   },
   "devDependencies": {
     "@types/chai": "^4.0.1",
