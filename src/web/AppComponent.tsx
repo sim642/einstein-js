@@ -144,13 +144,15 @@ export class AppComponent extends Component<{}, AppState> {
 
     private submitOptions = (options: PuzzleOptions) => {
         this.configOptions(options);
-        this.setState({
-            puzzle: Puzzle.generate(options),
-            gameState: GameState.Playing,
-            cheated: 0
-        }, () => {
-            this.timer.start();
-            this.refresh(); // check win in case everything opened on start
+        Puzzle.generate(options).then(puzzle => {
+            this.setState({
+                puzzle: puzzle,
+                gameState: GameState.Playing,
+                cheated: 0
+            }, () => {
+                this.timer.start();
+                this.refresh(); // check win in case everything opened on start
+            });
         });
     };
 
