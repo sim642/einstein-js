@@ -12,7 +12,8 @@ wasmXHR.responseType = 'arraybuffer';
 wasmXHR.onload = function() {
 
     var z3smt2 = Z3Em({
-        wasmBinary: wasmXHR.response
+        wasmBinary: wasmXHR.response,
+        onRuntimeInitialized: () => alert("Z3 armed")
     });
 
     z3 = new Z3(z3smt2);
