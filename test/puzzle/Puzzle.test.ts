@@ -77,19 +77,27 @@ describe("Puzzle", function () {
         context("returned puzzle", function () {
             paramPuzzleOptions(function (options) {
                 param.repeat(20, () => Puzzle.generate(options), function (puzzle) {
-                    it("should have correct size boards", function () {
-                        // singleboard
-                        expect(puzzle.singleBoard.rows).to.equal(options.rows);
-                        expect(puzzle.singleBoard.cols).to.equal(options.cols);
-                        // multiboard
-                        expect(puzzle.multiBoard.rows).to.equal(options.rows);
-                        expect(puzzle.multiBoard.cols).to.equal(options.cols);
+                    it("should have correct size boards", function (done) {
+                        puzzle.then(puzzle => {
+                            // singleboard
+                            expect(puzzle.singleBoard.rows).to.equal(options.rows);
+                            expect(puzzle.singleBoard.cols).to.equal(options.cols);
+                            // multiboard
+                            expect(puzzle.multiBoard.rows).to.equal(options.rows);
+                            expect(puzzle.multiBoard.cols).to.equal(options.cols);
+
+                            done();
+                        }).catch(err => done(err));
                     });
 
-                    it("should be solvable", function () {
-                        let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
+                    it("should be solvable", function (done) {
+                        puzzle.then(puzzle => {
+                            let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
 
-                        expect(solvable).to.be.true;
+                            expect(solvable).to.be.true;
+
+                            done();
+                        }).catch(err => done(err));
                     });
                 });
             });
