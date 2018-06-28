@@ -29,7 +29,7 @@ export class Puzzle {
         return this.multiBoard.applySingleHint(_.filter(this.hints, hint => hint.getType() !== HintType.Start));
     }
 
-    static generate(options: PuzzleOptions): Puzzle {
+    static async generate(options: PuzzleOptions): Promise<Puzzle> {
         let board = SingleBoard.random(options);
         let hints = Puzzle.generateHints(board);
         hints = Puzzle.pruneHints(board, hints);

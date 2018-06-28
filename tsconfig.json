@@ -7,14 +7,16 @@
       "es5",
       "scripthost",
       "es2015.iterable",
-      "es2015.symbol.wellknown"
+      "es2015.symbol.wellknown",
+      "es2015.promise"
     ],
     "jsx": "react",
     "jsxFactory": "h",
     "sourceMap": true,
     "noImplicitReturns": true,
     "strictNullChecks": true,
-    "allowJs": true
+    "allowJs": true,
+    "importHelpers": true
   },
   "exclude": [
     "node_modules"

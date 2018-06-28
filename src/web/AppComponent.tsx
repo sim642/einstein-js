@@ -32,7 +32,7 @@ export enum GameState {
 
 interface AppState {
     options: PuzzleOptions;
-    puzzle: Puzzle;
+    puzzle?: Puzzle;
     gameState: GameState;
     cheated: number;
     defaultName?: string;
@@ -53,7 +53,7 @@ export class AppComponent extends Component<{}, AppState> {
         super();
         this.state = {
             options: AppComponent.defaultOptions,
-            puzzle: Puzzle.generate(AppComponent.defaultOptions), // TODO: don't generate puzzle before setting options
+            puzzle: undefined,
             gameState: GameState.Options,
             cheated: 0
         };
@@ -107,7 +107,7 @@ export class AppComponent extends Component<{}, AppState> {
     private onClickCheat = (e) => {
         if (this.state.gameState === GameState.Playing) {
             this.setState((state: AppState) => {
-                let changed = state.puzzle.applySingleHint();
+                let changed = state.puzzle!.applySingleHint();
                 return _.merge(state, {
                     cheated: state.cheated + (changed ? 1 : 0)
                 });
@@ -142,10 +142,11 @@ export class AppComponent extends Component<{}, AppState> {
         }
     };
 
-    private submitOptions = (options: PuzzleOptions) => {
+    private submitOptions = async (options: PuzzleOptions) => {
         this.configOptions(options);
+        let puzzle = await Puzzle.generate(options);
         this.setState({
-            puzzle: Puzzle.generate(options),
+            puzzle: puzzle,
             gameState: GameState.Playing,
             cheated: 0
         }, () => {
@@ -185,7 +186,7 @@ export class AppComponent extends Component<{}, AppState> {
 
     private refresh = () => {
         if (this.state.gameState === GameState.Playing) {
-            let puzzle = this.state.puzzle;
+            let puzzle = this.state.puzzle!;
             if (puzzle.isSolved()) {
                 this.timer.pause();
                 let time = this.timer.getTotalTime();
@@ -228,7 +229,7 @@ export class AppComponent extends Component<{}, AppState> {
 
     render(props, state: AppState) {
         let solvedOrOver = state.gameState === GameState.Solved || state.gameState === GameState.Over;
-        let showBoard = solvedOrOver ? state.puzzle.singleBoard : undefined;
+        let showBoard = solvedOrOver ? state.puzzle!.singleBoard : undefined;
         return (
             <div class={classNames({
                 "app": true,
@@ -269,12 +270,12 @@ export class AppComponent extends Component<{}, AppState> {
                             <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions}/> :
                             state.gameState === GameState.Highscore ?
                                 <HighscoreComponent options={state.options}/> :
-                                <MultiBoardComponent board={state.puzzle.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
+                                <MultiBoardComponent board={state.puzzle!.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                     }
                 </div>
                 {
                     state.gameState !== GameState.Options && state.gameState !== GameState.Highscore ?
-                        <HintsComponent hints={state.puzzle.hints}/> :
+                        <HintsComponent hints={state.puzzle!.hints}/> :
                         null
                 }
             </div>

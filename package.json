@@ -34,6 +34,7 @@
     "dexie": "^2.0.1",
     "lodash": "^4.17.4",
     "preact": "^8.2.1",
+    "tslib": "^1.9.3",
     "z3em": "^0.0.2"
   },
   "devDependencies": {
