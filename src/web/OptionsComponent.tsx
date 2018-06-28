@@ -42,6 +42,37 @@ class InputRangeComponent extends Component<RangeProps, {}> {
     }
 }
 
+interface ChoiceProps {
+    choices: [string, string][];
+    value: string;
+    onChange: (value: string) => void;
+    id?: string;
+}
+
+class RadioChoiceComponent extends Component<ChoiceProps, {}> {
+    private onChange(value: string) {
+        return (e) => {
+            e.preventDefault();
+
+            this.props.onChange(value);
+        };
+    }
+
+    render(props: ChoiceProps) {
+        return (
+            // Chrome fieldsets don't flex: https://stackoverflow.com/q/28078681
+            <div class="input input-choice">
+                {_.map(props.choices, ([value, label]) =>
+                    <span>
+                        <input type="radio" id={`${props.id}-${value}`} name={props.id} checked={value === props.value} onChange={this.onChange(value)}/>
+                        <label for={`${props.id}-${value}`}>{label}</label>
+                    </span>
+                )}
+            </div>
+        );
+    }
+}
+
 interface TopOptionsProps {
     set: (PuzzleOptions) => void;
 }
@@ -208,6 +239,10 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                 <div class="form-group">
                     <label for="option-extra-hints">Extra hints</label>
                     <InputRangeComponent id="option-extra-hints" min={0} max={100} step={20} value={state.options.extraHintsPercent} onChange={this.onChange("extraHintsPercent")} unit="%"/>
+                </div>
+                <div class="form-group">
+                    <label for="option-difficulty">Difficulty</label>
+                    <RadioChoiceComponent id="option-difficulty" choices={[["normal", "Normal"], ["hard", "Hard"]]} value="normal" onChange={console.log}/>
                 </div>
                 <div class="form-group buttons">
                     <button type="reset" onClick={this.onReset}>Reset</button>
