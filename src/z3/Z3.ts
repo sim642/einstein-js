@@ -6,19 +6,21 @@ import * as z3emWasm from "z3em/z3em.wasm";
 export let z3: Z3 | null = null;
 
 var wasmURL = z3emWasm;
-var wasmXHR = new XMLHttpRequest();
-wasmXHR.open('GET', wasmURL, true);
-wasmXHR.responseType = 'arraybuffer';
-wasmXHR.onload = function() {
+// var wasmXHR = new XMLHttpRequest();
+// wasmXHR.open('GET', wasmURL, true);
+// wasmXHR.responseType = 'arraybuffer';
+// wasmXHR.onload = function() {
 
     var z3smt2 = Z3Em({
-        wasmBinary: wasmXHR.response,
-        onRuntimeInitialized: () => alert("Z3 armed")
+        // wasmBinary: wasmXHR.response,
+        wasmBinaryFile: wasmURL,
+        onRuntimeInitialized: () => {
+            z3 = new Z3(z3smt2);
+            alert("Z3 armed");
+        }
     });
-
-    z3 = new Z3(z3smt2);
-};
-wasmXHR.send(null);
+// };
+// wasmXHR.send(null);
 
 export class Z3 {
     constructor(private z3smt2) {
