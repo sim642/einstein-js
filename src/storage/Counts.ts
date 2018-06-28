@@ -29,6 +29,14 @@ export namespace Counts {
         });
     }
 
+    export function getTopCounts(): Promise<CountsItem[]> {
+        return db.counts.toArray().then(countsItems =>
+            _.orderBy(countsItems, countsItem =>
+                countsItem.solved + countsItem.solvedCheated + countsItem.over,
+                ["desc"])
+        );
+    }
+
     export function increase(options: PuzzleOptions, count: keyof Counts): Promise<PuzzleOptions> {
         return db.transaction("rw", db.counts, () =>
             get(options).then(countsItem => {
