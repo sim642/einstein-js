@@ -76,28 +76,24 @@ describe("Puzzle", function () {
     describe("#generate()", function () {
         context("returned puzzle", function () {
             paramPuzzleOptions(function (options) {
-                param.repeat(20, () => Puzzle.generate(options), function (puzzle) {
-                    it("should have correct size boards", function (done) {
-                        puzzle.then(puzzle => {
-                            // singleboard
-                            expect(puzzle.singleBoard.rows).to.equal(options.rows);
-                            expect(puzzle.singleBoard.cols).to.equal(options.cols);
-                            // multiboard
-                            expect(puzzle.multiBoard.rows).to.equal(options.rows);
-                            expect(puzzle.multiBoard.cols).to.equal(options.cols);
+                param.repeat(20, () => Puzzle.generate(options), function (puzzlePromise) {
+                    it("should have correct size boards", async function () {
+                        let puzzle = await puzzlePromise;
 
-                            done();
-                        }).catch(err => done(err));
+                        // singleboard
+                        expect(puzzle.singleBoard.rows).to.equal(options.rows);
+                        expect(puzzle.singleBoard.cols).to.equal(options.cols);
+                        // multiboard
+                        expect(puzzle.multiBoard.rows).to.equal(options.rows);
+                        expect(puzzle.multiBoard.cols).to.equal(options.cols);
                     });
 
-                    it("should be solvable", function (done) {
-                        puzzle.then(puzzle => {
-                            let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
+                    it("should be solvable", async function () {
+                        let puzzle = await puzzlePromise;
 
-                            expect(solvable).to.be.true;
+                        let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
 
-                            done();
-                        }).catch(err => done(err));
+                        expect(solvable).to.be.true;
                     });
                 });
             });

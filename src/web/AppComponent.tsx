@@ -142,17 +142,16 @@ export class AppComponent extends Component<{}, AppState> {
         }
     };
 
-    private submitOptions = (options: PuzzleOptions) => {
+    private submitOptions = async (options: PuzzleOptions) => {
         this.configOptions(options);
-        Puzzle.generate(options).then(puzzle => {
-            this.setState({
-                puzzle: puzzle,
-                gameState: GameState.Playing,
-                cheated: 0
-            }, () => {
-                this.timer.start();
-                this.refresh(); // check win in case everything opened on start
-            });
+        let puzzle = await Puzzle.generate(options);
+        this.setState({
+            puzzle: puzzle,
+            gameState: GameState.Playing,
+            cheated: 0
+        }, () => {
+            this.timer.start();
+            this.refresh(); // check win in case everything opened on start
         });
     };
 

@@ -29,13 +29,12 @@ export class Puzzle {
         return this.multiBoard.applySingleHint(_.filter(this.hints, hint => hint.getType() !== HintType.Start));
     }
 
-    static generate(options: PuzzleOptions): Promise<Puzzle> {
+    static async generate(options: PuzzleOptions): Promise<Puzzle> {
         let board = SingleBoard.random(options);
         let hints = Puzzle.generateHints(board);
         hints = Puzzle.pruneHints(board, hints);
         hints = Puzzle.generateExtraHints(options, board, hints);
-        return new Promise<Puzzle>(resolve => resolve(new Puzzle(board, hints, options)));
-        // return new Puzzle(board, hints, options);
+        return new Puzzle(board, hints, options);
     }
 
     private static hintFactory: HintFactory = new RandomHintFactory();
