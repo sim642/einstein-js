@@ -61,7 +61,7 @@ export class EinsteinDatabase extends Dexie {
                     difficulty: "normal"
                 }),
                 tx.table<ConfigItem, string>("config").update("options", {
-                    difficulty: "normal"
+                    "value.difficulty": "normal" // actual object is in value
                 }),
                 tx.table<CountsItem>("counts").toCollection().modify({
                     difficulty: "normal"
