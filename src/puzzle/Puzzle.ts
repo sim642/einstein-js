@@ -3,13 +3,16 @@ import {BoardOptions} from "./board/Board";
 import {MultiBoard} from "./board/MultiBoard";
 import {SingleBoard} from "./board/SingleBoard";
 import {ApplyHintsGenerator} from "./generate/ApplyHintsGenerator";
+import {DifficultyHintsGenerator} from "./generate/DifficultyHintsGenerator";
 import {ExtraHintsGenerator} from "./generate/ExtraHintsGenerator";
 import {Z3HintsGenerator} from "./generate/Z3HintsGenerator";
 import {Hint, HintType} from "./hint/Hint";
 
+export type Difficulty = "normal" | "hard";
+
 export interface PuzzleOptions extends BoardOptions {
     readonly extraHintsPercent: number;
-    readonly difficulty: "normal" | "hard";
+    readonly difficulty: Difficulty;
 }
 
 export class Puzzle {
@@ -34,7 +37,10 @@ export class Puzzle {
 
     static async generate(options: PuzzleOptions): Promise<Puzzle> {
         let board = SingleBoard.random(options);
-        let hintsGenerator = new ExtraHintsGenerator(new Z3HintsGenerator()); // TODO: check options.difficulty
+        let hintsGenerator = new ExtraHintsGenerator(new DifficultyHintsGenerator({
+            normal: new ApplyHintsGenerator(),
+            hard: new Z3HintsGenerator()
+        }));
         let start = _.now();
         let hints = await hintsGenerator.generate(options, board);
         let end = _.now();

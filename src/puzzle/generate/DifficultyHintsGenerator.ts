@@ -1,0 +1,14 @@
+import {SingleBoard} from "../board/SingleBoard";
+import {Hint} from "../hint/Hint";
+import {Difficulty, PuzzleOptions} from "../Puzzle";
+import {HintsGenerator} from "./HintsGenerator";
+
+export class DifficultyHintsGenerator implements HintsGenerator {
+    constructor(private generators: Record<Difficulty, HintsGenerator>) {
+
+    }
+
+    generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
+        return this.generators[options.difficulty].generate(options, board);
+    }
+}
