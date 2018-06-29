@@ -24,6 +24,13 @@ export class EinsteinDatabase extends Dexie {
             counts: "[rows+cols+extraHintsPercent]"
         });
 
+        /*
+        counts has puzzle options as primary key.
+        Dexie can't upgrade primary key changes automatically: https://github.com/dfahlander/Dexie.js/issues/88#issuecomment-285384576
+        Must use temporary table to recreate with additional auto-increment primary key.
+        Must use hacks to directly transfer to/from temporary table because Dexie uses one transaction for everything.
+         */
+
         this.version(4).stores({
             counts: null,
             countsTmp: "[rows+cols+extraHintsPercent]"
@@ -39,8 +46,8 @@ export class EinsteinDatabase extends Dexie {
         }).upgrade(async tx => {
             let countsItemsTmp = await new Promise<any[]>((resolve, reject) => {
                 let request = tx.idbtrans.objectStore("countsTmp").getAll();
-                request.onSuccess = () => resolve(request.result);
-                request.onError = () => reject(request.error);
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
             });
             await tx.table("counts").bulkAdd(countsItemsTmp);
         });
