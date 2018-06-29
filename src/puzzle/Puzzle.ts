@@ -34,7 +34,10 @@ export class Puzzle {
     static async generate(options: PuzzleOptions): Promise<Puzzle> {
         let board = SingleBoard.random(options);
         let hintsGenerator = new ExtraHintsGenerator(new Z3HintsGenerator());
+        let start = _.now();
         let hints = await hintsGenerator.generate(options, board);
+        let end = _.now();
+        console.log(`${end - start}`);
         return new Puzzle(board, hints, options);
     }
 }

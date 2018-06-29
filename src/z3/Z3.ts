@@ -8,7 +8,7 @@ export const getZ3 = memoizeSupplier(() =>
             wasmBinaryFile: z3emWasm,
             onRuntimeInitialized: () => {
                 const z3 = new Z3(z3em);
-                alert("Z3 armed");
+                console.log("Z3 armed");
                 resolve(z3);
             }
         });

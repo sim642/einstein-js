@@ -73,13 +73,12 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
         // let sat1 = ask("(check-sat)").trim();
         // let solvable = sat1 == "sat";
 
-        setup("y");
         let ds = "";
         for (let row = 0; row < board.rows; row++) {
-            for (let variant = 0; variant < board.variants; variant++) {
+            for (let col = 0; col < board.cols; col++) {
+                let variant = board.get(row, col);
                 let x = `x${row}${variant}`;
-                let y = `y${row}${variant}`;
-                ds += ` (distinct ${x} ${y})`;
+                ds += ` (distinct ${x} ${col})`;
             }
         }
         ask(`(assert (or${ds}))`);
