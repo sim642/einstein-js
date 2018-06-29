@@ -12,7 +12,8 @@ describe("Puzzle", function () {
     const options: PuzzleOptions = {
         rows: 3,
         cols: 3,
-        extraHintsPercent: 0
+        extraHintsPercent: 0,
+        difficulty: "normal"
     };
     const singleBoard: SingleBoard = new SingleBoard([
         [0, 1, 2],

@@ -102,7 +102,8 @@ class TopOptionsComponent extends Component<TopOptionsProps, TopOptionsState> {
         let options: PuzzleOptions = {
             rows: countsItem.rows,
             cols: countsItem.cols,
-            extraHintsPercent: countsItem.extraHintsPercent
+            extraHintsPercent: countsItem.extraHintsPercent,
+            difficulty: countsItem.difficulty
         }; // options shouldn't contain Counts fields, breaks IndexedDB query
 
         return (e) => {
@@ -169,11 +170,11 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
         }
     }
 
-    private onChange(field: keyof PuzzleOptions) {
-        return (value: number) => {
+    private onChange<K extends keyof PuzzleOptions>(field: K) {
+        return (value: PuzzleOptions[K]) => {
             this.setState(state => _.merge(state, {
                 options: {
-                    [field]: value // TODO: typecheck this,
+                    [field as string]: value // TODO: typecheck this,
                 },
                 hasTimes: false
             }));
@@ -242,7 +243,7 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                 </div>
                 <div class="form-group">
                     <label for="option-difficulty">Difficulty</label>
-                    <RadioChoiceComponent id="option-difficulty" choices={[["normal", "Normal"], ["hard", "Hard"]]} value="normal" onChange={console.log}/>
+                    <RadioChoiceComponent id="option-difficulty" choices={[["normal", "Normal"], ["hard", "Hard"]]} value={state.options.difficulty} onChange={this.onChange("difficulty")}/>
                 </div>
                 <div class="form-group buttons">
                     <button type="reset" onClick={this.onReset}>Reset</button>

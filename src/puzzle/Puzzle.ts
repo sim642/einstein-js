@@ -9,6 +9,7 @@ import {Hint, HintType} from "./hint/Hint";
 
 export interface PuzzleOptions extends BoardOptions {
     readonly extraHintsPercent: number;
+    readonly difficulty: "normal" | "hard";
 }
 
 export class Puzzle {
@@ -33,7 +34,7 @@ export class Puzzle {
 
     static async generate(options: PuzzleOptions): Promise<Puzzle> {
         let board = SingleBoard.random(options);
-        let hintsGenerator = new ExtraHintsGenerator(new Z3HintsGenerator());
+        let hintsGenerator = new ExtraHintsGenerator(new Z3HintsGenerator()); // TODO: check options.difficulty
         let start = _.now();
         let hints = await hintsGenerator.generate(options, board);
         let end = _.now();

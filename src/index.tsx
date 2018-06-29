@@ -8,7 +8,7 @@ console.log("-------");
 
 OfflinePluginRuntime.install();
 
-// import "preact/devtools";
+import "preact/devtools";
 
 render(<AppComponent/>, document.body);
 
