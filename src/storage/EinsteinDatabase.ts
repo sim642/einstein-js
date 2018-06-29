@@ -7,7 +7,7 @@ import {TimesItem} from "./Times";
 export class EinsteinDatabase extends Dexie {
     times: Dexie.Table<TimesItem, any>;
     config: Dexie.Table<ConfigItem, string>;
-    counts: Dexie.Table<CountsItem, any>;
+    counts: Dexie.Table<CountsItem, number>;
 
     constructor() {
         super("EinsteinDatabase");
@@ -41,7 +41,7 @@ export class EinsteinDatabase extends Dexie {
         });
 
         this.version(5).stores({
-            counts: "++, [rows+cols+extraHintsPercent]",
+            counts: "++id, [rows+cols+extraHintsPercent]",
             countsTmp: null
         }).upgrade(async tx => {
             let countsItemsTmp = await new Promise<any[]>((resolve, reject) => {
@@ -54,7 +54,7 @@ export class EinsteinDatabase extends Dexie {
 
         this.version(6).stores({
             times: "++, [rows+cols+extraHintsPercent+difficulty]",
-            counts: "++, [rows+cols+extraHintsPercent+difficulty]"
+            counts: "++id, [rows+cols+extraHintsPercent+difficulty]"
         }).upgrade(tx =>
             Dexie.Promise.all([
                 tx.table<TimesItem>("times").toCollection().modify({
