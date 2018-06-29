@@ -3,7 +3,7 @@ import {Hint} from "../hint/Hint";
 import {SolvableHintsGenerator} from "./HintsGenerator";
 
 export class ApplyHintsGenerator extends SolvableHintsGenerator {
-    isSolvable(board: SingleBoard, hints: Hint[]): boolean {
+    async isSolvable(board: SingleBoard, hints: Hint[]): Promise<boolean> {
         return board.isSolvable(hints);
     }
 }

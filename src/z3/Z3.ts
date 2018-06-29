@@ -1,15 +1,18 @@
 import * as Z3Em from "z3em";
 import * as z3emWasm from "z3em/z3em.wasm";
+import {memoizeSupplier} from "../function";
 
-export let z3: Z3 | null = null;
-
-const z3em = Z3Em({
-    wasmBinaryFile: z3emWasm,
-    onRuntimeInitialized: () => {
-        z3 = new Z3(z3em);
-        alert("Z3 armed");
-    }
-});
+export const getZ3 = memoizeSupplier(() =>
+    new Promise<Z3>((resolve, reject) => {
+        const z3em = Z3Em({
+            wasmBinaryFile: z3emWasm,
+            onRuntimeInitialized: () => {
+                const z3 = new Z3(z3em);
+                alert("Z3 armed");
+                resolve(z3);
+            }
+        });
+    }));
 
 export class Z3 {
     constructor(private z3em) {
@@ -22,4 +25,3 @@ export class Z3 {
     del_context = this.z3em.cwrap("Z3_del_context", null, ["number"]);
     eval_smtlib2_string = this.z3em.cwrap("Z3_eval_smtlib2_string", "string", ["number", "string"]);
 }
-

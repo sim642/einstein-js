@@ -9,8 +9,8 @@ export class ExtraHintsGenerator extends DelegateHintsGenerator {
 
     private static hintFactory: HintFactory = new RandomHintFactory();
 
-    generate(options: PuzzleOptions, board: SingleBoard): Hint[] {
-        let hints = this.delegate.generate(options, board);
+    async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
+        let hints = await this.delegate.generate(options, board);
         return ExtraHintsGenerator.generateExtraHints(options, board, hints);
     }
 

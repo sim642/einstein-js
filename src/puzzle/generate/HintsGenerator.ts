@@ -5,7 +5,7 @@ import {Puzzle, PuzzleOptions} from "../Puzzle";
 import {RandomHintFactory} from "../RandomHint";
 
 export interface HintsGenerator {
-    generate(options: PuzzleOptions, board: SingleBoard): Hint[];
+    generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]>;
 }
 
 export abstract class DelegateHintsGenerator implements HintsGenerator {
@@ -13,30 +13,30 @@ export abstract class DelegateHintsGenerator implements HintsGenerator {
 
     }
 
-    abstract generate(options: PuzzleOptions, board: SingleBoard): Hint[];
+    abstract generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]>;
 }
 
 export abstract class SolvableHintsGenerator implements HintsGenerator {
 
     private static hintFactory: HintFactory = new RandomHintFactory();
 
-    generate(options: PuzzleOptions, board: SingleBoard): Hint[] {
-        let hints = this.generateHints(board);
+    async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
+        let hints = await this.generateHints(board);
         return this.pruneHints(board, hints);
     }
 
-    abstract isSolvable(board: SingleBoard, hints: Hint[]): boolean;
+    abstract isSolvable(board: SingleBoard, hints: Hint[]): Promise<boolean>;
 
-    private generateHints(board: SingleBoard): Hint[] {
+    private async generateHints(board: SingleBoard): Promise<Hint[]> {
         let hints: Hint[] = [];
-        while (!this.isSolvable(board, hints)) {
+        while (!await this.isSolvable(board, hints)) {
             let hint = SolvableHintsGenerator.hintFactory.random(board);
             hints.push(hint);
         }
         return hints;
     }
 
-    private pruneHints(board: SingleBoard, hints: Hint[]): Hint[] {
+    private async pruneHints(board: SingleBoard, hints: Hint[]): Promise<Hint[]> {
         hints = _.clone(hints);
         console.debug(`Before pruneHints: ${hints.length}`);
         let changed: boolean;
@@ -44,7 +44,7 @@ export abstract class SolvableHintsGenerator implements HintsGenerator {
             changed = false;
             for (let i = 0; i < hints.length; i++) {
                 let hint = hints.splice(i, 1)[0];
-                if (this.isSolvable(board, hints)) {
+                if (await this.isSolvable(board, hints)) {
                     changed = true;
                     break;
                 }

@@ -1,4 +1,4 @@
-import {z3 as z, Z3} from "../../z3/Z3";
+import {getZ3, Z3} from "../../z3/Z3";
 import {SingleBoard} from "../board/SingleBoard";
 import {AdjacentHint} from "../hint/AdjacentHint";
 import {BetweenHint} from "../hint/BetweenHint";
@@ -9,8 +9,8 @@ import {SameColumnHint} from "../hint/SameColumnHint";
 import {SolvableHintsGenerator} from "./HintsGenerator";
 
 export class Z3HintsGenerator extends SolvableHintsGenerator {
-    isSolvable(board: SingleBoard, hints: Hint[]): boolean {
-        const z3: Z3 = z!; // TODO: don't assume non-null
+    async isSolvable(board: SingleBoard, hints: Hint[]): Promise<boolean> {
+        const z3 = await getZ3();
 
         let cfg = z3.mk_config();
         let ctx = z3.mk_context(cfg);
@@ -24,7 +24,7 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
         let ask = s => {
             // console.log(s);
             ss += s + "\n";
-            return (z3 as Z3).eval_smtlib2_string(ctx, s);
+            return z3.eval_smtlib2_string(ctx, s);
         };
 
         let setup = v => {
