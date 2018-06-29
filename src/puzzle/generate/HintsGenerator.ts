@@ -21,22 +21,22 @@ export abstract class SolvableHintsGenerator implements HintsGenerator {
     private static hintFactory: HintFactory = new RandomHintFactory();
 
     async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
-        let hints = await this.generateHints(board);
+        let hints = this.generateHints(board);
         return this.pruneHints(board, hints);
     }
 
-    abstract isSolvable(board: SingleBoard, hints: Hint[]): Promise<boolean>;
+    abstract isSolvable(board: SingleBoard, hints: Hint[]): boolean;
 
-    private async generateHints(board: SingleBoard): Promise<Hint[]> {
+    private generateHints(board: SingleBoard): Hint[] {
         let hints: Hint[] = [];
-        while (!await this.isSolvable(board, hints)) {
+        while (!this.isSolvable(board, hints)) {
             let hint = SolvableHintsGenerator.hintFactory.random(board);
             hints.push(hint);
         }
         return hints;
     }
 
-    private async pruneHints(board: SingleBoard, hints: Hint[]): Promise<Hint[]> {
+    private pruneHints(board: SingleBoard, hints: Hint[]): Hint[] {
         hints = _.clone(hints);
         console.debug(`Before pruneHints: ${hints.length}`);
         let changed: boolean;
@@ -44,7 +44,7 @@ export abstract class SolvableHintsGenerator implements HintsGenerator {
             changed = false;
             for (let i = 0; i < hints.length; i++) {
                 let hint = hints.splice(i, 1)[0];
-                if (await this.isSolvable(board, hints)) {
+                if (this.isSolvable(board, hints)) {
                     changed = true;
                     break;
                 }

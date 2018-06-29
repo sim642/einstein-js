@@ -14,7 +14,8 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
     private z3: Z3;
     private ctx;
 
-    /*async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
+    async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
+        console.debug("getting Z3");
         this.z3 = await getZ3();
         this.makeContext();
         this.assertBoard(board);
@@ -23,39 +24,45 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
 
         this.deleteContext();
         return hints;
-    }*/
+    }
 
     private makeContext() {
+        console.debug("makeContext");
         let cfg = this.z3.mk_config();
         this.ctx = this.z3.mk_context(cfg);
         this.z3.del_config(cfg);
     }
 
     private ask(smtlib2: string): string {
+        // console.debug(smtlib2);
         return this.z3.eval_smtlib2_string(this.ctx, smtlib2).trim();
     }
 
     private deleteContext() {
+        console.debug("deleteContext");
         this.z3.del_context(this.ctx);
     }
 
-    async isSolvable(board: SingleBoard, hints: Hint[]): Promise<boolean> {
-        this.z3 = await getZ3();
+    isSolvable(board: SingleBoard, hints: Hint[]): boolean {
+        /*this.z3 = await getZ3();
         this.makeContext();
-        this.assertBoard(board);
+        this.assertBoard(board);*/
 
+        console.debug("push");
         this.ask("(push)");
 
         this.assertHints(hints);
         let checkSat = this.ask("(check-sat)");
         let unique = checkSat == "unsat";
 
+        console.debug("pop");
         this.ask("(pop)");
-        this.deleteContext();
+        // this.deleteContext();
         return unique;
     }
 
     private assertBoard(board: SingleBoard) {
+        console.debug("assertBoard");
         for (let row = 0; row < board.rows; row++) {
             let xs = "";
             for (let variant = 0; variant < board.variants; variant++) {
@@ -80,6 +87,7 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
     }
 
     private assertHints(hints: Hint[]) {
+        console.debug("assertHints");
         for (const hint of hints) {
             if (hint instanceof AdjacentHint) {
                 let x1 = `x${hint.row1}${hint.variant1}`;
