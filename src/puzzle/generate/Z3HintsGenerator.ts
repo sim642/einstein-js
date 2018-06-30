@@ -1,26 +1,33 @@
+import * as _ from "lodash";
 import {getZ3, Z3} from "../../z3/Z3";
 import {SingleBoard} from "../board/SingleBoard";
 import {AdjacentHint} from "../hint/AdjacentHint";
 import {BetweenHint} from "../hint/BetweenHint";
 import {DirectionHint} from "../hint/DirectionHint";
-import {Hint} from "../hint/Hint";
+import {Hint, HintFactory} from "../hint/Hint";
 import {OpenHint} from "../hint/OpenHint";
 import {SameColumnHint} from "../hint/SameColumnHint";
 import {PuzzleOptions} from "../Puzzle";
-import {SolvableHintsGenerator} from "./HintsGenerator";
+import {RandomHintFactory} from "../RandomHint";
+import {HintsGenerator} from "./HintsGenerator";
 
-export class Z3HintsGenerator extends SolvableHintsGenerator {
+export class Z3HintsGenerator implements HintsGenerator {
+
+    private static hintFactory: HintFactory = new RandomHintFactory();
 
     private z3: Z3;
     private ctx;
 
     async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
-        console.debug("getting Z3");
+        console.debug("getZ3");
         this.z3 = await getZ3();
+
         this.makeContext();
+        // this.ask("(set-option :produce-unsat-cores true)"); // TODO: why parser error?
         this.assertBoard(board);
 
-        let hints = super.generate(options, board); // TODO shouldn't await be here?
+        let hints = this.generateHints(board);
+        hints = this.pruneHints(board, hints);
 
         this.deleteContext();
         return hints;
@@ -28,8 +35,12 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
 
     private makeContext() {
         console.debug("makeContext");
+        this.z3.global_param_set("unsat_core", "true");
+        this.z3.global_param_set("smt.core.minimize", "true");
+
         let cfg = this.z3.mk_config();
         this.ctx = this.z3.mk_context(cfg);
+        this.z3.set_error_handler(this.ctx, this.z3.errorHandler);
         this.z3.del_config(cfg);
     }
 
@@ -44,36 +55,28 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
     }
 
     protected generateHints(board: SingleBoard): Hint[] {
-        this.ask("(push)");
-
         let hints: Hint[] = [];
         while (!this.isUniqueSolvable()) {
-            let hint = SolvableHintsGenerator.hintFactory.random(board);
+            let hint = Z3HintsGenerator.hintFactory.random(board);
             hints.push(hint);
 
+            let i = hints.length - 1;
             let constraint = Z3HintsGenerator.getHintConstraint(hint);
-            this.ask(`(assert ${constraint})`);
+            this.ask(`(assert (! ${constraint} :named h${i}))`);
         }
-
-        this.ask("(pop)");
         return hints;
     }
 
-    isSolvable(board: SingleBoard, hints: Hint[]): boolean {
-        /*this.z3 = await getZ3();
-        this.makeContext();
-        this.assertBoard(board);*/
+    protected pruneHints(board: SingleBoard, hints: Hint[]): Hint[] {
+        console.debug(`Before pruneHints: ${hints.length}`);
 
-        console.debug("push");
-        this.ask("(push)");
+        let getUnsatCore = this.ask("(get-unsat-core)");
+        console.debug(getUnsatCore);
+        let coreIs = _.map(getUnsatCore.match(/\d+/g), i => parseInt(i));
+        hints = _.filter(hints, (hint, i) => _.includes(coreIs, i));
 
-        this.assertHints(hints);
-        let unique = this.isUniqueSolvable();
-
-        console.debug("pop");
-        this.ask("(pop)");
-        // this.deleteContext();
-        return unique;
+        console.debug(`After pruneHints: ${hints.length}`);
+        return hints;
     }
 
     private isUniqueSolvable() {
@@ -105,14 +108,6 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
             }
         }
         this.ask(`(assert (or${ds}))`);
-    }
-
-    private assertHints(hints: Hint[]) {
-        console.debug("assertHints");
-        for (const hint of hints) {
-            let constraint = Z3HintsGenerator.getHintConstraint(hint);
-            this.ask(`(assert ${constraint})`);
-        }
     }
 
     private static getHintConstraint(hint: Hint): string {
