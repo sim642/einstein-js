@@ -89,31 +89,38 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
     private assertHints(hints: Hint[]) {
         console.debug("assertHints");
         for (const hint of hints) {
-            if (hint instanceof AdjacentHint) {
-                let x1 = `x${hint.row1}${hint.variant1}`;
-                let x2 = `x${hint.row2}${hint.variant2}`;
-                this.ask(`(assert (or (= ${x1} (+ ${x2} 1)) (= ${x1} (- ${x2} 1))))`);
-            }
-            else if (hint instanceof BetweenHint) {
-                let x1 = `x${hint.row1}${hint.variant1}`;
-                let xMiddle = `x${hint.rowMiddle}${hint.variantMiddle}`;
-                let x2 = `x${hint.row2}${hint.variant2}`;
-                this.ask(`(assert (or (and (= ${xMiddle} (+ ${x1} 1)) (= ${xMiddle} (- ${x2} 1))) (and (= ${xMiddle} (+ ${x2} 1)) (= ${xMiddle} (- ${x1} 1)))))`);
-            }
-            else if (hint instanceof DirectionHint) {
-                let xLeft = `x${hint.rowLeft}${hint.variantLeft}`;
-                let xRight = `x${hint.rowRight}${hint.variantRight}`;
-                this.ask(`(assert (< ${xLeft} ${xRight}))`);
-            }
-            else if (hint instanceof OpenHint) {
-                let x = `x${hint.row}${hint.variant}`;
-                this.ask(`(assert (= ${x} ${hint.col}))`);
-            }
-            else if (hint instanceof SameColumnHint) {
-                let x1 = `x${hint.row1}${hint.variant1}`;
-                let x2 = `x${hint.row2}${hint.variant2}`;
-                this.ask(`(assert (= ${x1} ${x2}))`);
-            }
+            let constraint = Z3HintsGenerator.getHintConstraint(hint);
+            this.ask(`(assert ${constraint})`);
         }
+    }
+
+    private static getHintConstraint(hint: Hint): string {
+        if (hint instanceof AdjacentHint) {
+            let x1 = `x${hint.row1}${hint.variant1}`;
+            let x2 = `x${hint.row2}${hint.variant2}`;
+            return `(or (= ${x1} (+ ${x2} 1)) (= ${x1} (- ${x2} 1)))`;
+        }
+        else if (hint instanceof BetweenHint) {
+            let x1 = `x${hint.row1}${hint.variant1}`;
+            let xMiddle = `x${hint.rowMiddle}${hint.variantMiddle}`;
+            let x2 = `x${hint.row2}${hint.variant2}`;
+            return `(or (and (= ${xMiddle} (+ ${x1} 1)) (= ${xMiddle} (- ${x2} 1))) (and (= ${xMiddle} (+ ${x2} 1)) (= ${xMiddle} (- ${x1} 1))))`;
+        }
+        else if (hint instanceof DirectionHint) {
+            let xLeft = `x${hint.rowLeft}${hint.variantLeft}`;
+            let xRight = `x${hint.rowRight}${hint.variantRight}`;
+            return `(< ${xLeft} ${xRight})`;
+        }
+        else if (hint instanceof OpenHint) {
+            let x = `x${hint.row}${hint.variant}`;
+            return `(= ${x} ${hint.col})`;
+        }
+        else if (hint instanceof SameColumnHint) {
+            let x1 = `x${hint.row1}${hint.variant1}`;
+            let x2 = `x${hint.row2}${hint.variant2}`;
+            return `(= ${x1} ${x2})`;
+        }
+        else
+            throw new Error("Unsupported hint type");
     }
 }
