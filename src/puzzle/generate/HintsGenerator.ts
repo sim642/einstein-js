@@ -18,7 +18,7 @@ export abstract class DelegateHintsGenerator implements HintsGenerator {
 
 export abstract class SolvableHintsGenerator implements HintsGenerator {
 
-    private static hintFactory: HintFactory = new RandomHintFactory();
+    protected static hintFactory: HintFactory = new RandomHintFactory();
 
     async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
         let hints = this.generateHints(board);
@@ -27,7 +27,7 @@ export abstract class SolvableHintsGenerator implements HintsGenerator {
 
     abstract isSolvable(board: SingleBoard, hints: Hint[]): boolean;
 
-    private generateHints(board: SingleBoard): Hint[] {
+    protected generateHints(board: SingleBoard): Hint[] {
         let hints: Hint[] = [];
         while (!this.isSolvable(board, hints)) {
             let hint = SolvableHintsGenerator.hintFactory.random(board);
@@ -36,7 +36,7 @@ export abstract class SolvableHintsGenerator implements HintsGenerator {
         return hints;
     }
 
-    private pruneHints(board: SingleBoard, hints: Hint[]): Hint[] {
+    protected pruneHints(board: SingleBoard, hints: Hint[]): Hint[] {
         hints = _.clone(hints);
         console.debug(`Before pruneHints: ${hints.length}`);
         for (let i = 0; i < hints.length;) { // no i++

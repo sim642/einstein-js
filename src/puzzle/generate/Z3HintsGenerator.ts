@@ -43,6 +43,22 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
         this.z3.del_context(this.ctx);
     }
 
+    protected generateHints(board: SingleBoard): Hint[] {
+        this.ask("(push)");
+
+        let hints: Hint[] = [];
+        while (!this.isUniqueSolvable()) {
+            let hint = SolvableHintsGenerator.hintFactory.random(board);
+            hints.push(hint);
+
+            let constraint = Z3HintsGenerator.getHintConstraint(hint);
+            this.ask(`(assert ${constraint})`);
+        }
+
+        this.ask("(pop)");
+        return hints;
+    }
+
     isSolvable(board: SingleBoard, hints: Hint[]): boolean {
         /*this.z3 = await getZ3();
         this.makeContext();
@@ -52,12 +68,17 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
         this.ask("(push)");
 
         this.assertHints(hints);
-        let checkSat = this.ask("(check-sat)");
-        let unique = checkSat == "unsat";
+        let unique = this.isUniqueSolvable();
 
         console.debug("pop");
         this.ask("(pop)");
         // this.deleteContext();
+        return unique;
+    }
+
+    private isUniqueSolvable() {
+        let checkSat = this.ask("(check-sat)");
+        let unique = checkSat == "unsat";
         return unique;
     }
 
