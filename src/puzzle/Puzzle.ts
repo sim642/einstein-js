@@ -32,15 +32,8 @@ export class Puzzle {
     static generate(options: PuzzleOptions): Puzzle {
         let board = SingleBoard.random(options);
         let hints = Puzzle.generateHints(board);
-        let start = _.now();
-        let hints1 = this.pruneHints(board, hints);
-        let mid = _.now();
-        let hints2 = this.pruneHints2(board, hints);
-        let end = _.now();
-        let t1 = mid - start;
-        let t2 = end - mid;
-        console.debug(`%c${_.isEqual(hints1, hints2)} ${t1}/${t2}=${t1 / t2}`, "font-weight: bold;");
-        hints = Puzzle.generateExtraHints(options, board, hints1);
+        hints = Puzzle.pruneHints(board, hints);
+        hints = Puzzle.generateExtraHints(options, board, hints);
         return new Puzzle(board, hints, options);
     }
 
@@ -58,37 +51,17 @@ export class Puzzle {
     private static pruneHints(board: SingleBoard, hints: Hint[]): Hint[] {
         hints = _.clone(hints);
         console.debug(`Before pruneHints: ${hints.length}`);
-        let changed: boolean;
-        do {
-            changed = false;
-            for (let i = 0; i < hints.length; i++) {
-                let hint = hints.splice(i, 1)[0];
-                if (board.isSolvable(hints)) {
-                    changed = true;
-                    break;
-                }
-                else
-                    hints.splice(i, 0, hint);
-            }
-        } while (changed);
-        console.debug(`After pruneHints: ${hints.length}`);
-        return hints;
-    }
-
-    private static pruneHints2(board: SingleBoard, hints: Hint[]): Hint[] {
-        hints = _.clone(hints);
-        console.debug(`Before pruneHints2: ${hints.length}`);
         for (let i = 0; i < hints.length;) { // no i++
             let hint = hints.splice(i, 1)[0];
             if (board.isSolvable(hints)) {
-
+                // keep i which now points to next hint
             }
             else {
                 hints.splice(i, 0, hint);
                 i++;
             }
         }
-        console.debug(`After pruneHints2: ${hints.length}`);
+        console.debug(`After pruneHints: ${hints.length}`);
         return hints;
     }
 
