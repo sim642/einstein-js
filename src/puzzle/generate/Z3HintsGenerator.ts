@@ -20,7 +20,7 @@ export class Z3HintsGenerator extends SolvableHintsGenerator {
         this.makeContext();
         this.assertBoard(board);
 
-        let hints = super.generate(options, board);
+        let hints = super.generate(options, board); // TODO shouldn't await be here?
 
         this.deleteContext();
         return hints;

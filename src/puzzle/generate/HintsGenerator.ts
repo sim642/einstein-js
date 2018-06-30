@@ -41,7 +41,7 @@ export abstract class SolvableHintsGenerator implements HintsGenerator {
         console.debug(`Before pruneHints: ${hints.length}`);
         for (let i = 0; i < hints.length;) { // no i++
             let hint = hints.splice(i, 1)[0];
-            if (board.isSolvable(hints)) {
+            if (this.isSolvable(board, hints)) {
                 // keep i which now points to next hint
             }
             else {
