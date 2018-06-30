@@ -10,7 +10,9 @@ module.exports = {
     },
 
     target: "node", // webpack should compile node compatible code
-    externals: [nodeExternals()], // in order to ignore all modules in node_modules folder
+    externals: [nodeExternals({
+        whitelist: ["z3em/z3em.wasm"] // must be whitelisted to go through loaders since node natively can't import wasm
+    })], // in order to ignore all modules in node_modules folder
     devtool: "inline-cheap-module-source-map",
 
     resolve: {
@@ -29,6 +31,10 @@ module.exports = {
             {
                 test: /\.tsx?$/,
                 use: "ts-loader"
+            },
+            {
+                test: /\.wasm$/,
+                use: "file-loader"
             }
         )
     }
