@@ -3,6 +3,24 @@ import * as z3emWasm from "z3em/z3em.wasm";
 import {memoizeSupplier} from "../function";
 import {db} from "../storage/db";
 
+class ResolveWrapper<T> {
+    constructor(public value: T) {
+
+    }
+}
+
+function createZ3Em(moduleOptions): Promise<ResolveWrapper<Z3Em>> {
+    return new Promise((resolve, reject) => {
+        const z3em = Z3Em({
+            ...moduleOptions,
+            onRuntimeInitialized: () => {
+                resolve(new ResolveWrapper(z3em)); // TODO: unwrapped return freezes browser, WTF?
+            }
+            // TODO: handle failed
+        });
+    });
+}
+
 // for caching WASM in Chrome: chrome://flags/#enable-webassembly
 
 export const getZ3 = memoizeSupplier(() =>
@@ -26,26 +44,22 @@ export const getZ3 = memoizeSupplier(() =>
             };
         }
 
-        return new Promise<Z3>((resolve, reject) => {
-            console.debug("Z3 arming...");
-            const z3em = Z3Em({
-                ...moduleOptions,
-                onRuntimeInitialized: () => {
-                    if (wasmItem === undefined) {
-                        let newWasmItem = {
-                            url: z3emWasm,
-                            module: z3em.wasmModule
-                        };
-                        console.log("wasm to db:");
-                        console.debug(newWasmItem);
-                        db.wasm.put(newWasmItem).then(() => console.log("wasm cached"));
-                    }
+        console.debug("Z3 arming...");
+        return createZ3Em(moduleOptions).then(resolveWrapper => {
+            let z3em = resolveWrapper.value;
+            if (wasmItem === undefined) {
+                let newWasmItem = {
+                    url: z3emWasm,
+                    module: z3em.wasmModule
+                };
+                console.log("wasm to db:");
+                console.debug(newWasmItem);
+                db.wasm.put(newWasmItem).then(() => console.log("wasm cached"));
+            }
 
-                    const z3 = new Z3(z3em);
-                    console.log("Z3 armed");
-                    resolve(z3);
-                }
-            });
+            const z3 = new Z3(z3em);
+            console.log("Z3 armed");
+            return z3;
         });
     })
 );
