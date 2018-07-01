@@ -3,18 +3,12 @@ import * as z3emWasm from "z3em/z3em.wasm";
 import {memoizeSupplier} from "../function";
 import {db} from "../storage/db";
 
-class ResolveWrapper<T> {
-    constructor(public value: T) {
-
-    }
-}
-
-function createZ3Em(moduleOptions): Promise<ResolveWrapper<Z3Em>> {
+function createZ3Em(moduleOptions): Promise<Z3Em> {
     return new Promise((resolve, reject) => {
         const z3em = Z3Em({
             ...moduleOptions,
             onRuntimeInitialized: () => {
-                resolve(new ResolveWrapper(z3em)); // TODO: unwrapped return freezes browser, WTF?
+                resolve(z3em); // TODO: unwrapped return freezes browser, WTF?
             }
             // TODO: handle failed
         });
@@ -45,8 +39,7 @@ export const getZ3 = memoizeSupplier(() =>
         }
 
         console.debug("Z3 arming...");
-        return createZ3Em(moduleOptions).then(resolveWrapper => {
-            let z3em = resolveWrapper.value;
+        return createZ3Em(moduleOptions).then(z3em => {
             if (wasmItem === undefined) {
                 let newWasmItem = {
                     url: z3emWasm,
