@@ -38,7 +38,7 @@ export const getZ3 = memoizeSupplier(() =>
                         };
                         console.log("wasm to db:");
                         console.debug(newWasmItem);
-                        db.wasm.put(newWasmItem);
+                        db.wasm.put(newWasmItem).then(() => console.log("wasm cached"));
                     }
 
                     const z3 = new Z3(z3em);
