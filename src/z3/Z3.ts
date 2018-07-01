@@ -1,18 +1,54 @@
 import * as Z3Em from "z3em";
 import * as z3emWasm from "z3em/z3em.wasm";
 import {memoizeSupplier} from "../function";
+import {db} from "../storage/db";
+
+// for caching WASM in Chrome: chrome://flags/#enable-webassembly
 
 export const getZ3 = memoizeSupplier(() =>
-    new Promise<Z3>((resolve, reject) => {
-        const z3em = Z3Em({
-            wasmBinaryFile: z3emWasm,
-            onRuntimeInitialized: () => {
-                const z3 = new Z3(z3em);
-                console.log("Z3 armed");
-                resolve(z3);
-            }
+    db.wasm.get(z3emWasm, wasmItem => {
+        console.log("wasm from db:");
+        console.debug(wasmItem);
+        let moduleOptions;
+        if (wasmItem !== undefined) {
+            moduleOptions = {
+                instantiateWasm: (importObject, receiveInstance) => {
+                    console.debug("instantiateWasm");
+                    let module = wasmItem.module;
+                    WebAssembly.instantiate(module, importObject).then(instance => receiveInstance(instance, module));
+                    return {}; // instantiateWasm is async
+                }
+            };
+        }
+        else {
+            moduleOptions = {
+                wasmBinaryFile: z3emWasm
+            };
+        }
+
+        return new Promise<Z3>((resolve, reject) => {
+            console.debug("Z3 arming...");
+            const z3em = Z3Em({
+                ...moduleOptions,
+                onRuntimeInitialized: () => {
+                    if (wasmItem === undefined) {
+                        let newWasmItem = {
+                            url: z3emWasm,
+                            module: z3em.wasmModule
+                        };
+                        console.log("wasm to db:");
+                        console.debug(newWasmItem);
+                        db.wasm.put(newWasmItem);
+                    }
+
+                    const z3 = new Z3(z3em);
+                    console.log("Z3 armed");
+                    resolve(z3);
+                }
+            });
         });
-    }));
+    })
+);
 
 export class Z3 {
     constructor(private z3em) {

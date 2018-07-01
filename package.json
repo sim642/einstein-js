@@ -35,12 +35,13 @@
     "lodash": "^4.17.4",
     "preact": "^8.2.1",
     "tslib": "^1.9.3",
-    "z3em": "^0.0.3"
+    "z3em": "^0.0.4"
   },
   "devDependencies": {
     "@types/chai": "^4.0.1",
     "@types/lodash": "^4.14.66",
     "@types/mocha": "^2.2.41",
+    "@types/webassembly-js-api": "0.0.1",
     "@types/webpack-env": "^1.13.0",
     "autoprefixer": "^7.1.2",
     "chai": "^4.1.0",

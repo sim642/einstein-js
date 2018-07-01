@@ -3,11 +3,13 @@ import {PuzzleOptions} from "../puzzle/Puzzle";
 import {ConfigItem} from "./Config";
 import {CountsItem} from "./Counts";
 import {TimesItem} from "./Times";
+import {WasmItem} from "./Wasm";
 
 export class EinsteinDatabase extends Dexie {
     times: Dexie.Table<TimesItem, any>;
     config: Dexie.Table<ConfigItem, string>;
     counts: Dexie.Table<CountsItem, number>;
+    wasm: Dexie.Table<WasmItem, string>;
 
     constructor() {
         super("EinsteinDatabase");
@@ -68,5 +70,9 @@ export class EinsteinDatabase extends Dexie {
                 }),
             ])
         );
+
+        this.version(7).stores({
+            wasm: "url"
+        });
     }
 }
