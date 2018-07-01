@@ -35,7 +35,6 @@ interface AppState {
     puzzle?: Puzzle;
     gameState: GameState;
     cheated: number;
-    defaultName?: string;
 }
 
 export class AppComponent extends Component<{}, AppState> {
@@ -60,11 +59,12 @@ export class AppComponent extends Component<{}, AppState> {
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
         this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
 
-        Config.get().then(config => {
-            this.setState(state => _.assignWith(state, {
-                options: config.options,
-                defaultName: config.name
-            }, (stateValue, sourceValue) => _.isUndefined(sourceValue) ? stateValue : sourceValue));
+        Config.getKey("options").then(options => {
+            if (options !== undefined) {
+                this.setState({
+                    options: options
+                });
+            }
         });
     }
 
@@ -170,19 +170,6 @@ export class AppComponent extends Component<{}, AppState> {
         });
     }
 
-    private configDefaultName(name: string): Promise<string> {
-        return Dexie.Promise.all([
-            new Dexie.Promise((resolve, reject) => {
-                this.setState({
-                    defaultName: name
-                }, () => resolve(name));
-            }),
-            Config.set({
-                name: name
-            })
-        ]).then(() => name);
-    }
-
     private refresh = () => {
         if (this.state.gameState === GameState.Playing) {
             let puzzle = this.state.puzzle!;
@@ -201,15 +188,20 @@ export class AppComponent extends Component<{}, AppState> {
 
                     if (!cheated) {
                         Times.isInTop10(options, time).then<string | undefined>(isInTop10 => {
-                            let name;
-                            if (isInTop10 !== false &&
-                                (name = prompt(`Enter name for ${isInTop10 + 1}. place in high scores:`, this.state.defaultName)) !== null)
-                                return this.configDefaultName(name);
-                            else
-                                return undefined;
-                        }).then(name =>
-                            Times.add(options, time, name)
-                        );
+                            return Config.getKey("name").then(defaultName => {
+                                let name;
+                                if (isInTop10 !== false &&
+                                    (name = prompt(`Enter name for ${isInTop10 + 1}. place in high scores:`, defaultName)) !== null)
+                                    return name;
+                                else
+                                    return undefined;
+                            })
+                        }).then(name => {
+                            return Dexie.Promise.all([
+                                Times.add(options, time, name),
+                                Config.setKey("name", name)
+                            ]);
+                        });
                     }
                 });
             }
