@@ -1,7 +1,7 @@
 import * as Z3Em from "z3em";
 import * as z3emWasm from "z3em/z3em.wasm";
 import {memoizeSupplier} from "../function";
-import {db} from "../storage/db";
+import {Wasm} from "../storage/Wasm";
 
 class ResolveWrapper<T> {
     constructor(public value: T) {
@@ -9,10 +9,10 @@ class ResolveWrapper<T> {
     }
 }
 
-function createZ3Em(moduleOptions): Promise<ResolveWrapper<Z3Em>> {
+function createZ3Em(z3emOptions): Promise<ResolveWrapper<Z3Em>> {
     return new Promise((resolve, reject) => {
         const z3em = Z3Em({
-            ...moduleOptions,
+            ...z3emOptions,
             onRuntimeInitialized: () => {
                 resolve(new ResolveWrapper(z3em)); // TODO: unwrapped return freezes browser, WTF?
             }
@@ -24,38 +24,31 @@ function createZ3Em(moduleOptions): Promise<ResolveWrapper<Z3Em>> {
 // for caching WASM in Chrome: chrome://flags/#enable-webassembly
 
 export const getZ3 = memoizeSupplier(() =>
-    db.wasm.get(z3emWasm, wasmItem => {
-        console.log("wasm from db:");
-        console.debug(wasmItem);
-        let moduleOptions;
-        if (wasmItem !== undefined) {
-            moduleOptions = {
+    Wasm.getCached(z3emWasm).then( module => {
+        let z3emOptions;
+        if (module !== undefined) {
+            z3emOptions = {
                 instantiateWasm: (importObject, receiveInstance) => {
                     console.debug("instantiateWasm");
-                    let module = wasmItem.module;
-                    WebAssembly.instantiate(module, importObject).then(instance => receiveInstance(instance, module));
+                    WebAssembly.instantiate(module, importObject).then(instance =>
+                        receiveInstance(instance, module)
+                    );
                     return {}; // instantiateWasm is async
                 }
             };
         }
         else {
-            moduleOptions = {
+            z3emOptions = {
                 wasmBinaryFile: z3emWasm,
                 onReceiveInstance: (instance, module) => {
                     console.debug("onReceiveInstance");
-                    let newWasmItem = {
-                        url: z3emWasm,
-                        module: module
-                    };
-                    console.log("wasm to db:");
-                    console.debug(newWasmItem);
-                    db.wasm.put(newWasmItem).then(() => console.log("wasm cached"));
+                    Wasm.cache(z3emWasm, module);
                 }
             };
         }
 
         console.debug("Z3 arming...");
-        return createZ3Em(moduleOptions).then(resolveWrapper => {
+        return createZ3Em(z3emOptions).then(resolveWrapper => {
             let z3em = resolveWrapper.value;
 
             const z3 = new Z3(z3em);
