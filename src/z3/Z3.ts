@@ -40,22 +40,23 @@ export const getZ3 = memoizeSupplier(() =>
         }
         else {
             moduleOptions = {
-                wasmBinaryFile: z3emWasm
+                wasmBinaryFile: z3emWasm,
+                onReceiveInstance: (instance, module) => {
+                    console.debug("onReceiveInstance");
+                    let newWasmItem = {
+                        url: z3emWasm,
+                        module: module
+                    };
+                    console.log("wasm to db:");
+                    console.debug(newWasmItem);
+                    db.wasm.put(newWasmItem).then(() => console.log("wasm cached"));
+                }
             };
         }
 
         console.debug("Z3 arming...");
         return createZ3Em(moduleOptions).then(resolveWrapper => {
             let z3em = resolveWrapper.value;
-            if (wasmItem === undefined) {
-                let newWasmItem = {
-                    url: z3emWasm,
-                    module: z3em.wasmModule
-                };
-                console.log("wasm to db:");
-                console.debug(newWasmItem);
-                db.wasm.put(newWasmItem).then(() => console.log("wasm cached"));
-            }
 
             const z3 = new Z3(z3em);
             console.log("Z3 armed");
