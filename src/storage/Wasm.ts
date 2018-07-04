@@ -21,6 +21,10 @@ export namespace Wasm {
         };
         console.log("wasm to db:");
         console.debug(wasmItem);
-        db.wasm.put(wasmItem).then(() => console.log("wasm cached"));
+        db.transaction("rw", db.wasm, () =>
+            db.wasm.clear().then(() =>
+                db.wasm.put(wasmItem)
+            )
+        ).then(() => console.log("wasm cached"));
     }
 }

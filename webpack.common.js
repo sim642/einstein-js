@@ -91,7 +91,8 @@ module.exports = {
                 use: {
                     loader: "file-loader",
                     query: {
-                        name: "[name].[ext]"
+                        // always include hash for WASM cache invalidation in IndexedDB
+                        name: "[name].[hash].[ext]"
                     }
                 }
             }
