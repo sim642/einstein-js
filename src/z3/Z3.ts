@@ -39,7 +39,7 @@ export const getZ3 = memoizeSupplier(() =>
         }
         else {
             z3emOptions = {
-                wasmBinaryFile: z3emWasm,
+                locateFile: () => z3emWasm,
                 onReceiveInstance: (instance, module) => {
                     console.debug("onReceiveInstance");
                     Wasm.cache(z3emWasm, module);
