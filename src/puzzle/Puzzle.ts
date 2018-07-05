@@ -5,6 +5,7 @@ import {SingleBoard} from "./board/SingleBoard";
 import {ApplyHintsGenerator} from "./generate/ApplyHintsGenerator";
 import {DifficultyHintsGenerator} from "./generate/DifficultyHintsGenerator";
 import {ExtraHintsGenerator} from "./generate/ExtraHintsGenerator";
+import {NonApplyHintsGenerator} from "./generate/NonApplyHintsGenerator";
 import {Z3HintsGenerator} from "./generate/Z3HintsGenerator";
 import {Hint, HintType} from "./hint/Hint";
 
@@ -39,7 +40,7 @@ export class Puzzle {
         let board = SingleBoard.random(options);
         let hintsGenerator = new ExtraHintsGenerator(new DifficultyHintsGenerator({
             normal: new ApplyHintsGenerator(),
-            hard: new Z3HintsGenerator()
+            hard: new NonApplyHintsGenerator(new Z3HintsGenerator())
         }));
         let start = _.now();
         let hints = await hintsGenerator.generate(options, board);
