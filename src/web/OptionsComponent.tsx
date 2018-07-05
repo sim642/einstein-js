@@ -2,6 +2,7 @@ import * as _ from "lodash";
 import {Component, h} from "preact";
 import "./options.less";
 import {PuzzleOptions} from "../puzzle/Puzzle";
+import {PuzzleGenerator} from "../puzzle/PuzzleGenerator";
 import {Config} from "../storage/Config";
 import {Counts, CountsItem} from "../storage/Counts";
 import {Times} from "../storage/Times";
@@ -143,6 +144,7 @@ export interface OptionsProps {
     submit: (PuzzleOptions) => void;
     highscore: (PuzzleOptions) => void;
     defaultOptions: PuzzleOptions;
+    puzzleGenerator: PuzzleGenerator;
 }
 
 interface OptionsState {
@@ -248,7 +250,7 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
                 <div class="form-group buttons">
                     <button type="reset" onClick={this.onReset}>Reset</button>
                     <button type="button" disabled={!state.hasTimes} onClick={this.onHighscore}>High scores</button>
-                    <button class="button-highlight button-wide" type="submit">Play</button>
+                    <button class="button-highlight button-wide" type="submit" disabled={!props.puzzleGenerator.supports(state.options)}>Play</button>
                 </div>
 
                 <TopOptionsComponent set={this.setOptions}/>

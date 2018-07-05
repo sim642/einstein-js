@@ -8,6 +8,10 @@ export class DifficultyHintsGenerator implements HintsGenerator {
 
     }
 
+    supports(options: PuzzleOptions): boolean {
+        return this.generators[options.difficulty].supports(options);
+    }
+
     generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
         return this.generators[options.difficulty].generate(options, board);
     }

@@ -18,6 +18,10 @@ export class Z3HintsGenerator implements HintsGenerator {
     private z3: Z3;
     private ctx;
 
+    supports(options: PuzzleOptions): boolean {
+        return Z3HintsGenerator.hintFactory.supports(options);
+    }
+
     async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
         console.debug("getZ3");
         this.z3 = await getZ3();

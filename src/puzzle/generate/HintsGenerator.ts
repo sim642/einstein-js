@@ -1,10 +1,11 @@
 import * as _ from "lodash";
 import {SingleBoard} from "../board/SingleBoard";
 import {Hint, HintFactory} from "../hint/Hint";
-import {Puzzle, PuzzleOptions} from "../Puzzle";
+import {PuzzleOptions} from "../Puzzle";
 import {RandomHintFactory} from "../RandomHint";
 
 export interface HintsGenerator {
+    supports(options: PuzzleOptions): boolean;
     generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]>;
 }
 
@@ -13,12 +14,20 @@ export abstract class DelegateHintsGenerator implements HintsGenerator {
 
     }
 
+    supports(options: PuzzleOptions): boolean {
+        return this.delegate.supports(options);
+    }
+
     abstract generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]>;
 }
 
 export abstract class SolvableHintsGenerator implements HintsGenerator {
 
     protected static hintFactory: HintFactory = new RandomHintFactory();
+
+    supports(options: PuzzleOptions): boolean {
+        return SolvableHintsGenerator.hintFactory.supports(options);
+    }
 
     async generate(options: PuzzleOptions, board: SingleBoard): Promise<Hint[]> {
         let hints = this.generateHints(board);

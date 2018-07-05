@@ -4,6 +4,7 @@ import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
 import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
+import {mainPuzzleGenerator, PuzzleGenerator} from "../puzzle/PuzzleGenerator";
 import {Config} from "../storage/Config";
 import {Counts} from "../storage/Counts";
 import {Times} from "../storage/Times";
@@ -42,6 +43,7 @@ export class AppComponent extends Component<{}, AppState> {
     private timer = new Timer();
     private visibilityChange: VisibilityChangeListener;
     private messageUnload: MessageUnloadListener;
+    private puzzleGenerator: PuzzleGenerator = mainPuzzleGenerator;
 
     private static readonly defaultOptions: PuzzleOptions = {
         rows: 6,
@@ -145,7 +147,7 @@ export class AppComponent extends Component<{}, AppState> {
 
     private submitOptions = async (options: PuzzleOptions) => {
         this.configOptions(options);
-        let puzzle = await Puzzle.generate(options);
+        let puzzle = await this.puzzleGenerator.generate(options);
         this.setState({
             puzzle: puzzle,
             gameState: GameState.Playing,
@@ -268,7 +270,7 @@ export class AppComponent extends Component<{}, AppState> {
                     <BirthdayComponent month={10} day={22} name="Elisabeth"/>
                     {
                         state.gameState === GameState.Options ?
-                            <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions}/> :
+                            <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions} puzzleGenerator={this.puzzleGenerator}/> :
                             state.gameState === GameState.Highscore ?
                                 <HighscoreComponent options={state.options}/> :
                                 <MultiBoardComponent board={state.puzzle!.multiBoard} refresh={this.refresh} showBoard={showBoard}/>

@@ -2,12 +2,8 @@ import * as _ from "lodash";
 import {BoardOptions} from "./board/Board";
 import {MultiBoard} from "./board/MultiBoard";
 import {SingleBoard} from "./board/SingleBoard";
-import {ApplyHintsGenerator} from "./generate/ApplyHintsGenerator";
-import {DifficultyHintsGenerator} from "./generate/DifficultyHintsGenerator";
-import {ExtraHintsGenerator} from "./generate/ExtraHintsGenerator";
-import {NonApplyHintsGenerator} from "./generate/NonApplyHintsGenerator";
-import {Z3HintsGenerator} from "./generate/Z3HintsGenerator";
 import {Hint, HintType} from "./hint/Hint";
+import {mainPuzzleGenerator} from "./PuzzleGenerator";
 
 export type Difficulty = "normal" | "hard";
 
@@ -36,16 +32,7 @@ export class Puzzle {
         return this.multiBoard.applySingleHint(_.filter(this.hints, hint => hint.getType() !== HintType.Start));
     }
 
-    static async generate(options: PuzzleOptions): Promise<Puzzle> {
-        let board = SingleBoard.random(options);
-        let hintsGenerator = new ExtraHintsGenerator(new DifficultyHintsGenerator({
-            normal: new ApplyHintsGenerator(),
-            hard: new NonApplyHintsGenerator(new Z3HintsGenerator())
-        }));
-        let start = _.now();
-        let hints = await hintsGenerator.generate(options, board);
-        let end = _.now();
-        console.log(`${end - start}`);
-        return new Puzzle(board, hints, options);
+    static generate(options: PuzzleOptions): Promise<Puzzle> {
+        return mainPuzzleGenerator.generate(options); // TODO: remove because usages should check supports before
     }
 }
