@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import {setClass} from "../../object";
 import {Hint} from "../hint/Hint";
 import {Board, BoardOptions} from "./Board";
 import {SingleBoard} from "./SingleBoard";
@@ -18,6 +19,11 @@ export class MultiBoard extends Board<Variants> {
                 variants[numberVariant] = true;
             return variants;
         })), options);
+    }
+
+    static from(o: any): MultiBoard {
+        setClass(o, MultiBoard);
+        return o;
     }
 
     remove(row: number, col: number, variant: number): void {

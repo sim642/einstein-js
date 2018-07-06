@@ -2,9 +2,11 @@ import * as _ from "lodash";
 import {BoardOptions} from "../board/Board";
 import {MultiBoard} from "../board/MultiBoard";
 import {SingleBoard} from "../board/SingleBoard";
-import {Hint, HintFactory, HintType} from "./Hint";
+import {Hint, HintClass, HintFactory, HintType} from "./Hint";
 
 export class OpenHint implements Hint {
+    class: HintClass = HintClass.Open;
+
     constructor(public row: number, public col: number, public variant: number) {
 
     }

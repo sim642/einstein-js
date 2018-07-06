@@ -1,4 +1,5 @@
 import * as _ from "lodash";
+import {setClass} from "../object";
 import {BoardOptions} from "./board/Board";
 import {MultiBoard} from "./board/MultiBoard";
 import {SingleBoard} from "./board/SingleBoard";
@@ -18,6 +19,14 @@ export class Puzzle {
     constructor(public singleBoard: SingleBoard, public hints: Hint[], public readonly options: PuzzleOptions) {
         this.multiBoard = MultiBoard.full(options);
         this.multiBoard.applyHints(_.filter(hints, hint => hint.getType() === HintType.Start));
+    }
+
+    static from(o: any): Puzzle {
+        setClass(o,  Puzzle);
+        o.singleBoard = SingleBoard.from(o.singleBoard);
+        o.multiBoard = MultiBoard.from(o.multiBoard);
+        o.hints = _.map(o.hints, Hint.from);
+        return o;
     }
 
     isSolved(): boolean {
