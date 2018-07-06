@@ -32,6 +32,13 @@ module.exports = {
     module: {
         rules: [
             {
+                test: /\.worker\.ts$/,
+                use: [
+                    "worker-loader",
+                    "ts-loader"
+                ]
+            },
+            {
                 test: /\.tsx?$/,
                 use: "ts-loader"
             },

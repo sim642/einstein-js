@@ -4,7 +4,8 @@ import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
 import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
-import {mainPuzzleGenerator, PuzzleGenerator} from "../puzzle/PuzzleGenerator";
+import {PuzzleGenerator} from "../puzzle/PuzzleGenerator";
+import {workerMainPuzzleGenerator} from "../puzzle/WorkerPuzzleGenerator";
 import {Config} from "../storage/Config";
 import {Counts} from "../storage/Counts";
 import {Times} from "../storage/Times";
@@ -43,7 +44,7 @@ export class AppComponent extends Component<{}, AppState> {
     private timer = new Timer();
     private visibilityChange: VisibilityChangeListener;
     private messageUnload: MessageUnloadListener;
-    private puzzleGenerator: PuzzleGenerator = mainPuzzleGenerator;
+    private puzzleGenerator: PuzzleGenerator = workerMainPuzzleGenerator;
 
     private static readonly defaultOptions: PuzzleOptions = {
         rows: 6,

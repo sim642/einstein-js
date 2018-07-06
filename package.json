@@ -68,7 +68,8 @@
     "webpack": "^3.0.0",
     "webpack-chunk-hash": "^0.4.0",
     "webpack-merge": "^4.1.0",
-    "webpack-node-externals": "^1.6.0"
+    "webpack-node-externals": "^1.6.0",
+    "worker-loader": "^2.0.0"
   },
   "nyc": {
     "extension": [
