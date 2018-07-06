@@ -9,9 +9,8 @@ export class SingleBoard extends Board<number> {
         return new SingleBoard(_.times(options.rows, row => _.shuffle(_.range(options.cols))), options);
     }
 
-    static from(o: any): SingleBoard {
+    static hydrate(o: SingleBoard): void {
         setClass(o, SingleBoard);
-        return o;
     }
 
     getCol(row: number, variant: number): number {

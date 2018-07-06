@@ -21,12 +21,11 @@ export class Puzzle {
         this.multiBoard.applyHints(_.filter(hints, hint => hint.getType() === HintType.Start));
     }
 
-    static from(o: any): Puzzle {
-        setClass(o,  Puzzle);
-        o.singleBoard = SingleBoard.from(o.singleBoard);
-        o.multiBoard = MultiBoard.from(o.multiBoard);
-        o.hints = _.map(o.hints, Hint.from);
-        return o;
+    static hydrate(o: Puzzle): void {
+        setClass(o, Puzzle);
+        SingleBoard.hydrate(o.singleBoard);
+        MultiBoard.hydrate(o.multiBoard);
+        _.forEach(o.hints, Hint.hydrate);
     }
 
     isSolved(): boolean {

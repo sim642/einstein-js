@@ -12,7 +12,8 @@ class WorkerMainPuzzleGenerator implements PuzzleGenerator {
     generate(options: PuzzleOptions): Promise<Puzzle> {
         return new Promise(resolve => {
             this.worker.onmessage = ev => {
-                let puzzle: Puzzle = Puzzle.from(ev.data); // TODO: deserialize
+                let puzzle: Puzzle = ev.data;
+                Puzzle.hydrate(puzzle);
                 console.log(puzzle);
                 resolve(puzzle);
             };

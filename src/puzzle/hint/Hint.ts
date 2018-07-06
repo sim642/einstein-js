@@ -34,24 +34,27 @@ export interface HintFactory {
 }
 
 export namespace Hint {
-    export function from(o: any): Hint {
+    export function hydrate(o: Hint): void {
         switch (o.class) {
             case HintClass.Adjacent:
                 setClass(o, AdjacentHint);
                 break;
+
             case HintClass.Between:
                 setClass(o, BetweenHint);
                 break;
+
             case HintClass.Direction:
                 setClass(o, DirectionHint);
                 break;
+
             case HintClass.Open:
                 setClass(o, OpenHint);
                 break;
+
             case HintClass.SameColumn:
                 setClass(o, SameColumnHint);
                 break;
         }
-        return o;
     }
 }

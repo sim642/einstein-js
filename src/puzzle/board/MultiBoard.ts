@@ -21,9 +21,8 @@ export class MultiBoard extends Board<Variants> {
         })), options);
     }
 
-    static from(o: any): MultiBoard {
+    static hydrate(o: MultiBoard): void {
         setClass(o, MultiBoard);
-        return o;
     }
 
     remove(row: number, col: number, variant: number): void {
