@@ -26,7 +26,17 @@ module.exports = {
     },
 
     node: {
-        fs: "empty"
+        // empty imports for z3em
+        fs: "empty",
+        path: "empty",
+        crypto: "empty",
+
+        // false for everything else
+        console: false,
+        global: false,
+        process: false,
+        Buffer: false,
+        setImmediate: false
     },
 
     module: {
