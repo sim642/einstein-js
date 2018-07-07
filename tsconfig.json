@@ -15,7 +15,6 @@
     "sourceMap": true,
     "noImplicitReturns": true,
     "strictNullChecks": true,
-    "allowJs": true,
     "importHelpers": true
   },
   "exclude": [
