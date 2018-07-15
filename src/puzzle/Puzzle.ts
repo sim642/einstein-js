@@ -32,6 +32,11 @@ export class Puzzle {
         return this.multiBoard.applySingleHint(_.filter(this.hints, hint => hint.getType() !== HintType.Start));
     }
 
+    canApplySingleHint(): boolean {
+        let tmpPuzzle: Puzzle = _.cloneDeep(this);
+        return tmpPuzzle.applySingleHint();
+    }
+
     static generate(options: PuzzleOptions): Promise<Puzzle> {
         return mainPuzzleGenerator.generate(options); // TODO: remove because usages should check supports before
     }

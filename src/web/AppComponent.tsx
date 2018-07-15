@@ -37,6 +37,7 @@ interface AppState {
     gameState: GameState;
     cheated: number;
     defaultName?: string;
+    canCheat?: boolean;
 }
 
 export class AppComponent extends Component<{}, AppState> {
@@ -58,7 +59,8 @@ export class AppComponent extends Component<{}, AppState> {
             options: AppComponent.defaultOptions,
             puzzle: undefined,
             gameState: GameState.Options,
-            cheated: 0
+            cheated: 0,
+            canCheat: undefined
         };
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
         this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
@@ -151,7 +153,8 @@ export class AppComponent extends Component<{}, AppState> {
         this.setState({
             puzzle: puzzle,
             gameState: GameState.Playing,
-            cheated: 0
+            cheated: 0,
+            canCheat: true
         }, () => {
             this.timer.start();
             this.refresh(); // check win in case everything opened on start
@@ -227,6 +230,11 @@ export class AppComponent extends Component<{}, AppState> {
                     alert("Over!");
                 });
             }
+            else {
+                this.setState({
+                    canCheat: puzzle.canApplySingleHint()
+                });
+            }
         }
     };
 
@@ -251,7 +259,7 @@ export class AppComponent extends Component<{}, AppState> {
                             <button class={classNames({
                                 "button-highlight": solvedOrOver || state.gameState === GameState.Highscore
                             })} onClick={this.onClickNewGame}>New game</button>
-                            <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
+                            <button disabled={!(state.gameState === GameState.Playing && state.canCheat)} onClick={this.onClickCheat}>
                                 Cheat {
                                     state.cheated > 0 ?
                                         <span class="badge">{state.cheated}</span> :
