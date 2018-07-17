@@ -6,7 +6,7 @@ export interface WasmItem {
 }
 
 export namespace Wasm {
-    export function getCached(url): Promise<WebAssembly.Module> {
+    export function getCached(url): Promise<WebAssembly.Module | undefined> {
         return db.wasm.get(url, wasmItem => {
             console.log("wasm from db:");
             console.debug(wasmItem);
