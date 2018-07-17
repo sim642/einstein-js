@@ -30,31 +30,32 @@ export class EinsteinDatabase extends Dexie {
         counts has puzzle options as primary key.
         Dexie can't upgrade primary key changes automatically: https://github.com/dfahlander/Dexie.js/issues/88#issuecomment-285384576
         Must use temporary table to recreate with additional auto-increment primary key.
-        Must use hacks to directly transfer to/from temporary table because Dexie uses one transaction for everything.
+        Must use separate versions for deletion for some reason: https://github.com/dfahlander/Dexie.js/issues/105#issuecomment-405670992
          */
 
         this.version(4).stores({
-            counts: null,
             countsTmp: "[rows+cols+extraHintsPercent]"
         }).upgrade(async tx => {
             let countsItems = await tx.table("counts").toArray();
-            let countsTmpStore = tx.idbtrans.objectStore("countsTmp");
-            countsItems.forEach(countsItem => countsTmpStore.put(countsItem));
+            await tx.table("countsTmp").bulkAdd(countsItems);
         });
 
         this.version(5).stores({
-            counts: "++id, [rows+cols+extraHintsPercent]",
-            countsTmp: null
-        }).upgrade(async tx => {
-            let countsItemsTmp = await new Promise<any[]>((resolve, reject) => {
-                let request = tx.idbtrans.objectStore("countsTmp").getAll();
-                request.onsuccess = () => resolve(request.result);
-                request.onerror = () => reject(request.error);
-            });
-            await tx.table("counts").bulkAdd(countsItemsTmp);
+            counts: null
         });
 
         this.version(6).stores({
+            counts: "++id, [rows+cols+extraHintsPercent]"
+        }).upgrade(async tx => {
+            let countsItemsTmp = await tx.table("countsTmp").toArray();
+            await tx.table("counts").bulkAdd(countsItemsTmp);
+        });
+
+        this.version(7).stores({
+            countsTmp: null
+        });
+
+        this.version(8).stores({
             times: "++, [rows+cols+extraHintsPercent+difficulty]",
             counts: "++id, [rows+cols+extraHintsPercent+difficulty]"
         }).upgrade(tx =>
@@ -71,7 +72,7 @@ export class EinsteinDatabase extends Dexie {
             ])
         );
 
-        this.version(7).stores({
+        this.version(9).stores({
             wasm: "url"
         });
     }
