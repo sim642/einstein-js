@@ -182,15 +182,13 @@ export class AppComponent extends Component<{}, AppState> {
                 }), () => {
                     let options = puzzle.options;
                     let cheated = this.state.cheated;
+                    Counts.increase(options, cheated ? "solvedCheated" : "solved");
+
                     let cheatedText = cheated > 0 ? ` by cheating ${cheated} times` : "";
-                    let alertText = `Solved ${formatOptions(options)} in ${formatDuration(time)}${cheatedText}!`;
+                    alert(`Solved ${formatOptions(options)} in ${formatDuration(time)}${cheatedText}!`);
 
                     if (!cheated) {
-                        db.transaction("rw", db.counts, db.times, db.config, () => {
-                            Counts.increase(options, "solved");
-
-                            alert(alertText);
-
+                        db.transaction("rw", db.times, db.config, () =>
                             Times.isInTop10(options, time).then<string | undefined>(isInTop10 => {
                                 return Config.getKey("name").then(defaultName => { // TODO: get name only when in top 10
                                     let name;
@@ -205,13 +203,8 @@ export class AppComponent extends Component<{}, AppState> {
                                     Times.add(options, time, name),
                                     Config.setKey("name", name)
                                 ]);
-                            });
-                        });
-                    }
-                    else { // cheated
-                        Counts.increase(options, "solvedCheated");
-
-                        alert(alertText);
+                            })
+                        );
                     }
                 });
             }
