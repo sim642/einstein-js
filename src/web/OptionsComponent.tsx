@@ -260,7 +260,7 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
 
                 {
                     props.generating ?
-                        <div class="loading-overlay">Loading...</div> :
+                        <div class="loading-overlay"><div class="lds-dual-ring"></div></div> :
                         null
                 }
             </form>
