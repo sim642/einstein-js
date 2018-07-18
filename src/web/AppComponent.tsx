@@ -6,6 +6,7 @@ import {Component, h} from "preact";
 import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
 import {Config} from "../storage/Config";
 import {Counts} from "../storage/Counts";
+import {db} from "../storage/db";
 import {Times} from "../storage/Times";
 import {formatDuration} from "../time";
 import {Timer} from "../Timer";
@@ -187,21 +188,23 @@ export class AppComponent extends Component<{}, AppState> {
                     alert(`Solved ${formatOptions(options)} in ${formatDuration(time)}${cheatedText}!`);
 
                     if (!cheated) {
-                        Times.isInTop10(options, time).then<string | undefined>(isInTop10 => {
-                            return Config.getKey("name").then(defaultName => { // TODO: get name only when in top 10
-                                let name;
-                                if (isInTop10 !== false &&
-                                    (name = prompt(`Enter name for ${isInTop10 + 1}. place in high scores:`, defaultName)) !== null)
-                                    return name;
-                                else
-                                    return undefined;
+                        db.transaction("rw", db.times, db.config, () =>
+                            Times.isInTop10(options, time).then<string | undefined>(isInTop10 => {
+                                return Config.getKey("name").then(defaultName => { // TODO: get name only when in top 10
+                                    let name;
+                                    if (isInTop10 !== false &&
+                                        (name = prompt(`Enter name for ${isInTop10 + 1}. place in high scores:`, defaultName)) !== null)
+                                        return name;
+                                    else
+                                        return undefined;
+                                })
+                            }).then(name => {
+                                return Dexie.Promise.all([
+                                    Times.add(options, time, name),
+                                    Config.setKey("name", name)
+                                ]);
                             })
-                        }).then(name => {
-                            return Dexie.Promise.all([
-                                Times.add(options, time, name),
-                                Config.setKey("name", name)
-                            ]);
-                        });
+                        );
                     }
                 });
             }
