@@ -153,18 +153,22 @@ export class AppComponent extends Component<{}, AppState> {
         this.setState({
             gameState: GameState.Generating
         }, () => {
-            setTimeout(async () => {
-                let puzzle = await this.puzzleGenerator.generate(options);
-                this.setState({
-                    puzzle: puzzle,
-                    gameState: GameState.Playing,
-                    cheated: 0,
-                    canCheat: true
-                }, () => {
-                    this.timer.start();
-                    this.refresh(); // check win in case everything opened on start
-                });
-            }, 10); // TODO: make sure form is actually rendered disabled
+            // this.forceUpdate(); // seems to make no difference
+
+            requestAnimationFrame(time => { // request repaint, callback runs BEFORE
+                setTimeout(async () => {
+                    let puzzle = await this.puzzleGenerator.generate(options);
+                    this.setState({
+                        puzzle: puzzle,
+                        gameState: GameState.Playing,
+                        cheated: 0,
+                        canCheat: true
+                    }, () => {
+                        this.timer.start();
+                        this.refresh(); // check win in case everything opened on start
+                    });
+                }, 0); // timeout to start generation AFTER repaint (hopefully)
+            });
         });
     };
 
