@@ -3,6 +3,7 @@
 .options {
   .box;
 
+  position: relative;
   align-self: center;
 }
 
@@ -110,4 +111,16 @@ fieldset:disabled {
 
 input[type=range]:disabled {
   opacity: 0.5;
+}
+
+.loading-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }

@@ -257,6 +257,12 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
 
                     <TopOptionsComponent set={this.setOptions}/>
                 </fieldset>
+
+                {
+                    props.generating ?
+                        <div class="loading-overlay">Loading...</div> :
+                        null
+                }
             </form>
         );
     }
