@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#ver:2018-7-6 14:19:02
+#ver:2018-7-18 16:39:21
 #plugin:4.8.3
 
 CACHE:
@@ -83,9 +83,9 @@ CACHE:
 ../icons/original/small/small-f4.fa8fa0e7c09873297312ed5082eac413.png
 ../icons/original/large/large-a4.30bcbdd3b26849030d9f7756c19d6a98.png
 ../icons/original/large/large-f2.ebac4e572194ab532410773494ed9c4e.png
-../app.80b67516a552e227cb370c00f10be377.js
+../app.1fcf18bd47b32412cfe9bda39b86cc4c.js
 ../manifest.d41d8cd98f00b204e9800998ecf8427e.js
-../vendor.1ca3b5e3e6a5ad286e24ccc5a830e6c5.js
+../vendor.c2aeb07cc476ec2eba36d34f01d55259.js
 ../app.fa94556d91b5ab337e7bae1154c5c410.css
 ../einstein.ico
 ../
