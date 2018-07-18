@@ -124,7 +124,7 @@ class TopOptionsComponent extends Component<TopOptionsProps, TopOptionsState> {
                         {
                             _.map(_.take(state.topCounts, 5), countsItem =>
                                 <li>
-                                    <a onClick={this.onClick(countsItem)}>
+                                    <a class="button" onClick={this.onClick(countsItem)}>
                                         {formatOptions(countsItem)} <small className="small-number">({countsItem.solved + countsItem.solvedCheated + countsItem.over})</small>
                                     </a>
                                 </li>
@@ -145,6 +145,7 @@ export interface OptionsProps {
     highscore: (PuzzleOptions) => void;
     defaultOptions: PuzzleOptions;
     puzzleGenerator: PuzzleGenerator;
+    generating: boolean;
 }
 
 interface OptionsState {
@@ -231,29 +232,31 @@ export class OptionsComponent extends Component<OptionsProps, OptionsState> {
     render(props: OptionsProps, state: OptionsState) {
         return (
             <form class="options" onSubmit={this.onSubmit}>
-                <div class="form-group">
-                    <label for="option-rows">Rows</label>
-                    <InputRangeComponent id="option-rows" min={2} max={6} value={state.options.rows} onChange={this.onChange("rows")}/>
-                </div>
-                <div class="form-group">
-                    <label for="option-cols">Columns</label>
-                    <InputRangeComponent id="option-cols" min={2} max={6} value={state.options.cols} onChange={this.onChange("cols")}/>
-                </div>
-                <div class="form-group">
-                    <label for="option-extra-hints">Extra hints</label>
-                    <InputRangeComponent id="option-extra-hints" min={0} max={100} step={20} value={state.options.extraHintsPercent} onChange={this.onChange("extraHintsPercent")} unit="%"/>
-                </div>
-                <div class="form-group">
-                    <label for="option-difficulty">Difficulty</label>
-                    <RadioChoiceComponent id="option-difficulty" choices={[["normal", "Normal"], ["hard", "Hard"]]} value={state.options.difficulty} onChange={this.onChange("difficulty")}/>
-                </div>
-                <div class="form-group buttons">
-                    <button type="reset" onClick={this.onReset}>Reset</button>
-                    <button type="button" disabled={!state.hasTimes} onClick={this.onHighscore}>High scores</button>
-                    <button class="button-highlight button-wide" type="submit" disabled={!props.puzzleGenerator.supports(state.options)}>Play</button>
-                </div>
+                <fieldset disabled={props.generating}>
+                    <div class="form-group">
+                        <label for="option-rows">Rows</label>
+                        <InputRangeComponent id="option-rows" min={2} max={6} value={state.options.rows} onChange={this.onChange("rows")}/>
+                    </div>
+                    <div class="form-group">
+                        <label for="option-cols">Columns</label>
+                        <InputRangeComponent id="option-cols" min={2} max={6} value={state.options.cols} onChange={this.onChange("cols")}/>
+                    </div>
+                    <div class="form-group">
+                        <label for="option-extra-hints">Extra hints</label>
+                        <InputRangeComponent id="option-extra-hints" min={0} max={100} step={20} value={state.options.extraHintsPercent} onChange={this.onChange("extraHintsPercent")} unit="%"/>
+                    </div>
+                    <div class="form-group">
+                        <label for="option-difficulty">Difficulty</label>
+                        <RadioChoiceComponent id="option-difficulty" choices={[["normal", "Normal"], ["hard", "Hard"]]} value={state.options.difficulty} onChange={this.onChange("difficulty")}/>
+                    </div>
+                    <div class="form-group buttons">
+                        <button type="reset" onClick={this.onReset}>Reset</button>
+                        <button type="button" disabled={!state.hasTimes} onClick={this.onHighscore}>High scores</button>
+                        <button class="button-highlight button-wide" type="submit" disabled={!props.puzzleGenerator.supports(state.options)}>Play</button>
+                    </div>
 
-                <TopOptionsComponent set={this.setOptions}/>
+                    <TopOptionsComponent set={this.setOptions}/>
+                </fieldset>
             </form>
         );
     }

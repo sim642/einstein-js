@@ -86,3 +86,28 @@
     }
   }
 }
+
+.options fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+fieldset:disabled {
+  opacity: 0.5;
+  @cursor: progress;
+  cursor: @cursor;
+
+  input, button {
+    opacity: 1 !important;
+    cursor: @cursor;
+  }
+
+  a.button {
+    pointer-events: none;
+  }
+}
+
+input[type=range]:disabled {
+  opacity: 0.5;
+}

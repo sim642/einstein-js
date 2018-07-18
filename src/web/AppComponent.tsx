@@ -24,6 +24,7 @@ import {OptionsComponent} from "./OptionsComponent";
 export enum GameState {
     Options,
     Highscore,
+    Generating,
     Playing,
     ManualPaused,
     AutoPaused,
@@ -147,17 +148,23 @@ export class AppComponent extends Component<{}, AppState> {
         }
     };
 
-    private submitOptions = async (options: PuzzleOptions) => {
+    private submitOptions = (options: PuzzleOptions) => {
         this.configOptions(options);
-        let puzzle = await this.puzzleGenerator.generate(options);
         this.setState({
-            puzzle: puzzle,
-            gameState: GameState.Playing,
-            cheated: 0,
-            canCheat: true
+            gameState: GameState.Generating
         }, () => {
-            this.timer.start();
-            this.refresh(); // check win in case everything opened on start
+            setTimeout(async () => {
+                let puzzle = await this.puzzleGenerator.generate(options);
+                this.setState({
+                    puzzle: puzzle,
+                    gameState: GameState.Playing,
+                    cheated: 0,
+                    canCheat: true
+                }, () => {
+                    this.timer.start();
+                    this.refresh(); // check win in case everything opened on start
+                });
+            }, 10); // TODO: make sure form is actually rendered disabled
         });
     };
 
@@ -258,7 +265,7 @@ export class AppComponent extends Component<{}, AppState> {
                         <div class="buttons buttons-responsive">
                             <button class={classNames({
                                 "button-highlight": solvedOrOver || state.gameState === GameState.Highscore
-                            })} onClick={this.onClickNewGame}>New game</button>
+                            })} disabled={state.gameState === GameState.Generating} onClick={this.onClickNewGame}>New game</button>
                             <button disabled={!(state.gameState === GameState.Playing && state.canCheat)} onClick={this.onClickCheat}>
                                 Cheat {
                                     state.cheated > 0 ?
@@ -277,15 +284,15 @@ export class AppComponent extends Component<{}, AppState> {
                     </div>
                     <BirthdayComponent month={10} day={22} name="Elisabeth"/>
                     {
-                        state.gameState === GameState.Options ?
-                            <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions} puzzleGenerator={this.puzzleGenerator}/> :
+                        state.gameState === GameState.Options || state.gameState === GameState.Generating ?
+                            <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions} puzzleGenerator={this.puzzleGenerator} generating={state.gameState === GameState.Generating}/> :
                             state.gameState === GameState.Highscore ?
                                 <HighscoreComponent options={state.options}/> :
                                 <MultiBoardComponent board={state.puzzle!.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                     }
                 </div>
                 {
-                    state.gameState !== GameState.Options && state.gameState !== GameState.Highscore ?
+                    state.gameState !== GameState.Options && state.gameState !== GameState.Highscore && state.gameState !== GameState.Generating ?
                         <HintsComponent hints={state.puzzle!.hints}/> :
                         null
                 }
