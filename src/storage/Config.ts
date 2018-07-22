@@ -13,7 +13,7 @@ export interface Config {
 }
 
 export namespace Config {
-    export function getKey<V>(key: string): Promise<V | undefined> {
+    export function getKey<K extends keyof Config>(key: K): Promise<Config[K] | undefined> {
         return db.config.get(key, configItem => configItem !== undefined ? configItem.value : undefined);
     }
 
@@ -23,7 +23,7 @@ export namespace Config {
         );
     }
 
-    export function setKey<V>(key: string, value: V): Promise<string> {
+    export function setKey<K extends keyof Config>(key: K, value: Config[K]): Promise<string> {
         return db.config.put({
             key: key,
             value: value
