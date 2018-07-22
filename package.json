@@ -31,7 +31,7 @@
   },
   "dependencies": {
     "classnames": "^2.2.5",
-    "dexie": "^2.0.1",
+    "dexie": "^3.0.0-alpha.3",
     "lodash": "^4.17.4",
     "preact": "^8.2.1",
     "tslib": "^1.9.3",
