@@ -1,5 +1,5 @@
 CACHE MANIFEST
-#ver:2018-7-18 16:39:21
+#ver:2018-7-23 22:18:07
 #plugin:4.8.3
 
 CACHE:
@@ -33,6 +33,7 @@ CACHE:
 ../icons/original/large/large-a1.d73d5dfe6e49493fa72128c7d36eca4e.png
 ../icons/original/small/small-f6.2f7d8a98586b23b3f348bef4350bf4f7.png
 ../icons/original/hint-adjacent.7b5864dbf0656526063d96f271c1e5fc.png
+../z3em.6be190eb29c7bcb60f127514f976f898.wasm
 ../icons/original/small/small-b3.65f5bcb765e8dc6f37ec5174e112cea4.png
 ../icons/original/large/large-e4.07420566e5a63e3313fa48704100c22f.png
 ../icons/original/small/small-e1.abbe71866b879431f7d1ec2f736260f3.png
@@ -83,10 +84,10 @@ CACHE:
 ../icons/original/small/small-f4.fa8fa0e7c09873297312ed5082eac413.png
 ../icons/original/large/large-a4.30bcbdd3b26849030d9f7756c19d6a98.png
 ../icons/original/large/large-f2.ebac4e572194ab532410773494ed9c4e.png
-../app.1fcf18bd47b32412cfe9bda39b86cc4c.js
+../app.2e770df424b74b5ac71cf84208f834e6.js
 ../manifest.d41d8cd98f00b204e9800998ecf8427e.js
-../vendor.c2aeb07cc476ec2eba36d34f01d55259.js
-../app.fa94556d91b5ab337e7bae1154c5c410.css
+../vendor.66180ea3acdd58211f0539d252e82a99.js
+../app.5f220b6aeeee1085dcfa26c9d18f8b8d.css
 ../einstein.ico
 ../
 ../einstein-256.png
