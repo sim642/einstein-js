@@ -158,16 +158,27 @@ export class AppComponent extends Component<{}, AppState> {
 
             requestAnimationFrame(time => { // request repaint, callback runs BEFORE
                 setTimeout(async () => {
-                    let puzzle = await this.puzzleGenerator.generate(options);
-                    this.setState({
-                        puzzle: puzzle,
-                        gameState: GameState.Playing,
-                        cheated: 0,
-                        canCheat: true
-                    }, () => {
-                        this.timer.start();
-                        this.refresh(); // check win in case everything opened on start
-                    });
+                    try {
+                        let puzzle = await this.puzzleGenerator.generate(options);
+                        this.setState({
+                            puzzle: puzzle,
+                            gameState: GameState.Playing,
+                            cheated: 0,
+                            canCheat: true
+                        }, () => {
+                            this.timer.start();
+                            this.refresh(); // check win in case everything opened on start
+                        });
+                    }
+                    catch (e) {
+                        alert(e);
+                        this.setState({
+                            puzzle: undefined,
+                            gameState: GameState.Options,
+                            cheated: 0,
+                            canCheat: undefined
+                        });
+                    }
                 }, 0); // timeout to start generation AFTER repaint (hopefully)
             });
         });

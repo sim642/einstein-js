@@ -2,6 +2,7 @@ import * as Z3Em from "z3em";
 import * as z3emWasm from "z3em/z3em.wasm";
 import {memoizeSupplier} from "../function";
 import {Wasm} from "../storage/Wasm";
+import {isWasmSupported} from "../wasm";
 
 class ResolveWrapper<T> {
     constructor(public value: T) {
@@ -23,40 +24,45 @@ function createZ3Em(z3emOptions): Promise<ResolveWrapper<Z3Em>> {
 
 // for caching WASM in Chrome: chrome://flags/#enable-webassembly
 
-export const getZ3 = memoizeSupplier(() =>
-    Wasm.getCached(z3emWasm).then( module => {
-        let z3emOptions;
-        if (module !== undefined) {
-            z3emOptions = {
-                instantiateWasm: (importObject, receiveInstance) => {
-                    console.debug("instantiateWasm");
-                    WebAssembly.instantiate(module, importObject).then(instance =>
-                        receiveInstance(instance, module)
-                    );
-                    return {}; // instantiateWasm is async
-                }
-            };
-        }
-        else {
-            z3emOptions = {
-                locateFile: () => z3emWasm,
-                onReceiveInstance: (instance, module) => {
-                    console.debug("onReceiveInstance");
-                    Wasm.cache(z3emWasm, module);
-                }
-            };
-        }
+export const getZ3 = memoizeSupplier(() => {
+    if (isWasmSupported()) {
+        return Wasm.getCached(z3emWasm).then(module => {
+            let z3emOptions;
+            if (module !== undefined) {
+                z3emOptions = {
+                    instantiateWasm: (importObject, receiveInstance) => {
+                        console.debug("instantiateWasm");
+                        WebAssembly.instantiate(module, importObject).then(instance =>
+                            receiveInstance(instance, module)
+                        );
+                        return {}; // instantiateWasm is async
+                    }
+                };
+            }
+            else {
+                z3emOptions = {
+                    locateFile: () => z3emWasm,
+                    onReceiveInstance: (instance, module) => {
+                        console.debug("onReceiveInstance");
+                        Wasm.cache(z3emWasm, module);
+                    }
+                };
+            }
 
-        console.debug("Z3 arming...");
-        return createZ3Em(z3emOptions).then(resolveWrapper => {
-            let z3em = resolveWrapper.value;
+            console.debug("Z3 arming...");
+            return createZ3Em(z3emOptions).then(resolveWrapper => {
+                let z3em = resolveWrapper.value;
 
-            const z3 = new Z3(z3em);
-            console.log("Z3 armed");
-            return z3;
+                const z3 = new Z3(z3em);
+                console.log("Z3 armed");
+                return z3;
+            });
         });
-    })
-);
+    }
+    else {
+        return Promise.reject(new Error("WebAssembly not supported"));
+    }
+});
 
 export class Z3 {
     constructor(private z3em) {
