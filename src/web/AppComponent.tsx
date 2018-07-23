@@ -4,6 +4,7 @@ import * as _ from "lodash";
 import * as Package from "package.json";
 import {Component, h} from "preact";
 import {Puzzle, PuzzleOptions} from "../puzzle/Puzzle";
+import {mainPuzzleGenerator, PuzzleGenerator} from "../puzzle/PuzzleGenerator";
 import {Config} from "../storage/Config";
 import {Counts} from "../storage/Counts";
 import {db} from "../storage/db";
@@ -24,6 +25,7 @@ import {OptionsComponent} from "./OptionsComponent";
 export enum GameState {
     Options,
     Highscore,
+    Generating,
     Playing,
     ManualPaused,
     AutoPaused,
@@ -36,17 +38,20 @@ interface AppState {
     puzzle?: Puzzle;
     gameState: GameState;
     cheated: number;
+    canCheat?: boolean;
 }
 
 export class AppComponent extends Component<{}, AppState> {
     private timer = new Timer();
     private visibilityChange: VisibilityChangeListener;
     private messageUnload: MessageUnloadListener;
+    private puzzleGenerator: PuzzleGenerator = mainPuzzleGenerator;
 
     private static readonly defaultOptions: PuzzleOptions = {
         rows: 6,
         cols: 6,
-        extraHintsPercent: 0
+        extraHintsPercent: 0,
+        difficulty: "normal"
     };
 
     constructor() {
@@ -55,7 +60,8 @@ export class AppComponent extends Component<{}, AppState> {
             options: AppComponent.defaultOptions,
             puzzle: undefined,
             gameState: GameState.Options,
-            cheated: 0
+            cheated: 0,
+            canCheat: undefined
         };
         this.visibilityChange = new VisibilityChangeListener(this.onVisibilityChange);
         this.messageUnload = new MessageUnloadListener(this.onMessageUnload);
@@ -146,12 +152,35 @@ export class AppComponent extends Component<{}, AppState> {
     private submitOptions = (options: PuzzleOptions) => {
         this.configOptions(options);
         this.setState({
-            puzzle: Puzzle.generate(options),
-            gameState: GameState.Playing,
-            cheated: 0
+            gameState: GameState.Generating
         }, () => {
-            this.timer.start();
-            this.refresh(); // check win in case everything opened on start
+            // this.forceUpdate(); // seems to make no difference
+
+            requestAnimationFrame(time => { // request repaint, callback runs BEFORE
+                setTimeout(async () => {
+                    try {
+                        let puzzle = await this.puzzleGenerator.generate(options);
+                        this.setState({
+                            puzzle: puzzle,
+                            gameState: GameState.Playing,
+                            cheated: 0,
+                            canCheat: true
+                        }, () => {
+                            this.timer.start();
+                            this.refresh(); // check win in case everything opened on start
+                        });
+                    }
+                    catch (e) {
+                        alert(e);
+                        this.setState({
+                            puzzle: undefined,
+                            gameState: GameState.Options,
+                            cheated: 0,
+                            canCheat: undefined
+                        });
+                    }
+                }, 0); // timeout to start generation AFTER repaint (hopefully)
+            });
         });
     };
 
@@ -218,6 +247,11 @@ export class AppComponent extends Component<{}, AppState> {
                     alert("Over!");
                 });
             }
+            else {
+                this.setState({
+                    canCheat: puzzle.canApplySingleHint()
+                });
+            }
         }
     };
 
@@ -241,8 +275,8 @@ export class AppComponent extends Component<{}, AppState> {
                         <div class="buttons buttons-responsive">
                             <button class={classNames({
                                 "button-highlight": solvedOrOver || state.gameState === GameState.Highscore
-                            })} onClick={this.onClickNewGame}>New game</button>
-                            <button disabled={state.gameState !== GameState.Playing} onClick={this.onClickCheat}>
+                            })} disabled={state.gameState === GameState.Generating} onClick={this.onClickNewGame}>New game</button>
+                            <button disabled={!(state.gameState === GameState.Playing && state.canCheat)} onClick={this.onClickCheat}>
                                 Cheat {
                                     state.cheated > 0 ?
                                         <span class="badge">{state.cheated}</span> :
@@ -260,15 +294,15 @@ export class AppComponent extends Component<{}, AppState> {
                     </div>
                     <BirthdayComponent month={10} day={22} name="Elisabeth"/>
                     {
-                        state.gameState === GameState.Options ?
-                            <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions}/> :
+                        state.gameState === GameState.Options || state.gameState === GameState.Generating ?
+                            <OptionsComponent options={state.options} submit={this.submitOptions} highscore={this.highscoreOptions} defaultOptions={AppComponent.defaultOptions} puzzleGenerator={this.puzzleGenerator} generating={state.gameState === GameState.Generating}/> :
                             state.gameState === GameState.Highscore ?
                                 <HighscoreComponent options={state.options}/> :
                                 <MultiBoardComponent board={state.puzzle!.multiBoard} refresh={this.refresh} showBoard={showBoard}/>
                     }
                 </div>
                 {
-                    state.gameState !== GameState.Options && state.gameState !== GameState.Highscore ?
+                    state.gameState !== GameState.Options && state.gameState !== GameState.Highscore && state.gameState !== GameState.Generating ?
                         <HintsComponent hints={state.puzzle!.hints}/> :
                         null
                 }

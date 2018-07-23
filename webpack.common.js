@@ -25,6 +25,20 @@ module.exports = {
         }
     },
 
+    node: {
+        // empty imports for z3em
+        fs: "empty",
+        path: "empty",
+        crypto: "empty",
+
+        // false for everything else
+        console: false,
+        global: false,
+        process: false,
+        Buffer: false,
+        setImmediate: false
+    },
+
     module: {
         rules: [
             {
@@ -79,6 +93,16 @@ module.exports = {
                     loader: "file-loader",
                     query: {
                         name: "[name].[ext]"
+                    }
+                }
+            },
+            {
+                test: /\.wasm$/,
+                use: {
+                    loader: "file-loader",
+                    query: {
+                        // always include hash for WASM cache invalidation in IndexedDB
+                        name: "[name].[hash].[ext]"
                     }
                 }
             }

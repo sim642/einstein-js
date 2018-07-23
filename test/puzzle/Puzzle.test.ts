@@ -12,7 +12,8 @@ describe("Puzzle", function () {
     const options: PuzzleOptions = {
         rows: 3,
         cols: 3,
-        extraHintsPercent: 0
+        extraHintsPercent: 0,
+        difficulty: "normal"
     };
     const singleBoard: SingleBoard = new SingleBoard([
         [0, 1, 2],
@@ -76,8 +77,10 @@ describe("Puzzle", function () {
     describe("#generate()", function () {
         context("returned puzzle", function () {
             paramPuzzleOptions(function (options) {
-                param.repeat(20, () => Puzzle.generate(options), function (puzzle) {
-                    it("should have correct size boards", function () {
+                param.repeat(20, () => Puzzle.generate(options), function (puzzlePromise) {
+                    it("should have correct size boards", async function () {
+                        let puzzle = await puzzlePromise;
+
                         // singleboard
                         expect(puzzle.singleBoard.rows).to.equal(options.rows);
                         expect(puzzle.singleBoard.cols).to.equal(options.cols);
@@ -86,7 +89,9 @@ describe("Puzzle", function () {
                         expect(puzzle.multiBoard.cols).to.equal(options.cols);
                     });
 
-                    it("should be solvable", function () {
+                    it("should be solvable", async function () {
+                        let puzzle = await puzzlePromise;
+
                         let solvable = puzzle.singleBoard.isSolvable(puzzle.hints);
 
                         expect(solvable).to.be.true;

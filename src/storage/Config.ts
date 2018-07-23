@@ -23,7 +23,7 @@ export namespace Config {
         );
     }
 
-    export function setKey<K extends keyof Config>(key: K, value: Config[K]): Promise<K> {
+    export function setKey<K extends keyof Config>(key: K, value: Config[K]): Promise<string> {
         return db.config.put({
             key: key,
             value: value

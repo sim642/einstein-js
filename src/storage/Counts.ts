@@ -9,12 +9,12 @@ export interface Counts {
 }
 
 export interface CountsItem extends PuzzleOptions, Counts {
-
+    id?: number;
 }
 
 export namespace Counts {
     export function get(options: PuzzleOptions): Promise<CountsItem> {
-        return db.counts.get(options, countsItem => {
+        return db.counts.get({...options}, countsItem => { // TODO: why spread?
             if (countsItem === undefined) {
                 let defaultItem: CountsItem = {
                     ...options,
@@ -37,7 +37,7 @@ export namespace Counts {
         );
     }
 
-    export function increase(options: PuzzleOptions, count: keyof Counts): Promise<PuzzleOptions> {
+    export function increase(options: PuzzleOptions, count: keyof Counts): Promise<number> {
         return db.transaction("rw", db.counts, () =>
             get(options).then(countsItem => {
                 let newCountsItem: CountsItem = _.merge(countsItem, {

@@ -3,6 +3,7 @@
 .options {
   .box;
 
+  position: relative;
   align-self: center;
 }
 
@@ -41,6 +42,33 @@
   width: 2.5em;
 }
 
+.input-choice {
+  margin: 0;
+  padding: 0;
+  border: 0;
+
+  display: flex;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  align-items: center;
+
+  input {
+    //margin: 0;
+    //vertical-align: middle;
+    margin: 0 0.25em;
+  }
+
+  label {
+    margin: 0;
+    //display: inline-block;
+  }
+}
+
+.options .input-choice {
+  width: 100%;
+  margin-right: 2.5em;
+}
+
 .options-title {
   font-weight: bold;
 }
@@ -58,4 +86,43 @@
       padding: 0.1em 0 0.1em 0.3em;
     }
   }
+}
+
+.options fieldset {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+fieldset:disabled {
+  opacity: 0.5;
+  @cursor: progress;
+  cursor: @cursor;
+
+  input, button {
+    opacity: 1 !important;
+    cursor: @cursor;
+  }
+
+  a.button {
+    pointer-events: none;
+  }
+}
+
+input[type=range]:disabled {
+  opacity: 0.5;
+}
+
+.loading-overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  left: 0;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  cursor: progress;
 }

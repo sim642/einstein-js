@@ -1,6 +1,7 @@
 import * as _ from "lodash";
 import {Component, h} from "preact";
 import "./highscore.less";
+import "./spinner.less";
 import {Counts} from "../storage/Counts";
 import {Times, TimesItem} from "../storage/Times";
 import {PuzzleOptions} from "../puzzle/Puzzle";

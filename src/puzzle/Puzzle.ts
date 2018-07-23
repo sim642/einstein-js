@@ -2,11 +2,14 @@ import * as _ from "lodash";
 import {BoardOptions} from "./board/Board";
 import {MultiBoard} from "./board/MultiBoard";
 import {SingleBoard} from "./board/SingleBoard";
-import {Hint, HintFactory, HintType} from "./hint/Hint";
-import {RandomHintFactory} from "./RandomHint";
+import {Hint, HintType} from "./hint/Hint";
+import {mainPuzzleGenerator} from "./PuzzleGenerator";
+
+export type Difficulty = "normal" | "hard";
 
 export interface PuzzleOptions extends BoardOptions {
     readonly extraHintsPercent: number;
+    readonly difficulty: Difficulty;
 }
 
 export class Puzzle {
@@ -29,50 +32,12 @@ export class Puzzle {
         return this.multiBoard.applySingleHint(_.filter(this.hints, hint => hint.getType() !== HintType.Start));
     }
 
-    static generate(options: PuzzleOptions): Puzzle {
-        let board = SingleBoard.random(options);
-        let hints = Puzzle.generateHints(board);
-        hints = Puzzle.pruneHints(board, hints);
-        hints = Puzzle.generateExtraHints(options, board, hints);
-        return new Puzzle(board, hints, options);
+    canApplySingleHint(): boolean {
+        let tmpPuzzle: Puzzle = _.cloneDeep(this);
+        return tmpPuzzle.applySingleHint();
     }
 
-    private static hintFactory: HintFactory = new RandomHintFactory();
-
-    private static generateHints(board: SingleBoard): Hint[] {
-        let hints: Hint[] = [];
-        while (!board.isSolvable(hints)) {
-            let hint = Puzzle.hintFactory.random(board);
-            hints.push(hint);
-        }
-        return hints;
-    }
-
-    private static pruneHints(board: SingleBoard, hints: Hint[]): Hint[] {
-        hints = _.clone(hints);
-        console.debug(`Before pruneHints: ${hints.length}`);
-        for (let i = 0; i < hints.length;) { // no i++
-            let hint = hints.splice(i, 1)[0];
-            if (board.isSolvable(hints)) {
-                // keep i which now points to next hint
-            }
-            else {
-                hints.splice(i, 0, hint);
-                i++;
-            }
-        }
-        console.debug(`After pruneHints: ${hints.length}`);
-        return hints;
-    }
-
-    private static generateExtraHints(options: PuzzleOptions, board: SingleBoard, hints: Hint[]): Hint[] {
-        hints = _.clone(hints);
-        let extraHints = Math.round((options.extraHintsPercent / 100) * hints.length);
-        console.debug(`Adding extra hints: ${extraHints}`);
-        for (let i = 0; i < extraHints; i++) {
-            let hint = Puzzle.hintFactory.random(board);
-            hints.push(hint);
-        }
-        return hints;
+    static generate(options: PuzzleOptions): Promise<Puzzle> {
+        return mainPuzzleGenerator.generate(options); // TODO: remove because usages should check supports before
     }
 }
