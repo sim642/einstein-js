@@ -14,8 +14,7 @@
     "jsxFactory": "h",
     "sourceMap": true,
     "noImplicitReturns": true,
-    "strictNullChecks": true,
-    "importHelpers": true
+    "strictNullChecks": true
   },
   "exclude": [
     "node_modules"

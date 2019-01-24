@@ -127,19 +127,19 @@ module.exports = {
         }),
 
         new HtmlWebpackPlugin({
-            title: "einstein-js",
-            template: "./src/index.ejs",
-            favicon: "./src/einstein.ico"
+            // title: "einstein-js",
+            // template: "./src/index.ejs",
+            // favicon: "./src/einstein.ico"
         }),
 
         new webpack.NamedChunksPlugin(),
 
-        new CopyWebpackPlugin([
+        /*new CopyWebpackPlugin([
             {
                 from: "./src/einstein-*.png", // TODO: don't hardcode icon png
                 to: "./",
                 flatten: true
             }
-        ])
+        ])*/
     ]
 };
