@@ -49,8 +49,11 @@ export class Z3HintsGenerator implements HintsGenerator {
     }
 
     private ask(smtlib2: string): string {
-        // console.debug(smtlib2);
-        return this.z3.eval_smtlib2_string(this.ctx, smtlib2).trim();
+        // console.debug(`> ${smtlib2}`);
+        console.debug(smtlib2);
+        let ret = this.z3.eval_smtlib2_string(this.ctx, smtlib2).trim();
+        console.debug(ret);
+        return ret;
     }
 
     private deleteContext() {
@@ -67,6 +70,8 @@ export class Z3HintsGenerator implements HintsGenerator {
             let i = hints.length - 1;
             let constraint = Z3HintsGenerator.getHintConstraint(hint);
             this.ask(`(assert (! ${constraint} :named h${i}))`);
+            if (i >= 10)
+                break;
         }
         return hints;
     }
