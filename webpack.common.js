@@ -3,6 +3,7 @@ var webpack = require("webpack");
 
 var ExtractTextPlugin = require("extract-text-webpack-plugin");
 var HtmlWebpackPlugin = require("html-webpack-plugin");
+var PreloadWebpackPlugin = require('preload-webpack-plugin');
 var CopyWebpackPlugin = require("copy-webpack-plugin");
 var CleanWebpackPlugin = require("clean-webpack-plugin");
 
@@ -130,6 +131,13 @@ module.exports = {
             title: "einstein-js",
             template: "./src/index.ejs",
             favicon: "./src/einstein.ico"
+        }),
+
+        new PreloadWebpackPlugin({
+            rel: "prefetch",
+            include: "allAssets",
+            fileWhitelist: [/\.png$/],
+            as: "image"
         }),
 
         new webpack.NamedChunksPlugin(),
