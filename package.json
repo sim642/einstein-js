@@ -32,7 +32,7 @@
   "dependencies": {
     "classnames": "^2.2.5",
     "dexie": "^3.0.0-alpha.3",
-    "lodash": "^4.17.10",
+    "lodash": "^4.17.19",
     "preact": "^8.2.1",
     "tslib": "^1.9.3",
     "z3em": "^0.0.5"
