@@ -1,5 +1,6 @@
 {
   "lang": "en-US",
+  "name": "einstein-js",
   "description": "Einstein Puzzle 2.0 by Flowix Games ported to the web",
   "start_url": ".",
   "display": "standalone",
