@@ -19,7 +19,7 @@
   "bugs": {
     "url": "https://github.com/sim642/einstein-js/issues"
   },
-  "homepage": "http://einstein.sim642.eu",
+  "homepage": "https://einstein.sim642.eu",
   "scripts": {
     "build:dev": "webpack --env=dev --progress --profile --colors",
     "build:prod": "webpack --env=prod --progress --profile --colors",
